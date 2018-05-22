@@ -1,0 +1,194 @@
+    {
+        "swagger": "2.0",
+        "info": {
+            "title": "SIMaaS Using Queue, Workers and fmpy",
+            "version": "0.1.0"
+        },
+        "paths": {
+            "/model_instances/{uuid}/_simulate": {
+                "post": {
+                    "tags": ["Model Instances"],
+                    "summary": "Trigger the simulation of a model instance by defining an experiment, i.e. boundary conditions and simulation parameters",
+                    "consumes": [ "application/json" ],
+                    "parameters": [
+                        {
+                            "$ref": "#/parameters/setup_experiment"
+                        }
+                    ],
+                    "responses": {
+                        "202": {
+                            "description": "An acknowledgement that the simulation was successfully triggered",
+                            "headers": {
+                                "Location": {
+                                    "description": "Referral to a resource that indicates the status of the long-running simulation; this resource needs to be polled ([RFC7231, section 7.1.2](https://tools.ietf.org/html/rfc7231#section-7.1.2))",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "uuid",
+                        "in": "path",
+                        "description": "The UUID of the model instance to be simulated",
+                        "required": true,
+                        "type": "string",
+                        "pattern": "^/^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i$"
+                    }
+                ]
+            },
+            "/experiments/{uuid}/status": {
+                "get": {
+                    "tags": ["Experiments"],
+                    "summary": "A resource indicating the status of an experiment",
+                    "produces": [ "application/json" ],
+                    "responses": {
+                        "200": {
+                            "description": "The current status of the experiment",
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [ "NEW", "IN_PROGRESS", "DONE" ],
+                                        "description": "The status of the background job, for example 'IN_PROGRESS'"
+                                    },
+                                    "link_to_result": {
+                                        "type": "string",
+                                        "description": "The link to the initially requested resource (the simulation result) that is now available. This property only exists if the status has reached 'DONE' and the result is indeed available."
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "application/json": { "status": "DONE", "link_to_result": "https://host.tld/experiments/uuid/result"}
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    { "$ref": "#/parameters/uuid_experiment" }
+                ]
+            },
+            "/experiments/{uuid}/result": {
+                "get": {
+                    "tags": ["Experiments"],
+                    "summary": "The results of performing the experiment by numerically solving a model instance, i.e. the simulation results",
+                    "produces": [ "application/json" ],
+                    "responses": {
+                        "200": {
+                            "$ref": "#/responses/simulation_result"
+                        }
+                    }
+                },
+                "parameters": [
+                    { "$ref": "#/parameters/uuid_experiment" }
+                ]
+            }
+        },
+        "definitions": {
+            "simulation_parameters": {
+                "type": "object",
+                "required": [
+                    "start_time",
+                    "stop_time"
+                ],
+                "properties": {
+                    "start_time": {
+                        "description": "The beginning of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1526637990000"
+                    },
+                    "stop_time": {
+                        "description": "The end of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1526551590000"
+                    },
+                    "output_interval": {
+                        "description": "The desired output interval in seconds (does _not_ affect step size of the integration algorithm)",
+                        "type": "number",
+                        "example": "900"
+                    }
+                }
+            },
+            "input_timeseries": {
+                "type": "array",
+                "items": {
+                    "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/master/schemata/timeseries/schema_v1.2.0-oas2.json#/Timeseries"
+                }
+            }
+        },
+        "parameters": {
+            "setup_experiment": {
+                "name": "setup_experiment",
+                "in": "body",
+                "description": "The boundary conditions and simulation parameters that define an experiment",
+                "required": true,
+                "schema": {
+                    "type": "object",
+                    "required": [
+                        "simulation_parameters"
+                    ],
+                    "properties": {
+                        "simulation_parameters": {
+                            "$ref": "#/definitions/simulation_parameters"
+                        },
+                        "input_timeseries": {
+                            "$ref": "#/definitions/input_timeseries"
+                        }
+                    }
+                }
+            },
+            "uuid_experiment": {
+                "name": "uuid",
+                "in": "path",
+                "description": "A unique identifier for a specific experiment",
+                "required": true,
+                "type": "string",
+                "pattern": "^/^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i$"
+            }
+        },
+        "responses": {
+            "simulation_result": {
+                "description": "The simulation result",
+                "schema": {
+                    "type": "object",
+                    "required": [
+                        "description",
+                        "data"
+                    ],
+                    "properties": {
+                        "description": {
+                            "type": "string"
+                        },
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/master/schemata/timeseries/schema_v1.2.0-oas2.json#/Timeseries"
+                            }
+                        }
+                    }
+                },
+                "examples": {
+                    "application/json": {"description": "An exemplary simulation result", "data": [ { "label": "albedo_ground", "unit": "1", "timeseries": [ { "timestamp":
+                    1526634000000, "value": 0.15174804687500001 }, { "timestamp": 1526637600000,
+                    "value": 0.15174804687500001 } ] }, { "label": "temperature_2m_ag", "unit": "K",
+                    "timeseries": [ { "timestamp": 1526634000000, "value": 286.0401916503906 }, {
+                    "timestamp": 1526637600000, "value": 287.0859680175781 } ] } ]}
+                }
+            }
+        },
+        "tags": [
+            {
+                "name": "Model Instances"
+            },
+            {
+                "name": "Experiments"
+            }
+        ]
+    }
