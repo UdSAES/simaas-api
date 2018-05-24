@@ -1,3 +1,6 @@
 [submodule "simaas_worker"]
 	path = simaas_worker
 	url = git@github.com:UdSAES/simaas_worker.git
+[submodule "asynchronous_api_implementation"]
+	path = asynchronous_api_implementation
+	url = git@github.com:UdSAES/asynchronous_api_implementation.git
