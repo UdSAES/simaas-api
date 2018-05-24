@@ -1,0 +1,3 @@
+[submodule "simaas_worker"]
+	path = simaas_worker
+	url = git@github.com:UdSAES/simaas_worker.git
