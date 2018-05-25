@@ -18,6 +18,7 @@
   "homepage": "https://github.com/UdSAES/simaas_api#readme",
   "dependencies": {
     "cors": "^2.8.4",
+    "designetz_logger": "^0.1.1",
     "express": "^4.16.3",
     "express-async-errors": "^2.1.2",
     "fs-extra": "^6.0.1",
