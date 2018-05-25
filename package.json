@@ -1,0 +1,32 @@
+{
+  "name": "simaas_api",
+  "version": "0.1.0",
+  "description": "Tiny micro service which implements the public API of the Simulation as a Service instance",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UdSAES/simaas_api.git"
+  },
+  "author": "Florian Wagner <florian.wagner@aut.uni-saarland.de>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UdSAES/simaas_api/issues"
+  },
+  "homepage": "https://github.com/UdSAES/simaas_api#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "designetz_logger": "^0.1.1",
+    "express": "^4.16.3",
+    "express-async-errors": "^2.1.2",
+    "fs-extra": "^6.0.1",
+    "http-proxy": "^1.17.0",
+    "json-schema-ref-parser": "^5.0.3",
+    "lodash": "^4.17.10",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5",
+    "swagger-tools": "^0.10.3"
+  }
+}
