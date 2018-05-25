@@ -10,8 +10,8 @@ ENV PYTHON=/usr/bin/python3
 USER node
 
 # Configure queue ##############################################################
-ENV LISTEN_PORT=3000
-ENV URL_HOST=http://127.0.0.1:3000
+ENV LISTEN_PORT_QUEUE 12345
+ENV URL_HOST http://127.0.0.1:12345
 
 RUN mkdir /home/node/queue
 WORKDIR /home/node/queue
@@ -23,9 +23,9 @@ RUN npm install
 COPY --chown=node:node ./asynchronous_api_implementation/ /home/node/queue/
 
 # Configure workers ############################################################
-ENV URL_QUEUE=http://127.0.0.1:3000
-ENV MODEL_BASE_PATH=/mnt/FMUs
-ENV WAIT_TIME=50
+ENV URL_QUEUE http://127.0.0.1:12345
+ENV MODEL_BASE_PATH /mnt/FMUs
+ENV WAIT_TIME 50
 
 RUN mkdir /home/node/worker
 WORKDIR /home/node/worker
@@ -46,6 +46,19 @@ RUN npm install
 COPY --chown=node:node ./simaas_worker/ /home/node/worker/
 
 # Configure API ################################################################
+ENV QUEUE_HOST 127.0.0.1:12345
+ENV LISTEN_PORT 3000
+
+RUN mkdir /home/node/api
+RUN mkdir /home/node/api/specifications
+WORKDIR /home/node/api
+
+COPY --chown=node:node ./package.json /home/node/api
+
+RUN npm install
+
+COPY --chown=node:node ./specifications /home/node/api/specifications
+COPY --chown=node:node ./index.js /home/node/api
 
 # Start application ############################################################
 COPY --chown=node:node ./startup.sh /home/node/

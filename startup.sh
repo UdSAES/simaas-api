@@ -1,10 +1,9 @@
 #!/bin/sh
 
 # Heartbeat
-echo "Alive!"
+echo "Entering startup.sh..."
 
-# Start component for managing work items
-cd queue; node index.js &
-cd ../worker; node index.js
-
-# Start proxy that implements the API of this application
+# Start all sub-services
+cd /home/node/queue; node index.js &
+cd /home/node/worker; node index.js &
+cd /home/node/api; node index.js
