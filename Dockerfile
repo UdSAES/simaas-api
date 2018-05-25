@@ -24,6 +24,8 @@ COPY --chown=node:node ./asynchronous_api_implementation/ /home/node/queue/
 
 # Configure workers ############################################################
 ENV URL_QUEUE=http://127.0.0.1:3000
+ENV MODEL_BASE_PATH=/mnt/FMUs
+ENV WAIT_TIME=50
 
 RUN mkdir /home/node/worker
 WORKDIR /home/node/worker
@@ -32,6 +34,8 @@ COPY --chown=node:node ./simaas_worker/Pipfile /home/node/worker
 COPY --chown=node:node ./simaas_worker/Pipfile.lock /home/node/worker
 
 USER root
+RUN mkdir /mnt/FMUs
+RUN chown node:node /mnt/FMUs
 RUN set -ex && pipenv install --deploy --system --ignore-pipfile
 USER node
 
