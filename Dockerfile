@@ -23,7 +23,7 @@ RUN npm install
 COPY --chown=node:node ./asynchronous_api_implementation/ /home/node/queue/
 
 # Configure workers ############################################################
-ENV URL_QUEUE http://127.0.0.1:12345
+ENV QUEUE_ORIGIN http://127.0.0.1:12345
 ENV MODEL_BASE_PATH /mnt/FMUs
 ENV WAIT_TIME 50
 
