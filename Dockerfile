@@ -46,7 +46,7 @@ RUN npm install
 COPY --chown=node:node ./simaas_worker/ /home/node/worker/
 
 # Configure API ################################################################
-ENV QUEUE_HOST 127.0.0.1:12345
+ENV QUEUE_ORIGIN http://127.0.0.1:12345
 ENV LISTEN_PORT 3000
 
 RUN mkdir /home/node/api

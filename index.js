@@ -25,12 +25,12 @@ const fs = require('fs-extra')
 
 log.any('successfully loaded modules', 30001)
 
-const QUEUE_HOST = process.env.QUEUE_HOST
+const QUEUE_ORIGIN = process.env.QUEUE_ORIGIN
 const LISTEN_PORT = parseInt(process.env.LISTEN_PORT)
 const API_SPECIFICATION_FILE_PATH = './specifications/simaas_oas2.json'
 
-if (!_.isString(QUEUE_HOST)) {
-  log.any('QUEUE_HOST is ' + QUEUE_HOST + ' but must be a valid host (e.g. 127.0.0.1:12345)', 60002)
+if (!_.isString(QUEUE_ORIGIN)) {
+  log.any('QUEUE_ORIGIN is ' + QUEUE_ORIGIN + ' but must be a valid protocol+host-combination (e.g. http://127.0.0.1:12345)', 60002)
   process.exit(1)
 }
 
@@ -47,12 +47,12 @@ app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
   const model_instance_id = _.get(req, ['params', 'model_instance_id'])
   const simulation_parameters = _.get(req, ['body', 'simulation_parameters'])
   const input_timeseries = _.get(req, ['body', 'input_timeseries'])
-  
+
   const host = _.get(req, ['headers', 'host'])
   let postTaskResult = null
   try {
     postTaskResult = await request({
-      url: 'http://' + QUEUE_HOST + '/tasks',
+      url: QUEUE_ORIGIN + '/tasks',
       method: 'post',
       json: true,
       resolveWithFullResponse: true,
@@ -74,18 +74,18 @@ app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
 
   const sourceLocationHeader = _.get(postTaskResult, ['headers', 'location'])
   const u = new URL(sourceLocationHeader, 'http://127.0.0.1')
-  
+
   res.status(202).location('http://' + host + u.pathname.replace('/tasks/','/experiments/')).send()
 })
 
 app.get('/experiments/:experiment_id/status', async (req, res) => {
   const experiment_id = _.get(req, ['params', 'experiment_id'])
   const host = _.get(req, ['headers', 'host'])
-  
+
   let postTaskResult = null
   try {
     postTaskResult = await request({
-      url: 'http://' + QUEUE_HOST + '/tasks/' + experiment_id + '/status',
+      url: QUEUE_ORIGIN + '/tasks/' + experiment_id + '/status',
       method: 'get',
       json: true,
       resolveWithFullResponse: true
@@ -98,7 +98,7 @@ app.get('/experiments/:experiment_id/status', async (req, res) => {
   const sourceLinkToResult = _.get(postTaskResult, ['body', 'link_to_result'])
   let targetLinkToResult = null
   const resultBody = postTaskResult.body
-  
+
   if (_.isString(sourceLinkToResult)) {
     const u = new URL(sourceLinkToResult, 'http://127.0.0.1')
     targetLinkToResult = 'http://' + host + u.pathname.replace('/tasks/', '/experiments/')
@@ -114,7 +114,7 @@ app.get('/experiments/:experiment_id/result', async (req, res) => {
   let postTaskResult = null
   try {
     postTaskResult = await request({
-      url: 'http://' + QUEUE_HOST + '/tasks/' + experiment_id + '/result',
+      url: QUEUE_ORIGIN + '/tasks/' + experiment_id + '/result',
       method: 'get',
       json: true,
       resolveWithFullResponse: true
@@ -142,7 +142,7 @@ async function init() {
     process.exit(1)
   }
 
-  
+
   swaggerTools.initializeMiddleware(api, function (middleware) {
     // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
     app.use(middleware.swaggerMetadata())
