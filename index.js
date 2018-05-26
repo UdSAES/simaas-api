@@ -49,6 +49,9 @@ app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
   const input_timeseries = _.get(req, ['body', 'input_timeseries'])
 
   const host = _.get(req, ['headers', 'host'])
+  const protocol = _.get(req, ['protocol'])
+  const origin = protocol + '://' + host
+
   let postTaskResult = null
   try {
     postTaskResult = await request({
@@ -75,12 +78,15 @@ app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
   const sourceLocationHeader = _.get(postTaskResult, ['headers', 'location'])
   const u = new URL(sourceLocationHeader, 'http://127.0.0.1')
 
-  res.status(202).location('http://' + host + u.pathname.replace('/tasks/','/experiments/')).send()
+  res.status(202).location(origin + u.pathname.replace('/tasks/','/experiments/')).send()
 })
 
 app.get('/experiments/:experiment_id/status', async (req, res) => {
   const experiment_id = _.get(req, ['params', 'experiment_id'])
+
   const host = _.get(req, ['headers', 'host'])
+  const protocol = _.get(req, ['protocol'])
+  const origin = protocol + '://' + host
 
   let postTaskResult = null
   try {
@@ -101,7 +107,7 @@ app.get('/experiments/:experiment_id/status', async (req, res) => {
 
   if (_.isString(sourceLinkToResult)) {
     const u = new URL(sourceLinkToResult, 'http://127.0.0.1')
-    targetLinkToResult = 'http://' + host + u.pathname.replace('/tasks/', '/experiments/')
+    targetLinkToResult = origin + u.pathname.replace('/tasks/', '/experiments/')
     resultBody.link_to_result = targetLinkToResult
   }
 
@@ -110,7 +116,7 @@ app.get('/experiments/:experiment_id/status', async (req, res) => {
 
 app.get('/experiments/:experiment_id/result', async (req, res) => {
   const experiment_id = _.get(req, ['params', 'experiment_id'])
-  const host = _.get(req, ['headers', 'host'])
+
   let postTaskResult = null
   try {
     postTaskResult = await request({

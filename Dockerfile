@@ -11,7 +11,6 @@ USER node
 
 # Configure queue ##############################################################
 ENV LISTEN_PORT_QUEUE 12345
-ENV URL_HOST http://127.0.0.1:12345
 
 RUN mkdir /home/node/queue
 WORKDIR /home/node/queue
