@@ -160,13 +160,13 @@
                 "type": "object",
                 "required": [
                     "description",
-                    "data"
+                    "result"
                 ],
                 "properties": {
                     "description": {
                         "type": "string"
                     },
-                    "data": {
+                    "result": {
                         "type": "array",
                         "items": {
                             "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/master/schemata/timeseries/schema_v1.2.0-oas2.json#/Timeseries"

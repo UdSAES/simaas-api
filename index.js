@@ -105,6 +105,11 @@ app.get('/experiments/:experiment_id/status', async (req, res) => {
   let targetLinkToResult = null
   const resultBody = postTaskResult.body
 
+  // delete properties that shall not be exposed to the consumer
+  delete resultBody.id
+  delete resultBody.timestamp_created
+  delete resultBody.timestamp_process_started
+
   if (_.isString(sourceLinkToResult)) {
     const u = new URL(sourceLinkToResult, 'http://127.0.0.1')
     targetLinkToResult = origin + u.pathname.replace('/tasks/', '/experiments/')
@@ -131,6 +136,14 @@ app.get('/experiments/:experiment_id/result', async (req, res) => {
   }
 
   const resultBody = postTaskResult.body
+
+  // transform body to specified format
+  resultBody.description = "The results of simulating model instance [ID] from [start_time] to [stop_time]."
+
+  // delete properties that shall not be exposed to the consumer
+  delete resultBody.id
+  delete resultBody.err
+
   res.status(200).send(resultBody)
 })
 
