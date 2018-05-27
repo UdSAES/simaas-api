@@ -27,6 +27,9 @@ log.any('successfully loaded modules', 30001)
 
 const QUEUE_ORIGIN = process.env.QUEUE_ORIGIN
 const LISTEN_PORT = parseInt(process.env.LISTEN_PORT)
+const UI_STATIC_FILES_PATH = String(process.env.UI_STATIC_FILES_PATH)  || ''
+const UI_URL_PATH = String(process.env.UI_URL_PATH)  || ''
+
 const API_SPECIFICATION_FILE_PATH = './specifications/simaas_oas2.json'
 
 if (!_.isString(QUEUE_ORIGIN)) {
@@ -42,6 +45,24 @@ if (!(_.isNumber(LISTEN_PORT) && LISTEN_PORT > 0 && LISTEN_PORT < 65535)) {
 const app = express()
 app.use(bodyParser.json())
 app.use(cors())
+
+// expose OpenAPI-specification as /oas
+app.use('/oas', express.static(API_SPECIFICATION_FILE_PATH))
+
+// expose UI iff UI_URL_PATH is not empty
+if (UI_URL_PATH !== '') {
+  if (UI_STATIC_FILES_PATH !== '') {
+
+    // expose locally defined UI
+    app.use(UI_URL_PATH, express.static(UI_STATIC_FILES_PATH))
+    log.any('exposing UI as ' + UI_URL_PATH, 30003)
+  }
+  else {
+    // fall back to default-UI
+    log.any('default-UI not implemented', 60002)
+    process.exit(1)
+  }
+}
 
 app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
   const model_instance_id = _.get(req, ['params', 'model_instance_id'])
