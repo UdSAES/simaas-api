@@ -21,6 +21,7 @@ const request = require('request-promise-native')
 const swaggerTools = require('swagger-tools')
 const $RefParser = require('json-schema-ref-parser')
 const fs = require('fs-extra')
+const delay = require('delay')
 
 
 log.any('successfully loaded modules', 30001)
@@ -29,6 +30,7 @@ const QUEUE_ORIGIN = process.env.QUEUE_ORIGIN
 const LISTEN_PORT = parseInt(process.env.LISTEN_PORT)
 const UI_STATIC_FILES_PATH = String(process.env.UI_STATIC_FILES_PATH)  || ''
 const UI_URL_PATH = String(process.env.UI_URL_PATH)  || ''
+const ALIVE_EVENT_WAIT_TIME = parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 3600 * 1000
 
 const API_SPECIFICATION_FILE_PATH = './specifications/simaas_oas2.json'
 
@@ -41,6 +43,12 @@ if (!(_.isNumber(LISTEN_PORT) && LISTEN_PORT > 0 && LISTEN_PORT < 65535)) {
   log.any('LISTEN_PORT is ' + LISTEN_PORT + ' but must be an integer number larger than 0 and smaller than 65535', 60002)
   process.exit(1)
 }
+
+if (!(_.isNumber(ALIVE_EVENT_WAIT_TIME) && ALIVE_EVENT_WAIT_TIME > 0)) {
+  log.any('ALIVE_EVENT_WAIT_TIME is ' + ALIVE_EVENT_WAIT_TIME + ' but must be positive integer number larger than 0', 60002)
+  process.exit(1)
+}
+
 
 const app = express()
 app.use(bodyParser.json())
@@ -203,4 +211,12 @@ async function init() {
   })
 }
 
+async function aliveLoop() {
+  while (true) {
+    await delay(ALIVE_EVENT_WAIT_TIME)
+    log.any('service instance still running', 30007)
+  }
+}
+
 init()
+aliveLoop()
