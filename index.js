@@ -70,6 +70,11 @@ if (UI_URL_PATH !== '') {
     log.any('default-UI not implemented', 60002)
     process.exit(1)
   }
+
+  // redirect GET-request on origin to UI iff UI is exposed
+  app.get('', async (req, res) => {
+    res.redirect(UI_URL_PATH)
+  })
 }
 
 app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
