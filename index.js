@@ -191,7 +191,7 @@ async function init() {
     api = await $RefParser.dereference(api)
     log.any('successfully loaded configuration file ' + API_SPECIFICATION_FILE_PATH, 30002)
   } catch (error) {
-    log.any('error while loading configuration file ' + API_SPECIFICATION_FILE_PATH, 60001)
+    log.any('error while loading configuration file ' + API_SPECIFICATION_FILE_PATH, 60001, error)
     process.exit(1)
   }
 
