@@ -25,6 +25,8 @@ COPY --chown=node:node ./udsaes_async_queue/ /home/node/queue/
 ENV QUEUE_ORIGIN http://127.0.0.1:12345
 ENV MODEL_BASE_PATH /mnt/FMUs
 ENV WAIT_TIME 50
+ENV LC_ALL en_GB.utf8
+ENV LANG en_GB.utf8
 
 RUN mkdir /home/node/worker
 WORKDIR /home/node/worker
