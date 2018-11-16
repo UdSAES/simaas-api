@@ -1,18 +1,16 @@
 'use strict'
 
-
-
 const createLogger = require('designetz_logger')
 const log = createLogger('simaas_api')
 log.any('started', 30000)
 
-process.on('uncaughtException', function(error) {
+process.on('uncaughtException', function (error) {
   log.any('uncaught exception', 60005, error)
   process.exit(1)
 })
 
 const express = require('express')
-const {URL} = require('url')
+const { URL } = require('url')
 var bodyParser = require('body-parser')
 require('express-async-errors')
 const cors = require('cors')
@@ -23,13 +21,12 @@ const $RefParser = require('json-schema-ref-parser')
 const fs = require('fs-extra')
 const delay = require('delay')
 
-
 log.any('successfully loaded modules', 30001)
 
 const QUEUE_ORIGIN = process.env.QUEUE_ORIGIN
 const LISTEN_PORT = parseInt(process.env.LISTEN_PORT)
-const UI_STATIC_FILES_PATH = String(process.env.UI_STATIC_FILES_PATH)  || ''
-const UI_URL_PATH = String(process.env.UI_URL_PATH)  || ''
+const UI_STATIC_FILES_PATH = String(process.env.UI_STATIC_FILES_PATH) || ''
+const UI_URL_PATH = String(process.env.UI_URL_PATH) || ''
 const ALIVE_EVENT_WAIT_TIME = parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 3600 * 1000
 
 const API_SPECIFICATION_FILE_PATH = './specifications/simaas_oas2.json'
@@ -49,7 +46,6 @@ if (!(_.isNumber(ALIVE_EVENT_WAIT_TIME) && ALIVE_EVENT_WAIT_TIME > 0)) {
   process.exit(1)
 }
 
-
 const app = express()
 app.use(bodyParser.json())
 app.use(cors())
@@ -60,12 +56,10 @@ app.use('/oas', express.static(API_SPECIFICATION_FILE_PATH))
 // expose UI iff UI_URL_PATH is not empty
 if (UI_URL_PATH !== '') {
   if (UI_STATIC_FILES_PATH !== '') {
-
     // expose locally defined UI
     app.use(UI_URL_PATH, express.static(UI_STATIC_FILES_PATH))
     log.any('exposing UI as ' + UI_URL_PATH, 30003)
-  }
-  else {
+  } else {
     // fall back to default-UI
     log.any('default-UI not implemented', 60002)
     process.exit(1)
@@ -112,7 +106,7 @@ app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
   const sourceLocationHeader = _.get(postTaskResult, ['headers', 'location'])
   const u = new URL(sourceLocationHeader, 'http://127.0.0.1')
 
-  res.status(202).location(origin + u.pathname.replace('/tasks/','/experiments/')).send()
+  res.status(202).location(origin + u.pathname.replace('/tasks/', '/experiments/')).send()
 })
 
 app.get('/experiments/:experiment_id/status', async (req, res) => {
@@ -172,7 +166,7 @@ app.get('/experiments/:experiment_id/result', async (req, res) => {
   const resultBody = postTaskResult.body
 
   // transform body to specified format
-  resultBody.description = "The results of simulating model instance [ID] from [start_time] to [stop_time]."
+  resultBody.description = 'The results of simulating model instance [ID] from [start_time] to [stop_time].'
 
   // delete properties that shall not be exposed to the consumer
   delete resultBody.id
@@ -181,8 +175,7 @@ app.get('/experiments/:experiment_id/result', async (req, res) => {
   res.status(200).send(resultBody)
 })
 
-async function init() {
-
+async function init () {
   let api = null
   try {
     api = await fs.readJson(API_SPECIFICATION_FILE_PATH, {
@@ -194,7 +187,6 @@ async function init() {
     log.any('error while loading configuration file ' + API_SPECIFICATION_FILE_PATH, 60001, error)
     process.exit(1)
   }
-
 
   swaggerTools.initializeMiddleware(api, function (middleware) {
     // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
@@ -209,14 +201,14 @@ async function init() {
       log.any('now listening on port ' + LISTEN_PORT, 30004)
     })
 
-    app.on('error', function(error) {
+    app.on('error', function (error) {
       log.any('cannot bind to listening port ' + LISTEN_PORT, 60003, error)
       process.exit(1)
     })
   })
 }
 
-async function aliveLoop() {
+async function aliveLoop () {
   while (true) {
     await delay(ALIVE_EVENT_WAIT_TIME)
     log.any('service instance still running', 30007)
