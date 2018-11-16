@@ -32,5 +32,11 @@
   },
   "devDependencies": {
     "standard": "^12.0.1"
+  },
+  "standard": {
+    "ignore": [
+      "/simaas_worker/",
+      "/udsaes_async_queue/"
+    ]
   }
 }
