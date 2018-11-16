@@ -19,7 +19,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "delay": "^3.1.0",
-    "designetz_logger": "^0.1.1",
+    "designetz_logger": "^1.0.2",
     "express": "^4.16.4",
     "express-async-errors": "^2.1.2",
     "fs-extra": "^6.0.1",
