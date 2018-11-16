@@ -17,7 +17,7 @@ WORKDIR /home/node/queue
 
 COPY --chown=node:node ./udsaes_async_queue/package.json /home/node/queue
 
-RUN npm install
+RUN npm install --production
 
 COPY --chown=node:node ./udsaes_async_queue/ /home/node/queue/
 
@@ -42,7 +42,7 @@ USER node
 
 COPY --chown=node:node ./simaas_worker/package.json /home/node/worker
 
-RUN npm install
+RUN npm install --production
 
 COPY --chown=node:node ./simaas_worker/ /home/node/worker/
 
@@ -56,7 +56,7 @@ WORKDIR /home/node/api
 
 COPY --chown=node:node ./package.json /home/node/api
 
-RUN npm install
+RUN npm install --production
 
 COPY --chown=node:node ./specifications /home/node/api/specifications
 COPY --chown=node:node ./index.js /home/node/api
