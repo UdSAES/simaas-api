@@ -10,7 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/UdSAES/simaas_api.git"
   },
-  "author": "Florian Wagner <florian.wagner@aut.uni-saarland.de>",
+  "author": "Moritz Stüber <moritz.stueber@aut.uni-saarland.de>",
+  "contributors": [
+    "Florian Wagner <florian.wagner@aut.uni-saarland.de>"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/UdSAES/simaas_api/issues"
