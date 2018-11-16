@@ -72,9 +72,9 @@ if (UI_URL_PATH !== '') {
 }
 
 app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
-  const model_instance_id = _.get(req, ['params', 'model_instance_id'])
-  const simulation_parameters = _.get(req, ['body', 'simulation_parameters'])
-  const input_timeseries = _.get(req, ['body', 'input_timeseries'])
+  const modelInstanceID = _.get(req, ['params', 'model_instance_id'])
+  const simulationParameters = _.get(req, ['body', 'simulation_parameters'])
+  const inputTimeseries = _.get(req, ['body', 'input_timeseries'])
 
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
@@ -88,9 +88,9 @@ app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
       json: true,
       resolveWithFullResponse: true,
       body: {
-        model_instance_id: model_instance_id,
-        simulation_parameters: simulation_parameters,
-        input_timeseries: input_timeseries
+        model_instance_id: modelInstanceID,
+        simulation_parameters: simulationParameters,
+        input_timeseries: inputTimeseries
       }
     })
   } catch (error) {
@@ -110,7 +110,7 @@ app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
 })
 
 app.get('/experiments/:experiment_id/status', async (req, res) => {
-  const experiment_id = _.get(req, ['params', 'experiment_id'])
+  const experimentID = _.get(req, ['params', 'experiment_id'])
 
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
@@ -119,7 +119,7 @@ app.get('/experiments/:experiment_id/status', async (req, res) => {
   let postTaskResult = null
   try {
     postTaskResult = await request({
-      url: QUEUE_ORIGIN + '/tasks/' + experiment_id + '/status',
+      url: QUEUE_ORIGIN + '/tasks/' + experimentID + '/status',
       method: 'get',
       json: true,
       resolveWithFullResponse: true
@@ -148,12 +148,12 @@ app.get('/experiments/:experiment_id/status', async (req, res) => {
 })
 
 app.get('/experiments/:experiment_id/result', async (req, res) => {
-  const experiment_id = _.get(req, ['params', 'experiment_id'])
+  const experimentID = _.get(req, ['params', 'experiment_id'])
 
   let postTaskResult = null
   try {
     postTaskResult = await request({
-      url: QUEUE_ORIGIN + '/tasks/' + experiment_id + '/result',
+      url: QUEUE_ORIGIN + '/tasks/' + experimentID + '/result',
       method: 'get',
       json: true,
       resolveWithFullResponse: true
