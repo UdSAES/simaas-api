@@ -1,6 +1,4 @@
-FROM node:9.6.1-alpine
-
-MAINTAINER Moritz Stüber
+FROM node:10.13-alpine
 
 RUN set -ex && apk add --no-cache gcc libc6-compat python3 py3-numpy py3-lxml
 RUN set -ex && python3 -m pip install pipenv --upgrade
