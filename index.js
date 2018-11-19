@@ -70,7 +70,7 @@ async function checkIfConfigIsValid () {
   log.any('configuration is valid, moving on', 300020)
 }
 
-// Instantiate express-application
+// Instantiate express-application and set up middleware-stack
 const app = express()
 app.use(bodyParser.json())
 app.use(cors())
@@ -224,6 +224,12 @@ async function getExperimentResult (req, res) {
 app.post('/model_instances/:model_instance_id/_simulate', simulateModelInstance)
 app.get('/experiments/:experiment_id/status', getExperimentStatus)
 app.get('/experiments/:experiment_id/result', getExperimentResult)
+
+app.use(function (req, res, next) {
+  res.status(404).json({
+    msg: 'Not Found'
+  })
+}) // http://expressjs.com/en/starter/faq.html
 
 // Define main program
 async function init () {
