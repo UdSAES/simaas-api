@@ -9,11 +9,18 @@ const log = createLogger({
 })
 log.any('service instance started', 300000)
 
+// Exit on uncaught errors
 process.on('uncaughtException', function (error) {
-  log.any('uncaught exception', 60005, error)
+  // Clean up allocated resources synchronously
+  log.any('uncaught exception', 600050, error)
+
+  // Shut down the process
   process.exit(1)
 })
 
+// TODO Handle shutdown signals gracefully
+
+// Load modules
 const express = require('express')
 const { URL } = require('url')
 var bodyParser = require('body-parser')
@@ -61,26 +68,27 @@ async function checkIfConfigIsValid () {
   log.any('configuration is valid, moving on', 300020)
 }
 
+// Instantiate express-application
 const app = express()
 app.use(bodyParser.json())
 app.use(cors())
 
-// expose OpenAPI-specification as /oas
+// Expose OpenAPI-specification as /oas
 app.use('/oas', express.static(API_SPECIFICATION_FILE_PATH))
 
-// expose UI iff UI_URL_PATH is not empty
+// Expose UI iff UI_URL_PATH is not empty
 if (UI_URL_PATH !== '') {
   if (UI_STATIC_FILES_PATH !== '') {
-    // expose locally defined UI
+    // Expose locally defined UI
     app.use(UI_URL_PATH, express.static(UI_STATIC_FILES_PATH))
     log.any('exposing UI as ' + UI_URL_PATH, 30003)
   } else {
-    // fall back to default-UI
+    // Fall back to default-UI
     log.any('default-UI not implemented', 60002)
     process.exit(1)
   }
 
-  // redirect GET-request on origin to UI iff UI is exposed
+  // Redirect GET-request on origin to UI iff UI is exposed
   app.get('', async (req, res) => {
     res.redirect(UI_URL_PATH)
   })
@@ -204,6 +212,7 @@ app.post('/model_instances/:model_instance_id/_simulate', simulateModelInstance)
 app.get('/experiments/:experiment_id/status', getExperimentStatus)
 app.get('/experiments/:experiment_id/result', getExperimentResult)
 
+// Define main program
 async function init () {
   await checkIfConfigIsValid()
 
@@ -220,7 +229,8 @@ async function init () {
   }
 
   swaggerTools.initializeMiddleware(api, function (middleware) {
-    // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
+    // Interpret Swagger resources and attach metadata to request
+    // -- must be first in swagger-tools middleware chain
     app.use(middleware.swaggerMetadata())
 
     // Validate Swagger requests
@@ -239,6 +249,6 @@ async function init () {
   })
 }
 
-
+// Enter main tasks
 init()
 aliveLoop()
