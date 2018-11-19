@@ -33,7 +33,7 @@ const $RefParser = require('json-schema-ref-parser')
 const fs = require('fs-extra')
 const delay = require('delay')
 
-log.any('successfully loaded modules', 30001)
+log.any('successfully loaded modules', 300010)
 
 // Load configuration
 const QUEUE_ORIGIN = process.env.QUEUE_ORIGIN
@@ -81,10 +81,10 @@ if (UI_URL_PATH !== '') {
   if (UI_STATIC_FILES_PATH !== '') {
     // Expose locally defined UI
     app.use(UI_URL_PATH, express.static(UI_STATIC_FILES_PATH))
-    log.any('exposing UI as ' + UI_URL_PATH, 30003)
+    log.any('exposing UI as ' + UI_URL_PATH, 300020)
   } else {
     // Fall back to default-UI
-    log.any('default-UI not implemented', 60002)
+    log.any('default-UI not implemented', 600020)
     process.exit(1)
   }
 
@@ -222,9 +222,9 @@ async function init () {
       encoding: 'utf8'
     })
     api = await $RefParser.dereference(api)
-    log.any('successfully loaded configuration file ' + API_SPECIFICATION_FILE_PATH, 30002)
+    log.any('successfully loaded API description ' + API_SPECIFICATION_FILE_PATH, 300020)
   } catch (error) {
-    log.any('error while loading configuration file ' + API_SPECIFICATION_FILE_PATH, 60001, error)
+    log.any('error while loading API description ' + API_SPECIFICATION_FILE_PATH, 600010, error)
     process.exit(1)
   }
 
@@ -236,14 +236,14 @@ async function init () {
     // Validate Swagger requests
     app.use(middleware.swaggerValidator())
 
-    log.any('configuration successfull', 30003)
+    log.any('configuration successfull', 300030)
 
     app.listen(LISTEN_PORT, function () {
-      log.any('now listening on port ' + LISTEN_PORT, 30004)
+      log.any('now listening on port ' + LISTEN_PORT, 300040)
     })
 
     app.on('error', function (error) {
-      log.any('cannot bind to listening port ' + LISTEN_PORT, 60003, error)
+      log.any('cannot bind to listening port ' + LISTEN_PORT, 600030, error)
       process.exit(1)
     })
   })
