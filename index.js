@@ -18,7 +18,9 @@ process.on('uncaughtException', function (error) {
   process.exit(1)
 })
 
-// TODO Handle shutdown signals gracefully
+// Handle shutdown signals gracefully
+process.on('SIGINT', handleShutdown)
+process.on('SIGTERM', handleShutdown)
 
 // Load modules
 const express = require('express')
@@ -100,6 +102,17 @@ async function aliveLoop () {
     await delay(ALIVE_EVENT_WAIT_TIME)
     log.any('service instance still running', 300100)
   }
+}
+
+function handleShutdown () {
+  log.any('received request to shut down', 300050)
+
+  // TODO Stop receiving new requests
+  // TODO Clean up resources
+
+  // Shut down the process
+  log.any('shut down gracefully', 300060)
+  process.exit(0)
 }
 
 // Define handlers
