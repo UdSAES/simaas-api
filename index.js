@@ -1,8 +1,13 @@
 'use strict'
 
-const createLogger = require('designetz_logger')
-const log = createLogger('simaas_api')
-log.any('started', 30000)
+// Create logger
+const { createLogger } = require('designetz_logger')
+const log = createLogger({
+  name: 'simaas_api',
+  target: console.log,
+  levelFilter: 0
+})
+log.any('service instance started', 300000)
 
 process.on('uncaughtException', function (error) {
   log.any('uncaught exception', 60005, error)
