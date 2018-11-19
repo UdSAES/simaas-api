@@ -28,27 +28,37 @@ const delay = require('delay')
 
 log.any('successfully loaded modules', 30001)
 
+// Load configuration
 const QUEUE_ORIGIN = process.env.QUEUE_ORIGIN
 const LISTEN_PORT = parseInt(process.env.LISTEN_PORT)
 const UI_STATIC_FILES_PATH = String(process.env.UI_STATIC_FILES_PATH) || ''
 const UI_URL_PATH = String(process.env.UI_URL_PATH) || ''
 const ALIVE_EVENT_WAIT_TIME = parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 3600 * 1000
-
 const API_SPECIFICATION_FILE_PATH = './specifications/simaas_oas2.json'
 
-if (!_.isString(QUEUE_ORIGIN)) {
-  log.any('QUEUE_ORIGIN is ' + QUEUE_ORIGIN + ' but must be a valid protocol+host-combination (e.g. http://127.0.0.1:12345)', 60002)
-  process.exit(1)
-}
+// Check if configuration is valid
+async function checkIfConfigIsValid () {
+  if (!_.isString(QUEUE_ORIGIN)) {
+    log.any('QUEUE_ORIGIN is ' + QUEUE_ORIGIN + ' but must be a valid protocol+host-combination (e.g. http://127.0.0.1:12345)', 600020)
+    process.exit(1)
+  }
 
-if (!(_.isNumber(LISTEN_PORT) && LISTEN_PORT > 0 && LISTEN_PORT < 65535)) {
-  log.any('LISTEN_PORT is ' + LISTEN_PORT + ' but must be an integer number larger than 0 and smaller than 65535', 60002)
-  process.exit(1)
-}
+  if (!(_.isNumber(LISTEN_PORT) && LISTEN_PORT > 0 && LISTEN_PORT < 65535)) {
+    log.any('LISTEN_PORT is ' + LISTEN_PORT + ' but must be an integer number larger than 0 and smaller than 65535', 600020)
+    process.exit(1)
+  }
 
-if (!(_.isNumber(ALIVE_EVENT_WAIT_TIME) && ALIVE_EVENT_WAIT_TIME > 0)) {
-  log.any('ALIVE_EVENT_WAIT_TIME is ' + ALIVE_EVENT_WAIT_TIME + ' but must be positive integer number larger than 0', 60002)
-  process.exit(1)
+  if (!(_.isNumber(ALIVE_EVENT_WAIT_TIME) && ALIVE_EVENT_WAIT_TIME > 0)) {
+    log.any('ALIVE_EVENT_WAIT_TIME is ' + ALIVE_EVENT_WAIT_TIME + ' but must be positive integer number larger than 0', 600020)
+    process.exit(1)
+  }
+
+  // TODO check validity of UI_STATIC_FILES_PATH
+  // TODO check validity of UI_URL_PATH
+  // TODO check validity of ALIVE_EVENT_WAIT_TIME
+  // TODO check validity of API_SPECIFICATION_FILE_PATH
+
+  log.any('configuration is valid, moving on', 300020)
 }
 
 const app = express()
@@ -181,6 +191,8 @@ app.get('/experiments/:experiment_id/result', async (req, res) => {
 })
 
 async function init () {
+  await checkIfConfigIsValid()
+
   let api = null
   try {
     api = await fs.readJson(API_SPECIFICATION_FILE_PATH, {
