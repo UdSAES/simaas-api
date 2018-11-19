@@ -22,7 +22,7 @@ RUN npm install --production
 COPY --chown=node:node ./udsaes_async_queue/ /home/node/queue/
 
 # Configure workers ############################################################
-ENV QUEUE_ORIGIN http://127.0.0.1:12345
+ENV QUEUE_ORIGIN http://127.0.0.1:${LISTEN_PORT_QUEUE}
 ENV MODEL_BASE_PATH /mnt/FMUs
 ENV WAIT_TIME 50
 ENV LC_ALL en_GB.utf8
@@ -47,7 +47,7 @@ RUN npm install --production
 COPY --chown=node:node ./simaas_worker/ /home/node/worker/
 
 # Configure API ################################################################
-ENV QUEUE_ORIGIN http://127.0.0.1:12345
+ENV QUEUE_ORIGIN http://127.0.0.1:${LISTEN_PORT_QUEUE}
 ENV LISTEN_PORT 3000
 
 RUN mkdir /home/node/api
