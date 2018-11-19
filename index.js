@@ -86,7 +86,16 @@ if (UI_URL_PATH !== '') {
   })
 }
 
-app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
+// Define functions
+async function aliveLoop () {
+  while (true) {
+    await delay(ALIVE_EVENT_WAIT_TIME)
+    log.any('service instance still running', 300100)
+  }
+}
+
+// Define handlers
+async function simulateModelInstance (req, res) {
   const modelInstanceID = _.get(req, ['params', 'model_instance_id'])
   const simulationParameters = _.get(req, ['body', 'simulation_parameters'])
   const inputTimeseries = _.get(req, ['body', 'input_timeseries'])
@@ -122,9 +131,9 @@ app.post('/model_instances/:model_instance_id/_simulate', async (req, res) => {
   const u = new URL(sourceLocationHeader, 'http://127.0.0.1')
 
   res.status(202).location(origin + u.pathname.replace('/tasks/', '/experiments/')).send()
-})
+}
 
-app.get('/experiments/:experiment_id/status', async (req, res) => {
+async function getExperimentStatus (req, res) {
   const experimentID = _.get(req, ['params', 'experiment_id'])
 
   const host = _.get(req, ['headers', 'host'])
@@ -148,7 +157,7 @@ app.get('/experiments/:experiment_id/status', async (req, res) => {
   let targetLinkToResult = null
   const resultBody = postTaskResult.body
 
-  // delete properties that shall not be exposed to the consumer
+  // Delete properties that shall not be exposed to the consumer
   delete resultBody.id
   delete resultBody.timestamp_created
   delete resultBody.timestamp_process_started
@@ -160,9 +169,9 @@ app.get('/experiments/:experiment_id/status', async (req, res) => {
   }
 
   res.status(200).send(resultBody)
-})
+}
 
-app.get('/experiments/:experiment_id/result', async (req, res) => {
+async function getExperimentResult (req, res) {
   const experimentID = _.get(req, ['params', 'experiment_id'])
 
   let postTaskResult = null
@@ -180,15 +189,20 @@ app.get('/experiments/:experiment_id/result', async (req, res) => {
 
   const resultBody = postTaskResult.body
 
-  // transform body to specified format
+  // Transform body to specified format
   resultBody.description = 'The results of simulating model instance [ID] from [start_time] to [stop_time].'
 
-  // delete properties that shall not be exposed to the consumer
+  // Delete properties that shall not be exposed to the consumer
   delete resultBody.id
   delete resultBody.err
 
   res.status(200).send(resultBody)
-})
+}
+
+// Define routing
+app.post('/model_instances/:model_instance_id/_simulate', simulateModelInstance)
+app.get('/experiments/:experiment_id/status', getExperimentStatus)
+app.get('/experiments/:experiment_id/result', getExperimentResult)
 
 async function init () {
   await checkIfConfigIsValid()
@@ -225,12 +239,6 @@ async function init () {
   })
 }
 
-async function aliveLoop () {
-  while (true) {
-    await delay(ALIVE_EVENT_WAIT_TIME)
-    log.any('service instance still running', 30007)
-  }
-}
 
 init()
 aliveLoop()
