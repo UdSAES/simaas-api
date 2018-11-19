@@ -11,10 +11,10 @@ log.any('service instance started', 300000)
 
 // Exit on uncaught errors
 process.on('uncaughtException', function (error) {
-  // Clean up allocated resources synchronously
-  log.any('uncaught exception', 600050, error)
+  // TODO Clean up allocated resources synchronously
 
   // Shut down the process
+  log.any('uncaught exception', 600050, error)
   process.exit(1)
 })
 
