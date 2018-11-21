@@ -34,6 +34,7 @@
     "swagger-tools": "^0.10.4"
   },
   "devDependencies": {
+    "dredd": "^5.2.0",
     "standard": "^12.0.1"
   },
   "standard": {
