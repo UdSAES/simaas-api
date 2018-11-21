@@ -185,7 +185,8 @@
             "in": "path",
             "description": "A unique identifier for a specific experiment",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "x-example": "d9a23e72-b01a-4be7-a598-c3f31071da2c"
         }
     },
     "responses": {
