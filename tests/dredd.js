@@ -19,6 +19,12 @@ const dreddConfig = {
       './tests/dredd_hooks.js'
     ],
     sorted: true,
+    reporter: [
+      'html'
+    ],
+    output: [
+      './tests/dredd_report.html'
+    ],
     level: 'info',
     silence: false,
     color: true
