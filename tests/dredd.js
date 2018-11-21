@@ -14,7 +14,14 @@ const dreddConfig = {
   options: {
     path: [
       './specifications/simaas_oas2.json'
-    ]
+    ],
+    hookfiles: [
+      './tests/dredd_hooks.js'
+    ],
+    sorted: true,
+    level: 'info',
+    silence: false,
+    color: true
   }
 }
 
