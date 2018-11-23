@@ -4,7 +4,7 @@
   "description": "Tiny micro service which implements the public API of the Simulation as a Service instance",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/standard/bin/cmd.js"
+    "lint": "./node_modules/standard/bin/cmd.js",
     "api-serve": "./node_modules/speccy/speccy.js serve ./specifications/simaas_oas2.json",
     "api-2oas3": "./node_modules/swagger2openapi/swagger2openapi.js -o ./specifications/simaas_oas3.json ./specifications/simaas_oas2.json",
     "api-resolve": "npm run api-2oas3 && ./node_modules/speccy/speccy.js resolve -o ./specifications/simaas_oas3.yaml ./specifications/simaas_oas3.json",
