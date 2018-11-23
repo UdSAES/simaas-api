@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "./node_modules/standard/bin/cmd.js",
+    "lint-fix": "./node_modules/standard/bin/cmd.js --fix",
     "dredd": "./node_modules/dredd/bin/dredd  ./specifications/simaas_oas2.json ${SIMAAS_INSTANCE} --sorted --hookfiles=./tests/dredd_hooks.js --reporter=html --output=./tests/dredd_report.html --level=warn",
     "api-serve": "./node_modules/speccy/speccy.js serve ./specifications/simaas_oas2.json",
     "api-2oas3": "./node_modules/swagger2openapi/swagger2openapi.js -o ./specifications/simaas_oas3.json ./specifications/simaas_oas2.json",
