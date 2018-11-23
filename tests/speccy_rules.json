@@ -17,7 +17,7 @@
         {
             "name": "operation-operationId",
             "object": "operation",
-            "enabled": true,
+            "enabled": false,
             "description": "operation should have an operationId",
             "truthy": "operationId"
         },
@@ -60,7 +60,7 @@
         {
             "name": "openapi-tags-alphabetical",
             "object": "openapi",
-            "enabled": true,
+            "enabled": false,
             "description": "openapi object should have alphabetical tags",
             "alphabetical": {
                 "properties": "tags",
@@ -113,7 +113,7 @@
         {
             "name":"info-contact",
             "object": "info",
-            "enabled": true,
+            "enabled": false,
             "description": "info object should contain contact object",
             "truthy": "contact"
         },
