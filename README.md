@@ -12,15 +12,15 @@ Consult the description of the API, located at [`./specifications/simaas_oas2.js
 ### Config
 The microservice can be configured using the environment variables described below. Environment variables that are already set when deploying a service instance using Docker are marked by an asterisk\*.
 
-ENVVAR                          | Description | Default Value
----                             | ---         | ---     
-`QUEUE_ORIGIN`\*                | autsys27    |
-`LISTEN_PORT`\*                 | autsys145   |
-`API_SPECIFICATION_FILE_PATH`\* | autserver03 | `'./specifications/simaas_oas2.json'`
-`ALIVE_EVENT_WAIT_TIME`         | autserver01 | `3600 s`     
-`UI_STATIC_FILES_PATH`          | autserver03 | `''`
-`UI_URL_PATH`                   | autserver03 | `''`
-...                             | ...         | ...
+ENVVAR                          | Description                                         | Default Value
+---                             | ---                                                 | ---     
+`QUEUE_ORIGIN`\*                | The origin of the task queue                        |
+`LISTEN_PORT`\*                 | The port on which the service listens               |
+`API_SPECIFICATION_FILE_PATH`\* | The path of the OAS                                 | `'./specifications/simaas_oas2.json'`
+`ALIVE_EVENT_WAIT_TIME`         | The cycle time of the heartbeat                     | `3600 s`     
+`UI_STATIC_FILES_PATH`          | Path in file system to custom static website/UI     | `''`
+`UI_URL_PATH`                   | Path (in URL) under which static content is exposed | `''`
+...                             | ...                                                 | ...
 
 ### Using Docker
 ```bash
@@ -84,4 +84,4 @@ Command       | Description
 `api-serve`   | Locally serve an interactive visualization of the OAS using  [ReDoc](https://github.com/Rebilly/ReDoc)
 `api-2oas3`   | Convert the OAS from version 2 to version 3 (resulting file excluded from git!)
 `api-resolve` | Dereference all `$ref` instructions in the OAS (operates on dynamically generated OAS3!)
-`api-lint`    | ~~Lint generated OAS3 using [Speccy](https://speccy.io/) and a [custom ruleset](https://speccy.io/rules/2-custom-rulesets)~~  // tbd.
+`api-lint`    | Lint generated OAS3 using [Speccy](https://speccy.io/) and a [custom ruleset](https://speccy.io/rules/2-custom-rulesets)
