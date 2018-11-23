@@ -5,6 +5,7 @@
 const _ = require('lodash')
 const url = require('url')
 const hooks = require('hooks')
+const delay = require('delay')
 
 // [moritz@autsys138 api]$ ./node_modules/dredd/bin/dredd ./specifications/simaas_oas2.json http://localhost:3000 --names
 // info: Model Instances > /model_instances/{uuid}/_simulate > Trigger the simulation of a model instance by defining an experiment, i.e. boundary conditions and simulation parameters > 202
@@ -36,8 +37,11 @@ hooks.beforeEach((transaction, done) => {
 })
 
 // Retrieve UUID of newly created experiment
-hooks.after(STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS, function (transaction) {
+hooks.after(STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS, async function (transaction, done) {
+  await delay(3000) // give the simulation 3 seconds to finish
+
   responseStash[transaction.name] = transaction.real // HTTP response to stash
+  done()
 })
 
 // Use UUID for checking /experiments/{uuid}/status
