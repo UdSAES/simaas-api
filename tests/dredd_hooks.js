@@ -50,7 +50,7 @@ hooks.before(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
   const transactionID = _.replace(
     transaction.id,
     transaction.fullPath,
-    experimentStatusURL.pathname
+    experimentStatusURL.href
   )
 
   transaction.id = transactionID
@@ -69,7 +69,7 @@ hooks.before(STEPS.EXPERIMENT_RESULT_SUCCESS, function (transaction) {
     const transactionID = _.replace(
       transaction.id,
       transaction.fullPath,
-      experimentResultURL.pathname
+      experimentResultURL.href
     )
     transaction.id = transactionID
     transaction.fullPath = experimentResultURL.pathname
@@ -79,7 +79,7 @@ hooks.before(STEPS.EXPERIMENT_RESULT_SUCCESS, function (transaction) {
     const transactionID = _.replace(
       transaction.id,
       transaction.fullPath,
-      _.replace(experimentStatusURL.pathname, 'status', 'result')
+      _.replace(experimentStatusURL.href, 'status', 'result')
     )
 
     transaction.id = transactionID
