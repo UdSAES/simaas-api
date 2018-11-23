@@ -8,7 +8,7 @@
     "api-serve": "./node_modules/speccy/speccy.js serve ./specifications/simaas_oas2.json",
     "api-2oas3": "./node_modules/swagger2openapi/swagger2openapi.js -o ./specifications/simaas_oas3.json ./specifications/simaas_oas2.json",
     "api-resolve": "npm run api-2oas3 && ./node_modules/speccy/speccy.js resolve -o ./specifications/simaas_oas3.yaml ./specifications/simaas_oas3.json",
-    "api-lint": "npm run api-2oas3 && ./node_modules/speccy/speccy.js lint ./specifications/simaas_oas3.json"
+    "api-lint": "npm run api-2oas3 && ./node_modules/speccy/speccy.js lint --rules ./tests/speccy_rules.json ./specifications/simaas_oas3.json"
   },
   "repository": {
     "type": "git",
