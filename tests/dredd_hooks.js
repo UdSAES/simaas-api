@@ -8,14 +8,13 @@ const hooks = require('hooks')
 const delay = require('delay')
 
 // [moritz@autsys138 api]$ ./node_modules/dredd/bin/dredd ./specifications/simaas_oas2.json http://localhost:3000 --names
-// info: Model Instances > /model_instances/{uuid}/_simulate > Trigger the simulation of a model instance by defining an experiment, i.e. boundary conditions and simulation parameters > 202
+// info: Model Instances > /model_instances/{uuid}/_simulate > Trigger the simulation of a model instance by defining an experiment > 202
 // info: Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json
-// info: Experiments > /experiments/{uuid}/result > The results of performing the experiment by numerically solving a model instance, i.e. the simulation results > 200 > application/json
+// info: Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json
 const STEPS = {
-  MODEL_INSTANCES_SIMULATE_SUCCESS: 'Model Instances > /model_instances/{uuid}/_simulate > Trigger the simulation of a model instance by defining an experiment, i.e. boundary conditions and simulation parameters > 202',
+  MODEL_INSTANCES_SIMULATE_SUCCESS: 'Model Instances > /model_instances/{uuid}/_simulate > Trigger the simulation of a model instance by defining an experiment > 202',
   EXPERIMENT_STATUS_SUCCESS: 'Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json',
-  EXPERIMENT_RESULT_SUCCESS: 'Experiments > /experiments/{uuid}/result > The results of performing the experiment by numerically solving a model instance, i.e. the simulation results > 200 > application/json'
-
+  EXPERIMENT_RESULT_SUCCESS: 'Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json'
 }
 
 // Create response stash for passing data between test steps

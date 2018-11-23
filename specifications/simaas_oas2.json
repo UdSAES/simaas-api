@@ -2,13 +2,13 @@
     "swagger": "2.0",
     "info": {
         "title": "SIMaaS Using Queue, Workers and fmpy",
-        "version": "0.1.0"
+        "version": "0.1.1"
     },
     "paths": {
         "/model_instances/{uuid}/_simulate": {
             "post": {
                 "tags": ["Model Instances"],
-                "summary": "Trigger the simulation of a model instance by defining an experiment, i.e. boundary conditions and simulation parameters",
+                "summary": "Trigger the simulation of a model instance by defining an experiment",
                 "consumes": [ "application/json" ],
                 "parameters": [
                     {
@@ -76,7 +76,7 @@
         "/experiments/{uuid}/result": {
             "get": {
                 "tags": ["Experiments"],
-                "summary": "The results of performing the experiment by numerically solving a model instance, i.e. the simulation results",
+                "summary": "The results of performing the experiment/simulation",
                 "produces": [ "application/json" ],
                 "responses": {
                     "200": {
