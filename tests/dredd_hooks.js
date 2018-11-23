@@ -53,15 +53,35 @@ hooks.before(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
   transaction.fullPath = experimentStatusURL.pathname
 })
 
+hooks.after(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
+  responseStash[transaction.name] = transaction.real // HTTP response to stash
+})
+
 // Use UUID for checking /experiments/{uuid}/result
 hooks.before(STEPS.EXPERIMENT_RESULT_SUCCESS, function (transaction) {
-  const experimentStatusURL = url.parse(responseStash[STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS].headers.location)
-  const transactionID = _.replace(
-    transaction.id,
-    transaction.fullPath,
-    _.replace(experimentStatusURL.pathname, 'status', 'result')
-  )
+  const experimentStatus = JSON.parse(responseStash[STEPS.EXPERIMENT_STATUS_SUCCESS].body)
+  if ('link_to_result' in experimentStatus) {
+    const experimentResultURL = url.parse(experimentStatus['link_to_result'])
+    const transactionID = _.replace(
+      transaction.id,
+      transaction.fullPath,
+      experimentResultURL.pathname
+    )
+    transaction.id = transactionID
+    transaction.fullPath = experimentResultURL.pathname
+  } else {
+    // Correct transaction.id, but still fail the test
+    const experimentStatusURL = url.parse(responseStash[STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS].headers.location)
+    const transactionID = _.replace(
+      transaction.id,
+      transaction.fullPath,
+      _.replace(experimentStatusURL.pathname, 'status', 'result')
+    )
 
-  transaction.id = transactionID
-  transaction.fullPath = experimentStatusURL.pathname
+    transaction.id = transactionID
+    transaction.fullPath = experimentStatusURL.pathname
+
+    // transaction.skip = true
+    transaction.fail = 'Fail ' + STEPS.EXPERIMENT_RESULT_SUCCESS + ' because property `link_to_result` did not exist'
+  }
 })
