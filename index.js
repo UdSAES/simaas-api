@@ -139,12 +139,12 @@ async function simulateModelInstance (req, res) {
       }
     })
   } catch (error) {
-    res.status(error.statusCode).send({'error': error.error.err})
+    res.status(error.statusCode).send({ 'error': error.error.err })
     return
   }
 
   if (postTaskResult.statusCode !== 202) {
-    res.status(500).json('error': 'got status code ' + postTaskResult.statusCode + ' instead of 202')
+    res.status(500).json({ 'error': 'got status code ' + postTaskResult.statusCode + ' instead of 202' })
     return
   }
 
@@ -170,7 +170,7 @@ async function getExperimentStatus (req, res) {
       resolveWithFullResponse: true
     })
   } catch (error) {
-    res.status(error.statusCode).send({'error': error.error.err})
+    res.status(error.statusCode).send({ 'error': error.error.err })
     return
   }
 
@@ -204,7 +204,7 @@ async function getExperimentResult (req, res) {
       resolveWithFullResponse: true
     })
   } catch (error) {
-    res.status(error.statusCode).send({'error': error.error.err})
+    res.status(error.statusCode).send({ 'error': error.error.err })
     return
   }
 
