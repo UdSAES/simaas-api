@@ -125,9 +125,9 @@ function shutDownGracefully () {
 
 // Define handlers
 async function simulateModelInstance (req, res) {
-  const modelInstanceID = _.get(req, ['params', 'model_instance_id'])
-  const simulationParameters = _.get(req, ['body', 'simulation_parameters'])
-  const inputTimeseries = _.get(req, ['body', 'input_timeseries'])
+  const modelInstanceID = _.get(req, ['params', 'modelInstanceID'])
+  const simulationParameters = _.get(req, ['body', 'simulationParameters'])
+  const inputTimeseries = _.get(req, ['body', 'inputTimeseries'])
 
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
@@ -163,7 +163,7 @@ async function simulateModelInstance (req, res) {
 }
 
 async function getExperimentStatus (req, res) {
-  const experimentID = _.get(req, ['params', 'experiment_id'])
+  const experimentID = _.get(req, ['params', 'experimentID'])
 
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
@@ -182,7 +182,7 @@ async function getExperimentStatus (req, res) {
     return
   }
 
-  const sourceLinkToResult = _.get(postTaskResult, ['body', 'link_to_result'])
+  const sourceLinkToResult = _.get(postTaskResult, ['body', 'linkToResult'])
   let targetLinkToResult = null
   const resultBody = postTaskResult.body
 
@@ -194,14 +194,14 @@ async function getExperimentStatus (req, res) {
   if (_.isString(sourceLinkToResult)) {
     const u = new URL(sourceLinkToResult, 'http://127.0.0.1')
     targetLinkToResult = origin + u.pathname.replace('/tasks/', '/experiments/')
-    resultBody.link_to_result = targetLinkToResult
+    resultBody.linkToResult = targetLinkToResult
   }
 
   res.status(200).send(resultBody)
 }
 
 async function getExperimentResult (req, res) {
-  const experimentID = _.get(req, ['params', 'experiment_id'])
+  const experimentID = _.get(req, ['params', 'experimentID'])
 
   let postTaskResult = null
   try {
@@ -219,7 +219,7 @@ async function getExperimentResult (req, res) {
   const resultBody = postTaskResult.body
 
   // Transform body to specified format
-  resultBody.description = 'The results of simulating model instance [ID] from [start_time] to [stop_time].'
+  resultBody.description = 'The results of simulating model instance [ID] from [startTime] to [stopTime].'
 
   // Delete properties that shall not be exposed to the consumer
   delete resultBody.id
@@ -236,9 +236,9 @@ app.use((req, res, next) => {
   )
   next()
 })
-app.post('/model-instances/:model_instance_id/_simulate', simulateModelInstance)
-app.get('/experiments/:experiment_id/status', getExperimentStatus)
-app.get('/experiments/:experiment_id/result', getExperimentResult)
+app.post('/model-instances/:modelInstanceID/_simulate', simulateModelInstance)
+app.get('/experiments/:experimentID/status', getExperimentStatus)
+app.get('/experiments/:experimentID/result', getExperimentResult)
 
 app.use(function (req, res, next) {
   res.status(404).json({

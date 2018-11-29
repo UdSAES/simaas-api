@@ -68,8 +68,8 @@ hooks.after(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
 // Use UUID for checking /experiments/{uuid}/result
 hooks.before(STEPS.EXPERIMENT_RESULT_SUCCESS, function (transaction) {
   const experimentStatus = JSON.parse(responseStash[STEPS.EXPERIMENT_STATUS_SUCCESS].body)
-  if ('link_to_result' in experimentStatus) {
-    const experimentResultURL = url.parse(experimentStatus['link_to_result'])
+  if ('linkToResult' in experimentStatus) {
+    const experimentResultURL = url.parse(experimentStatus['linkToResult'])
     const transactionID = _.replace(
       transaction.id,
       transaction.fullPath,
@@ -90,6 +90,6 @@ hooks.before(STEPS.EXPERIMENT_RESULT_SUCCESS, function (transaction) {
     transaction.fullPath = experimentStatusURL.pathname
 
     // transaction.skip = true
-    transaction.fail = 'Fail ' + STEPS.EXPERIMENT_RESULT_SUCCESS + ' because property `link_to_result` did not exist'
+    transaction.fail = 'Fail ' + STEPS.EXPERIMENT_RESULT_SUCCESS + ' because property `linkToResult` did not exist'
   }
 })
