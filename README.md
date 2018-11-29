@@ -81,8 +81,8 @@ Command       | Description
 ---           | ---
 `lint`        | Lint source code to enforce [JavaScript Standard Style](https://standardjs.com/)
 `lint-fix`    | Fix code style issues that can be resolved automatically
-`dredd`       | Verify implementation against OAS using [Dredd](https://github.com/apiaryio/dredd) (requires `SIMAAS_INSTANCE` to be set to the full URL of a running service instance!)
 `api-serve`   | Locally serve an interactive visualization of the OAS using  [ReDoc](https://github.com/Rebilly/ReDoc)
-`api-2oas3`   | Convert the OAS from version 2 to version 3 (resulting file excluded from git!)
-`api-resolve` | Dereference all `$ref` instructions in the OAS (operates on dynamically generated OAS3!)
+`api-resolve` | Dereference all `$ref` instructions in the OAS (version 2 only, resulting file excluded from git!)
+`api-2oas3`   | Convert the OAS from version 2 to version 3 (resolves `$ref`, resulting file excluded from git!)
 `api-lint`    | Lint generated OAS3 using [Speccy](https://speccy.io/) and a [custom ruleset](https://speccy.io/rules/2-custom-rulesets)
+`dredd`       | Verify implementation against OAS using [Dredd](https://github.com/apiaryio/dredd) (requires `SIMAAS_INSTANCE` to be set to the full URL of a running service instance!)
