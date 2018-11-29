@@ -1,4 +1,4 @@
-// Resolve $ref-entries in JSON schemata
+// Resolve $ref-entries in JSON schemata, file ./specifications/simaas_oas2.json
 
 'use strict'
 
@@ -33,7 +33,7 @@ async function main () {
     schemaFlat = await $refResolve(schema)
     await fs.writeJson(schemaPathFlat, schemaFlat, {
       spaces: 4,
-      encoding: 'utf8',
+      encoding: 'utf8'
     })
     console.log('successfully flattened the specification')
   } catch (error) {
