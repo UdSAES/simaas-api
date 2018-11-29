@@ -9,16 +9,13 @@ const log = createLogger({
 })
 log.any('service instance started', 300000)
 
-// Exit on uncaught errors or unhandled promise rejections
+// Exit immediately on uncaught errors or unhandled promise rejections
 process.on('unhandledRejection', function (error) {
   log.any('unhandled promise rejection', 600050, error)
   process.exit(1)
 })
 
 process.on('uncaughtException', function (error) {
-  // TODO Clean up allocated resources synchronously
-
-  // Shut down the process
   log.any('uncaught exception', 600050, error)
   process.exit(1)
 })
