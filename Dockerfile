@@ -4,6 +4,7 @@ RUN set -ex && apk add --no-cache gcc libc6-compat python3 py3-numpy py3-lxml
 RUN set -ex && python3 -m pip install pipenv --upgrade
 
 ENV PYTHON=/usr/bin/python3
+ENV NODE_ENV=production
 
 USER node
 
