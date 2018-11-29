@@ -229,6 +229,13 @@ async function getExperimentResult (req, res) {
 }
 
 // Define routing
+app.use((req, res, next) => {
+  log.info(
+    'received ' + req.method + '-request on ' + req.path +
+    ', accepted media types are: ' + req.headers.accept
+  )
+  next()
+})
 app.post('/model_instances/:model_instance_id/_simulate', simulateModelInstance)
 app.get('/experiments/:experiment_id/status', getExperimentStatus)
 app.get('/experiments/:experiment_id/result', getExperimentResult)
