@@ -64,9 +64,9 @@ _term() {
 trap _term SIGINT
 
 # Start all sub-services
-( cd $DIR_BASE/udsaes_async_queue; LISTEN_PORT=$LISTEN_PORT_QUEUE node index.js ) &
+(( cd $DIR_BASE/udsaes_async_queue; LISTEN_PORT=$LISTEN_PORT_QUEUE node index.js ) &
 ( cd $DIR_BASE/simaas_worker; node index.js ) &
-( cd $DIR_BASE; LISTEN_PORT=$LISTEN_PORT_API node index.js ) &
+( cd $DIR_BASE; LISTEN_PORT=$LISTEN_PORT_API node index.js )) &
 
 # Wait for process to finish or SIGINT to be fired
 child=$!

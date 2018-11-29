@@ -24,8 +24,8 @@ process.on('uncaughtException', function (error) {
 })
 
 // Handle shutdown signals gracefully
-process.on('SIGINT', handleShutdown)
-process.on('SIGTERM', handleShutdown)
+process.on('SIGINT', shutDownGracefully)
+process.on('SIGTERM', shutDownGracefully)
 
 // Load modules
 const express = require('express')
@@ -76,6 +76,7 @@ async function checkIfConfigIsValid () {
 }
 
 // Instantiate express-application and set up middleware-stack
+let server // global server object, populated when binding to port in init()
 const app = express()
 app.use(bodyParser.json())
 app.use(cors())
@@ -109,15 +110,19 @@ async function aliveLoop () {
   }
 }
 
-function handleShutdown () {
+function shutDownGracefully () {
   log.any('received request to shut down', 300050)
 
-  // TODO Stop receiving new requests
-  // TODO Clean up resources
+  // Stop receiving new requests, close server when all connections are ended
+  server.close(() => {
+    log.info('closed HTTP server')
 
-  // Shut down the process
-  log.any('shut down gracefully', 300060)
-  process.exit(0)
+    // TODO Clean up resources
+
+    // Shut down the process
+    log.any('shut down gracefully', 300060)
+    process.exit(0)
+  })
 }
 
 // Define handlers
@@ -262,7 +267,7 @@ async function init () {
 
     log.any('configuration successfull', 300030)
 
-    app.listen(LISTEN_PORT, function () {
+    server = app.listen(LISTEN_PORT, function () {
       log.any('now listening on port ' + LISTEN_PORT, 300040)
     })
 
