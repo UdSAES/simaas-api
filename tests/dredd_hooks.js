@@ -57,10 +57,12 @@ hooks.before(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
 })
 
 hooks.after(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
-  if (transaction.real.body.status !== 'DONE') {
+  const status = JSON.parse(transaction.real.body).status
+  if (status !== 'DONE') {
     transaction.fail = 'Fail ' + STEPS.EXPERIMENT_RESULT_SUCCESS + ' because status is not "DONE"'
+  } else {
+    responseStash[transaction.name] = transaction.real // HTTP response to stash
   }
-  responseStash[transaction.name] = transaction.real // HTTP response to stash
 })
 
 // Use UUID for checking /experiments/{uuid}/result
