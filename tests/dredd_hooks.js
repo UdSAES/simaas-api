@@ -57,6 +57,9 @@ hooks.before(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
 })
 
 hooks.after(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
+  if (transaction.real.body.status !== 'DONE') {
+    transaction.fail = 'Fail ' + STEPS.EXPERIMENT_RESULT_SUCCESS + ' because status is not "DONE"'
+  }
   responseStash[transaction.name] = transaction.real // HTTP response to stash
 })
 

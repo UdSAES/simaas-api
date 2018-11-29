@@ -8,9 +8,9 @@
     "lint-fix": "./node_modules/standard/bin/cmd.js --fix",
     "api-serve": "./node_modules/speccy/speccy.js serve ./specifications/simaas_oas2.json",
     "api-resolve": "node ./scripts/api-resolve.js",
-    "api-2oas3": "./node_modules/swagger2openapi/swagger2openapi.js --resolve -o ./specifications/simaas_oas3_flat.json ./specifications/simaas_oas2.json",
+    "api-2oas3": "npm run api-resolve && ./node_modules/swagger2openapi/swagger2openapi.js -o ./specifications/simaas_oas3_flat.json ./specifications/simaas_oas2_flat.json",
     "api-lint": "npm run api-2oas3 && ./node_modules/speccy/speccy.js lint --rules ./tests/speccy_rules.json ./specifications/simaas_oas3_flat.json",
-    "dredd": "npm run api-resolve && ./node_modules/dredd/bin/dredd  ./specifications/simaas_oas2_flat.json ${SIMAAS_INSTANCE} --sorted --hookfiles=./tests/dredd_hooks.js --reporter=html --output=./tests/dredd_report.html --level=warn"
+    "dredd": "npm run api-resolve && node ./tests/dredd.js"
   },
   "repository": {
     "type": "git",

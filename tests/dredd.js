@@ -6,14 +6,14 @@
 const Dredd = require('dredd')
 
 // Load configuration
-const SERVER_URL = 'http://localhost:3000/'
+const SERVER_URL = process.env.SIMAAS_INSTANCE
 
 // Global variables
 const dreddConfig = {
   server: SERVER_URL,
   options: {
     path: [
-      './specifications/simaas_oas2.json'
+      './specifications/simaas_oas2_flat.json'
     ],
     hookfiles: [
       './tests/dredd_hooks.js'
@@ -25,7 +25,7 @@ const dreddConfig = {
     output: [
       './tests/dredd_report.html'
     ],
-    level: 'info',
+    level: 'warn',
     silence: false,
     color: true
   }
