@@ -5,7 +5,7 @@
         "version": "0.1.1"
     },
     "paths": {
-        "/model_instances/{uuid}/_simulate": {
+        "/model-instances/{uuid}/_simulate": {
             "post": {
                 "tags": ["Model Instances"],
                 "summary": "Trigger the simulation of a model instance by defining an experiment",

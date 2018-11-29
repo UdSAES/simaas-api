@@ -236,7 +236,7 @@ app.use((req, res, next) => {
   )
   next()
 })
-app.post('/model_instances/:model_instance_id/_simulate', simulateModelInstance)
+app.post('/model-instances/:model_instance_id/_simulate', simulateModelInstance)
 app.get('/experiments/:experiment_id/status', getExperimentStatus)
 app.get('/experiments/:experiment_id/result', getExperimentResult)
 
