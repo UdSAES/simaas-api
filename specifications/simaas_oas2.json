@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "title": "SIMaaS Using Queue, Workers and fmpy",
-        "version": "0.1.1"
+        "version": "0.2.0"
     },
     "paths": {
         "/model-instances/{uuid}/_simulate": {
