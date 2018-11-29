@@ -36,6 +36,7 @@ const swaggerTools = require('swagger-tools')
 const $RefParser = require('json-schema-ref-parser')
 const fs = require('fs-extra')
 const delay = require('delay')
+const serializeError = require('serialize-error')
 
 log.any('successfully loaded modules', 300010)
 
@@ -272,6 +273,15 @@ async function init () {
       log.any('cannot bind to listening port ' + LISTEN_PORT, 600030, error)
       process.exit(1)
     })
+  })
+
+  // Ensure that any remaining errors are serialized as JSON
+  app.use(function (err, req, res, next) {
+    if (res.headersSent) {
+      return next(err)
+    }
+    log.any('an internal server error occured and was caught at the end of the chain', 501000, err)
+    res.status(500).json({ error: serializeError(err) })
   })
 }
 
