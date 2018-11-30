@@ -66,4 +66,4 @@ WORKDIR /home/node
 
 EXPOSE 3000
 
-CMD /home/node/startup.sh
+ENTRYPOINT [ "/home/node/startup.sh" ]

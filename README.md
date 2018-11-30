@@ -24,13 +24,11 @@ ENVVAR                          | Description                                   
 
 ### Using Docker
 ```bash
-docker run \
-    -e ALIVE_EVENT_WAIT_TIME \
-    -e ... \
-    -p <some port>:3000 \
-    -d \
-    registry/repository:tag
+# Build image (requires having checked out the repository locally, of course)
+docker build -t simaas_api .
 
+# Run using default configuration
+docker run --name simaas_api -p 3000:3000 -d simaas_api:latest
 ```
 
 ### Using Node.js
@@ -54,24 +52,43 @@ export UI_STATIC_FILES_PATH=...
 export UI_URL_PATH=...
 ...
 
-# Ensure that SIGINT is forwarded to main process
-# https://unix.stackexchange.com/a/146770
-_term() {
-  echo "-------------------------Caught SIGINT signal!"
-  kill -INT "$child" 2>/dev/null
+# Set up functions for properly forwarding SIGTERM
+# https://unix.stackexchange.com/a/444676
+prep_term()
+{
+    unset term_child_pid
+    unset term_kill_needed
+    trap 'handle_term' TERM INT
 }
 
-trap _term SIGINT
+handle_term()
+{
+    if [ "${term_child_pid}" ]; then
+        kill -TERM "${term_child_pid}" 2>/dev/null
+    else
+        term_kill_needed="yes"
+    fi
+}
 
-# Start all sub-services
+wait_term()
+{
+    term_child_pid=$!
+    if [ "${term_kill_needed}" ]; then
+        kill -TERM "${term_child_pid}" 2>/dev/null
+    fi
+    wait ${term_child_pid} 2>/dev/null
+    trap - TERM INT
+    wait ${term_child_pid} 2>/dev/null
+}
+
+# Start all sub-services, enclosed by functions that ensure SIGTERM is caught
+prep_term
+
 (( cd $DIR_BASE/udsaes_async_queue; LISTEN_PORT=$LISTEN_PORT_QUEUE node index.js ) &
 ( cd $DIR_BASE/simaas_worker; node index.js ) &
 ( cd $DIR_BASE; LISTEN_PORT=$LISTEN_PORT_API node index.js )) &
 
-# Wait for process to finish or SIGINT to be fired
-child=$!
-wait "$child"
-
+wait_term
 ```
 
 ## Development
