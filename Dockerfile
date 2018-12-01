@@ -1,4 +1,8 @@
-FROM node:10.13-alpine
+FROM node:lts-alpine
+
+LABEL me.msaas.vendor="UdS AES"
+LABEL me.msaas.maintainer="moritz.stueber@aut.uni-saarland.de"
+LABEL me.msaas.subject="Simulation as a Service"
 
 RUN set -ex && apk add --no-cache gcc libc6-compat python3 py3-numpy py3-lxml
 RUN set -ex && python3 -m pip install pipenv --upgrade
