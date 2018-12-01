@@ -29,7 +29,7 @@ const dreddConfig = {
     output: [
       './tests/dredd_report.html'
     ],
-    level: 'warn',
+    level: 'verbose',
     silence: false,
     color: true
   }
@@ -40,8 +40,8 @@ const dredd = new Dredd(dreddConfig)
 // Define main function
 const main = async function () {
   dredd.run(function (err, stats) {
-    if (err !== undefined) {
-      console.log(err)
+    if (err !== null) {
+      console.log('"err" !== null: ', err)
       process.exit(1)
     } else {
       console.log(stats)
