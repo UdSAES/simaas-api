@@ -8,6 +8,10 @@ const Dredd = require('dredd')
 // Load configuration
 const SERVER_URL = process.env.SIMAAS_INSTANCE
 
+// Accept self-signed certificates
+// https://github.com/apiaryio/dredd/issues/913#issuecomment-381419699
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
+
 // Global variables
 const dreddConfig = {
   server: SERVER_URL,
