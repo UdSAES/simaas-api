@@ -11,16 +11,16 @@ The microservice can be configured using the environment variables described bel
 
 ENVVAR                          | Description                                         | Default Value
 ---                             | ---                                                 | ---     
-                                |                                                     | :wavy_dash: API   
+:wavy_dash: API                 |                                                     | 
 `QUEUE_ORIGIN`\*                | __The origin of the task queue__                    |
 `LISTEN_PORT`\*                 | __The port on which the service listens__           |
 `ALIVE_EVENT_WAIT_TIME`         | The cycle time of the heartbeat (API)               | `3600 s`     
 `UI_STATIC_FILES_PATH`          | Path in file system to custom static website/UI     | `''`
 `UI_URL_PATH`                   | Path (in URL) under which static content is exposed | `''`
-                                |                                                     | :wavy_dash: Queue
+:wavy_dash: Queue               |                                                     |
 `LISTEN_PORT`\*                 | __The port on which the queue listens__             |
 `ALIVE_EVENT_WAIT_TIME`         | The cycle time of the heartbeat (queue)             | `3600 s`
-                                |                                                     | :wavy_dash: Worker
+:wavy_dash: Worker              |                                                     | 
 `QUEUE_ORIGIN`\*                | __The origin of the task queue__                    |
 `MODEL_BASE_PATH`\*             | __The path to the model instances__ (stored as FMU) |
 `WAIT_TIME`\*                   | Cycle time for polling the existence of new jobs    | `50 ms`
