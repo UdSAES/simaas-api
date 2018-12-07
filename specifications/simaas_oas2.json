@@ -192,10 +192,12 @@
     },
     "tags": [
         {
-            "name": "Model Instances"
+            "name": "Model Instances",
+            "description": "A model instance is the executable version of a model with all parameters set, thus describing the behaviour of a specific system for all possible boundary conditions. The parameters of a model instance cannot be changed in order to ensure that identical service interactions always lead to the same result. Consequently, it is possible that different model instances describe the same specific system, which can be a result of different parameter sets or the use of different models."
         },
         {
-            "name": "Experiments"
+            "name": "Experiments",
+            "description": "An experiment denotes the execution of a model instance for given boundary conditions and simulation settings; in other words, a specific simulation."
         }
     ]
 }
