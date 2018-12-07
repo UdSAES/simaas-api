@@ -53,7 +53,7 @@ hooks.after(STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS, async function (transaction,
 
 // Use UUID for checking /experiments/{uuid}/status
 hooks.before(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
-  if (responseStash[STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS].statusCode === 202){
+  if (responseStash[STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS].statusCode === 202) {
     const experimentStatusURL = url.parse(responseStash[STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS].headers.location)
     const transactionID = _.replace(
       transaction.id,
