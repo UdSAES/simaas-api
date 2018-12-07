@@ -125,7 +125,7 @@ function shutDownGracefully () {
 
 // Define handlers
 async function simulateModelInstance (req, res) {
-  const modelInstanceID = _.get(req, ['params', 'modelInstanceID'])
+  const modelInstanceID = _.get(req, ['body', 'modelInstanceID'])
   const simulationParameters = _.get(req, ['body', 'simulationParameters'])
   const inputTimeseries = _.get(req, ['body', 'inputTimeseries'])
 
@@ -236,7 +236,7 @@ app.use((req, res, next) => {
   )
   next()
 })
-app.post('/model-instances/:modelInstanceID/_simulate', simulateModelInstance)
+app.post('/experiments', simulateModelInstance)
 app.get('/experiments/:experimentID/status', getExperimentStatus)
 app.get('/experiments/:experimentID/result', getExperimentResult)
 
