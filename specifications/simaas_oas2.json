@@ -89,10 +89,49 @@
             }
         },
         "InputTimeseries": {
-            "type": "array",
-            "items": {
-                "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/master/schemata/timeseries/schema_v1.2.0-oas2.json#/Timeseries"
-            }
+            "type":"array",
+            "items": [
+                {
+                    "allOf": [
+                        {
+                            "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/master/schemata/timeseries/schema_v1.2.0-oas2.json#/Timeseries"
+                        },
+                        {
+                            "required": [
+                                "label"
+                            ]
+                        },
+                        {
+                            "properties": {
+                                "label": {
+                                    "type": "string",
+                                    "enum": [ "SaaSu" ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "allOf":[
+                        {
+                            "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/master/schemata/timeseries/schema_v1.2.0-oas2.json#/Timeseries"
+                        },
+                        {
+                            "required": [ "label" ]
+                        },
+                        {
+                            "properties": {
+                                "label": {
+                                    "type":"string",
+                                    "enum": [ "SaaSu1" ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            "minItems":2,
+            "maxItems":2
         },
         "ModelInstanceID": {
             "description": "The UUID of the model instance to be simulated",
