@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:10-alpine
 
 LABEL me.msaas.vendor="UdS AES"
 LABEL me.msaas.maintainer="moritz.stueber@aut.uni-saarland.de"
@@ -27,7 +27,6 @@ COPY --chown=node:node ./udsaes_async_queue/ /home/node/queue/
 # Configure workers ############################################################
 ENV QUEUE_ORIGIN http://127.0.0.1:${LISTEN_PORT_QUEUE}
 ENV MODEL_BASE_PATH /mnt/FMUs
-ENV WAIT_TIME 50
 ENV LC_ALL en_GB.utf8
 ENV LANG en_GB.utf8
 
