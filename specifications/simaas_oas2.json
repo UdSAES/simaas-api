@@ -136,9 +136,7 @@
         "ModelInstanceID": {
             "description": "The UUID of the model instance to be simulated",
             "type": "string",
-            "enum": [
-              "c02f1f12-966d-4eab-9f21-dcf265ceac71"
-            ]
+            "enum": [ "c02f1f12-966d-4eab-9f21-dcf265ceac71" ]
         }
     },
     "parameters": {
@@ -164,7 +162,7 @@
                         "$ref": "#/definitions/InputTimeseries"
                     }
                 },
-                "example": {"modelInstanceID":"c02f1f12-966d-4eab-9f21-dcf265ceac71","simulationParameters":{"startTime":"1526558400000","stopTime":"1526569200000","outputInterval":"900"},"inputTimeseries":[{"label":"SaaSu","unit":"W/m2","timeseries":[{"timestamp":1526558400000,"value":555.125},{"timestamp":1526559300000,"value":551.1875},{"timestamp":1526560200000,"value":568.28125},{"timestamp":1526561100000,"value":628.59375},{"timestamp":1526562000000,"value":631.875},{"timestamp":1526562900000,"value":607.7968750000724},{"timestamp":1526563800000,"value":593.4218750190755},{"timestamp":1526564700000,"value":559.8906250641351},{"timestamp":1526565600000,"value":515.2031250833663},{"timestamp":1526566500000,"value":458.42187504998253},{"timestamp":1526567400000,"value":401.109375043708},{"timestamp":1526568300000,"value":360.6250000271315},{"timestamp":1526569200000,"value":338.6562500432486}]},{"label":"SaaSu1","unit":"W/m2","timeseries":[{"timestamp":1526558400000,"value":238.53135991096497},{"timestamp":1526559300000,"value":238.43617391586304},{"timestamp":1526560200000,"value":220.99572658538818},{"timestamp":1526561100000,"value":171.54822373390198},{"timestamp":1526562000000,"value":158.77959752082825},{"timestamp":1526562900000,"value":161.28478050231934},{"timestamp":1526563800000,"value":157.22860145568848},{"timestamp":1526564700000,"value":164.33479499816895},{"timestamp":1526565600000,"value":176.16250228881836},{"timestamp":1526566500000,"value":193.0199851989746},{"timestamp":1526567400000,"value":207.74025344848633},{"timestamp":1526568300000,"value":210.68580627441406},{"timestamp":1526569200000,"value":201.1289520263672}]}]}
+                "example": {"modelInstanceID":"c02f1f12-966d-4eab-9f21-dcf265ceac71","simulationParameters":{"startTime":1526558400000,"stopTime":1526569200000,"outputInterval":900},"inputTimeseries":[{"label":"SaaSu","unit":"W/m2","timeseries":[{"timestamp":1526558400000,"value":555.125},{"timestamp":1526559300000,"value":551.1875},{"timestamp":1526560200000,"value":568.28125},{"timestamp":1526561100000,"value":628.59375},{"timestamp":1526562000000,"value":631.875},{"timestamp":1526562900000,"value":607.7968750000724},{"timestamp":1526563800000,"value":593.4218750190755},{"timestamp":1526564700000,"value":559.8906250641351},{"timestamp":1526565600000,"value":515.2031250833663},{"timestamp":1526566500000,"value":458.42187504998253},{"timestamp":1526567400000,"value":401.109375043708},{"timestamp":1526568300000,"value":360.6250000271315},{"timestamp":1526569200000,"value":338.6562500432486}]},{"label":"SaaSu1","unit":"W/m2","timeseries":[{"timestamp":1526558400000,"value":238.53135991096497},{"timestamp":1526559300000,"value":238.43617391586304},{"timestamp":1526560200000,"value":220.99572658538818},{"timestamp":1526561100000,"value":171.54822373390198},{"timestamp":1526562000000,"value":158.77959752082825},{"timestamp":1526562900000,"value":161.28478050231934},{"timestamp":1526563800000,"value":157.22860145568848},{"timestamp":1526564700000,"value":164.33479499816895},{"timestamp":1526565600000,"value":176.16250228881836},{"timestamp":1526566500000,"value":193.0199851989746},{"timestamp":1526567400000,"value":207.74025344848633},{"timestamp":1526568300000,"value":210.68580627441406},{"timestamp":1526569200000,"value":201.1289520263672}]}]}
             }
         },
         "ExperimentID": {
