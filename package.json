@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "./node_modules/standard/bin/cmd.js",
     "lint-fix": "./node_modules/standard/bin/cmd.js --fix",
-    "api-serve": "./node_modules/speccy/speccy.js serve ./specifications/simaas_oas2.json",
+    "api-serve": "npm run api-resolve && ./node_modules/speccy/speccy.js serve ./specifications/simaas_oas2_flat.json",
     "api-resolve": "node ./scripts/api-resolve.js",
     "api-2oas3": "npm run api-resolve && ./node_modules/swagger2openapi/swagger2openapi.js -o ./specifications/simaas_oas3_flat.json ./specifications/simaas_oas2_flat.json",
     "api-lint": "npm run api-2oas3 && ./node_modules/speccy/speccy.js lint --rules ./tests/speccy_rules.json ./specifications/simaas_oas3_flat.json",
