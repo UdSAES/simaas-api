@@ -228,24 +228,6 @@ async function getExperimentResult (req, res) {
   res.status(200).send(resultBody)
 }
 
-// Define routing
-app.use((req, res, next) => {
-  log.info(
-    'received ' + req.method + '-request on ' + req.path +
-    ', accepted media types are: ' + req.headers.accept
-  )
-  next()
-})
-app.post('/experiments', simulateModelInstance)
-app.get('/experiments/:experimentID/status', getExperimentStatus)
-app.get('/experiments/:experimentID/result', getExperimentResult)
-
-app.use(function (req, res, next) {
-  res.status(404).json({
-    msg: 'Not Found'
-  })
-}) // http://expressjs.com/en/starter/faq.html
-
 // Define main program
 async function init () {
   await checkIfConfigIsValid()
@@ -268,9 +250,45 @@ async function init () {
     app.use(middleware.swaggerMetadata())
 
     // Validate Swagger requests
-    app.use(middleware.swaggerValidator())
+    // https://github.com/apigee-127/swagger-tools/blob/master/docs/Middleware.md#swagger-validator
+    app.use(middleware.swaggerValidator({
+      validateResponse: true
+    }))
 
     log.any('configuration successfull', 300030)
+
+    // Define routing
+    // MUST happen after enabling swaggerValidator or validation doesn't work
+    app.use((req, res, next) => {
+      log.info(
+        'received ' + req.method + '-request on ' + req.path +
+        ', accepted media types are: ' + req.headers.accept
+      )
+      next()
+    })
+    app.post('/experiments', simulateModelInstance)
+    app.get('/experiments/:experimentID/status', getExperimentStatus)
+    app.get('/experiments/:experimentID/result', getExperimentResult)
+
+    app.use(function (req, res, next) {
+      res.status(404).json({
+        msg: 'Not Found'
+      })
+    }) // http://expressjs.com/en/starter/faq.html
+
+    // Ensure that any remaining errors are serialized as JSON
+    app.use(function (err, req, res, next) {
+      if (res.headersSent) {
+        return next(err)
+      }
+      if (err.code === 'SCHEMA_VALIDATION_FAILED') {
+        log.any('schema validation failed -- request dropped', 401099, err)
+        res.status(400).json({error: serializeError(err)})
+      } else {
+        log.any('an internal server error occured and was caught at the end of the chain', 501000, err)
+        res.status(500).json({ error: serializeError(err) })
+      }
+    })
 
     server = app.listen(LISTEN_PORT, function () {
       log.any('now listening on port ' + LISTEN_PORT, 300040)
@@ -280,15 +298,6 @@ async function init () {
       log.any('cannot bind to listening port ' + LISTEN_PORT, 600030, error)
       process.exit(1)
     })
-  })
-
-  // Ensure that any remaining errors are serialized as JSON
-  app.use(function (err, req, res, next) {
-    if (res.headersSent) {
-      return next(err)
-    }
-    log.any('an internal server error occured and was caught at the end of the chain', 501000, err)
-    res.status(500).json({ error: serializeError(err) })
   })
 }
 
