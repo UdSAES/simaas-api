@@ -20,14 +20,14 @@ const dreddConfig = {
       './specifications/simaas_oas2_flat.json'
     ],
     hookfiles: [
-      './tests/dredd_hooks.js'
+      './test/dredd_hooks.js'
     ],
     sorted: true,
     reporter: [
       'html'
     ],
     output: [
-      './tests/dredd_report.html'
+      './test/dredd_report.html'
     ],
     level: 'verbose',
     silence: false,
