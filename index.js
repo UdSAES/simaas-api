@@ -46,7 +46,7 @@ const LISTEN_PORT = parseInt(process.env.LISTEN_PORT)
 const UI_STATIC_FILES_PATH = String(process.env.UI_STATIC_FILES_PATH) || ''
 const UI_URL_PATH = String(process.env.UI_URL_PATH) || ''
 const ALIVE_EVENT_WAIT_TIME = parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 3600 * 1000
-const API_SPECIFICATION_FILE_PATH = './specifications/simaas_oas2.json'
+const API_SPECIFICATION_FILE_PATH = './oas/simaas_oas2.json'
 
 // Check if configuration is valid
 async function checkIfConfigIsValid () {

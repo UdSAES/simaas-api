@@ -7,7 +7,7 @@ const url = require('url')
 const hooks = require('hooks')
 const delay = require('delay')
 
-// [moritz@autsys138 api]$ ./node_modules/dredd/bin/dredd ./specifications/simaas_oas2_flat.json $SIMAAS_INSTANCE --names
+// [moritz@autsys138 api]$ ./node_modules/dredd/bin/dredd ./oas/simaas_oas2_flat.json $SIMAAS_INSTANCE --names
 // info: Experiments > /experiments > Trigger the simulation of a model instance by defining an experiment > 202
 // info: Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json
 // info: Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json

@@ -1,4 +1,4 @@
-// Resolve $ref-entries in JSON schemata, file ./specifications/simaas_oas2.json
+// Resolve $ref-entries in JSON schemata, file ./oas/simaas_oas2.json
 
 'use strict'
 
@@ -23,8 +23,8 @@ async function $refResolve (schema) {
 
 // Main function
 async function main () {
-  const schemaPath = './specifications/simaas_oas2.json'
-  const schemaPathFlat = './specifications/simaas_oas2_flat.json'
+  const schemaPath = './oas/simaas_oas2.json'
+  const schemaPathFlat = './oas/simaas_oas2_flat.json'
   let schema = null
   let schemaFlat = null
 

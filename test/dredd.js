@@ -17,7 +17,7 @@ const dreddConfig = {
   server: SERVER_URL,
   options: {
     path: [
-      './specifications/simaas_oas2_flat.json'
+      './oas/simaas_oas2_flat.json'
     ],
     hookfiles: [
       './test/dredd_hooks.js'

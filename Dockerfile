@@ -53,14 +53,14 @@ ENV QUEUE_ORIGIN http://127.0.0.1:${LISTEN_PORT_QUEUE}
 ENV LISTEN_PORT 3000
 
 RUN mkdir /home/node/api
-RUN mkdir /home/node/api/specifications
+RUN mkdir /home/node/api/oas
 WORKDIR /home/node/api
 
 COPY --chown=node:node ./package.json /home/node/api
 
 RUN npm install --production
 
-COPY --chown=node:node ./specifications/simaas_oas2_flat.json /home/node/api/specifications/simaas_oas2.json
+COPY --chown=node:node ./oas/simaas_oas2_flat.json /home/node/api/oas/simaas_oas2.json
 COPY --chown=node:node ./index.js /home/node/api
 
 # Start application ############################################################
