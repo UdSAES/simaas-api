@@ -13,6 +13,7 @@ const delay = require('delay')
 // info: Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json
 const STEPS = {
   MODEL_INSTANCES_LIST_501: 'Model Instances > /model-instances > A list of all available model instances > 501 > application/json',
+  MODEL_INSTANCE_501: 'Model Instances > /model-instances/{uuid} > A specific model instance > 501 > application/json',
   MODEL_INSTANCES_SIMULATE_SUCCESS: 'Experiments > /experiments > Trigger the simulation of a model instance by defining an experiment > 202',
   EXPERIMENT_STATUS_SUCCESS: 'Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json',
   EXPERIMENT_RESULT_SUCCESS: 'Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json'
@@ -47,6 +48,10 @@ hooks.beforeEach((transaction, done) => {
 // Activate checking of non-2xx responses
 // https://dredd.org/en/latest/how-to-guides.html?highlight=skip#id13
 hooks.before(STEPS.MODEL_INSTANCES_LIST_501, function (transaction) {
+  transaction.skip = false
+})
+
+hooks.before(STEPS.MODEL_INSTANCE_501, function (transaction) {
   transaction.skip = false
 })
 

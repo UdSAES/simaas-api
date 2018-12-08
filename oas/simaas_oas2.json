@@ -15,6 +15,19 @@
                 }
             }
         },
+        "/model-instances/{uuid}": {
+            "get": {
+                "tags": ["Model Instances"],
+                "summary": "A specific model instance",
+                "produces": ["application/json"],
+                "parameters": [
+                    {"$ref": "#/parameters/ModelInstanceID"}
+                ],
+                "responses": {
+                    "501": {"$ref": "#/responses/NotImplemented"}
+                }
+            }
+        },
         "/experiments": {
             "post": {
                 "tags": ["Experiments"],
@@ -72,6 +85,11 @@
         }
     },
     "definitions": {
+        "ModelInstanceID": {
+            "description": "The UUID of the model instance to be simulated",
+            "type": "string",
+            "enum": [ "c02f1f12-966d-4eab-9f21-dcf265ceac71" ]
+        },
         "SimulationParameters": {
             "type": "object",
             "required": [
@@ -142,14 +160,17 @@
             ],
             "minItems":2,
             "maxItems":2
-        },
-        "ModelInstanceID": {
-            "description": "The UUID of the model instance to be simulated",
-            "type": "string",
-            "enum": [ "c02f1f12-966d-4eab-9f21-dcf265ceac71" ]
         }
     },
     "parameters": {
+        "ModelInstanceID": {
+            "name": "uuid",
+            "in": "path",
+            "description": "The UUID of the model instance to be simulated",
+            "required": true,
+            "type": "string",
+            "x-example": "c02f1f12-966d-4eab-9f21-dcf265ceac71"
+        },
         "ExperimentSetup": {
             "name": "experimentSetup",
             "in": "body",
