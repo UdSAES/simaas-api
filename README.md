@@ -31,10 +31,10 @@ ENVVAR                          | Description                                   
 # Create flat version of OAS to ensure that container can run without web access
 npm run api-resolve
 
-# Build image (requires having checked out the repository locally, of course)
+# Build image
 docker build -t simaas_api .
 
-# Run using default configuration
+# Run using default configuration (possibly mount local FMUs for testing)
 docker run --name simaas_api -p 3000:3000 -d simaas_api:latest
 ```
 
