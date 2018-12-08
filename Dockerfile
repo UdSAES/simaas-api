@@ -33,8 +33,8 @@ ENV LANG en_GB.utf8
 RUN mkdir /home/node/worker
 WORKDIR /home/node/worker
 
-COPY --chown=node:node ./simaas_worker/Pipfile /home/node/worker
-COPY --chown=node:node ./simaas_worker/Pipfile.lock /home/node/worker
+COPY --chown=node:node ./worker/Pipfile /home/node/worker
+COPY --chown=node:node ./worker/Pipfile.lock /home/node/worker
 
 USER root
 RUN mkdir /mnt/FMUs
@@ -42,11 +42,11 @@ RUN chown node:node /mnt/FMUs
 RUN set -ex && pipenv install --deploy --system --ignore-pipfile
 USER node
 
-COPY --chown=node:node ./simaas_worker/package.json /home/node/worker
+COPY --chown=node:node ./worker/package.json /home/node/worker
 
 RUN npm install --production
 
-COPY --chown=node:node ./simaas_worker/ /home/node/worker/
+COPY --chown=node:node ./worker/ /home/node/worker/
 
 # Configure API ################################################################
 ENV QUEUE_ORIGIN http://127.0.0.1:${LISTEN_PORT_QUEUE}
