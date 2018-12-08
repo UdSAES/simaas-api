@@ -8,3 +8,6 @@ test/dredd_report.html
 specifications/simaas_oas2_flat.json
 specifications/simaas_oas3*.json
 specifications/simaas_oas3*.yaml
+
+# Ignore files for local development
+local/
