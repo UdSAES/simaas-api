@@ -11,7 +11,7 @@ The microservice can be configured using the environment variables described bel
 
 ENVVAR                          | Description                                         | Default Value
 ---                             | ---                                                 | ---     
-:wavy_dash: API                 |                                                     | 
+:wavy_dash: API                 |                                                     |
 `QUEUE_ORIGIN`\*                | __The origin of the task queue__                    |
 `LISTEN_PORT`\*                 | __The port on which the service listens__           |
 `ALIVE_EVENT_WAIT_TIME`         | The cycle time of the heartbeat (API)               | `3600 s`     
@@ -20,7 +20,7 @@ ENVVAR                          | Description                                   
 :wavy_dash: Queue               |                                                     |
 `LISTEN_PORT`\*                 | __The port on which the queue listens__             |
 `ALIVE_EVENT_WAIT_TIME`         | The cycle time of the heartbeat (queue)             | `3600 s`
-:wavy_dash: Worker              |                                                     | 
+:wavy_dash: Worker              |                                                     |
 `QUEUE_ORIGIN`\*                | __The origin of the task queue__                    |
 `MODEL_BASE_PATH`\*             | __The path to the model instances__ (stored as FMU) |
 `WAIT_TIME`\*                   | Cycle time for polling the existence of new jobs    | `50 ms`
@@ -88,7 +88,7 @@ wait_term()
 # Start all sub-services, enclosed by functions that ensure SIGTERM is caught
 prep_term
 
-(( cd $DIR_BASE/udsaes_async_queue; LISTEN_PORT=$LISTEN_PORT_QUEUE node index.js ) &
+(( cd $DIR_BASE/queue; LISTEN_PORT=$LISTEN_PORT_QUEUE node index.js ) &
 ( cd $DIR_BASE/simaas_worker; node index.js ) &
 ( cd $DIR_BASE; LISTEN_PORT=$LISTEN_PORT_API node index.js )) &
 

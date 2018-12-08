@@ -18,11 +18,11 @@ ENV LISTEN_PORT_QUEUE 12345
 RUN mkdir /home/node/queue
 WORKDIR /home/node/queue
 
-COPY --chown=node:node ./udsaes_async_queue/package.json /home/node/queue
+COPY --chown=node:node ./queue/package.json /home/node/queue
 
 RUN npm install --production
 
-COPY --chown=node:node ./udsaes_async_queue/ /home/node/queue/
+COPY --chown=node:node ./queue/ /home/node/queue/
 
 # Configure workers ############################################################
 ENV QUEUE_ORIGIN http://127.0.0.1:${LISTEN_PORT_QUEUE}
