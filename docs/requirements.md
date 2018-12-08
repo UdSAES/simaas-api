@@ -1,7 +1,7 @@
 # Requirements Simulation as a Service
 This microservice is expected to become a number cruncher that responds to all simulation requests thrown at it, even parallel ones, with ease and confidence; scaling across processors and machines dynamically iff necessary. Its basic entities are _model instances_ and _experiments_, which are at first exposed through a REST-based HTTP resource API.
 
-Under the hood, the strength of this microservice lies in the execution engine, which provides both the raw results of a simulation as well as meaningful metadata wherever applicable. Consequently, representing the abilities of "simulation" in terms of resources, verbs and, most importantly, formal representation in a way that intelligent clients can leverage these capabilities is the main challenge from a conceptual point of view. From a technical point of view, the challenge lies in architecting and implementing a robust and decently fast solution that fulfils the stakeholder expectations (_and_ documents that) without getting lost in the plethora of possibilities, especially those for unnecessary optimization offered by shiny, buzzword-heavy libraries/tools.
+Under the hood, the strength of this microservice lies in the execution engine, which provides both the raw results of a simulation as well as meaningful metadata wherever applicable. Consequently, representing the abilities of "simulation" in terms of resources, verbs and, most importantly, formal representations in a way that intelligent clients can leverage these capabilities is the main challenge from a conceptual point of view. From a technical point of view, the challenge lies in architecting and implementing a robust and decently fast solution that fulfils the stakeholder expectations (_and_ documents that) without getting lost in the plethora of possibilities, especially those for unnecessary optimization offered by shiny, buzzword-heavy libraries/tools.
 
 Over the course of my PhD, this API will evolve into a RESTful hypermedia API fully supporting HATEOAS and integrating with the principles of linked data and the semantic web in general.
 
@@ -9,7 +9,7 @@ Over the course of my PhD, this API will evolve into a RESTful hypermedia API fu
 The stakeholders of the microservice to be developed are...
 * __UdS AES__ as the chair that has to deliver specified results as part of the Designetz-project
 * __Westnetz/innogy__ as the company that will run the code in a critical environment
-* the __developers at UdS AES__ that have implement and operate the microservice
+* the __developers at UdS AES__ that have to implement and operate the microservice
 * __other microservices__ that hard-code requests against a specific version of the API
 * __human users of service instances__ that want to use it as a source of data
 * __researchers__ that want to evaluate the service's concept, its architecture, its capabilities, and its performance
@@ -70,11 +70,14 @@ Although not known for sure and definitely incomplete, these are their non-speci
 ## Requirements
 Requirements marked in __bold__ are to be realized sooner rather than later; those in _italics_ entail more requirements that are not listed here.
 * _The implementation MUST comply with the external stakeholder requirements_
+    * _A containerized service instance MUST function correctly if started with `--readonly`_
+    * _..._    
 * _The implementation MUST comply with the internal (team-) requirements_
+    * _..._
 * __The API MUST allow triggering a simulation__
 * __The API MUST provide access to the results of a simulation__
 * __The API MUST mitigate timeouts in a consistent manner__
-* The API MUST allow adding new model instances
+* __The API MUST allow adding new model instances__
 * The API MUST provide a representation of a model instance
 * The API SHOULD provide a list of model instances that can be filtered
 * The API SHOULD provide a list of model instances that can be sorted hierarchically
@@ -86,12 +89,13 @@ Requirements marked in __bold__ are to be realized sooner rather than later; tho
 * __The API MUST use identifiers that cannot be guessed__
 * __The API MUST use identifiers that are guaranteed to be unique__
 * __The microservice MUST validate all requests__
+    * __The OAS MUST define all inputs via regular expressions__
 * The microservice MUST implement a specified strategy for forgetting old simulation results
+* The microservice SHOULD support `x-request-id` headers and include them in all relevant logs
 * The microservice SHOULD implement a specified strategy against (D)DOS (aka "choking to death")
 * The microservice SHOULD scale across processors and machines dynamically iff necessary
 * The microservice SHOULD NOT depend on outdated or insecure packages
 * A service instance MUST handle unavailable peer services gracefully
-* A containerized service instance MUST function correctly if started with `--readonly`
 * The Docker image MUST NOT contain any unnecessary files/binaries
 * __The worker-process MUST simulate a given FMU 2.0 for co-simulation__
     * The worker-process MUST allow the specification of start time, stop time, and output interval
