@@ -124,6 +124,14 @@ function shutDownGracefully () {
 }
 
 // Define handlers
+async function respondWithNotImplemented (req, res) {
+  res.status(501).json({
+    'title': 'Not Implemented',
+    'status': 501,
+    'detail': 'The request was understood, but the underlying implementation is not available yet.'
+  })
+}
+
 async function simulateModelInstance (req, res) {
   const modelInstanceID = _.get(req, ['body', 'modelInstanceID'])
   const simulationParameters = _.get(req, ['body', 'simulationParameters'])
@@ -266,6 +274,7 @@ async function init () {
       )
       next()
     })
+    app.get('/model-instances', respondWithNotImplemented)
     app.post('/experiments', simulateModelInstance)
     app.get('/experiments/:experimentID/status', getExperimentStatus)
     app.get('/experiments/:experimentID/result', getExperimentResult)

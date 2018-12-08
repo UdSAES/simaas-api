@@ -5,6 +5,16 @@
         "version": "0.3.0"
     },
     "paths": {
+        "/model-instances": {
+            "get": {
+                "tags": ["Model Instances"],
+                "summary": "A list of all available model instances",
+                "produces": ["application/json"],
+                "responses": {
+                    "501": {"$ref": "#/responses/NotImplemented"}
+                }
+            }
+        },
         "/experiments": {
             "post": {
                 "tags": ["Experiments"],
