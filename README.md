@@ -41,7 +41,7 @@ docker run --name simaas_api -p 3000:3000 -d simaas_api:latest
 ### Using Node.js
 Internally, the microservice is composed of three different processes: one for the API, one for the queue, and one for the worker. Unfortunately, this makes running the application as a group of native Node.js-processes a bit complicated because it has to be ensured that `SIGTERM`/`SIGINT` are properly propagated -- solution shown below (discussion out of scope).
 
-Also note that the dependency on FMPy cannot be resolved unless you first spawn a pipenv-shell in which the dependencies specified in `./worker/Pipfile` are satisfied and then execute the script below from within this shell!
+Also note that the dependency on FMPy cannot be resolved unless you first spawn a pipenv-shell in which the dependencies specified in [`./simaas_worker/Pipfile`](./simaas_worker/Pipfile) are satisfied and then execute the script below from within this shell!
 
 ```bash
 #!/bin/sh
@@ -89,7 +89,7 @@ wait_term()
 prep_term
 
 (( cd $DIR_BASE/queue; LISTEN_PORT=$LISTEN_PORT_QUEUE node index.js ) &
-( cd $DIR_BASE/worker; node index.js ) &
+( cd $DIR_BASE/simaas_worker; node index.js ) &
 ( cd $DIR_BASE; LISTEN_PORT=$LISTEN_PORT_API node index.js )) &
 
 wait_term

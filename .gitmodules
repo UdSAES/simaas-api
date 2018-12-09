@@ -1,5 +1,5 @@
 [submodule "simaas_worker"]
-	path = worker
+	path = simaas_worker
 	url = git@github.com:UdSAES/simaas_worker.git
 [submodule "udsaes_async_queue"]
 	path = queue

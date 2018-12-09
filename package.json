@@ -48,7 +48,7 @@
   },
   "standard": {
     "ignore": [
-      "/worker/",
+      "/simaas_worker/",
       "/queue/"
     ]
   }
