@@ -49,7 +49,7 @@
   "standard": {
     "ignore": [
       "/simaas_worker/",
-      "/queue/"
+      "/udsaes_async_queue/"
     ]
   }
 }
