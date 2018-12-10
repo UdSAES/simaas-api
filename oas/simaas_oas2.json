@@ -13,6 +13,18 @@
                 "responses": {
                     "501": {"$ref": "#/responses/NotImplemented"}
                 }
+            },
+            "post": {
+                "tags": ["Model Instances"],
+                "summary": "Instantiate a model for a specific system",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {"$ref": "#/parameters/ModelInstance"}
+                ],
+                "responses": {
+                    "501": {"$ref": "#/responses/NotImplemented"}
+                }
             }
         },
         "/model-instances/{uuid}": {
@@ -120,6 +132,18 @@
             "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
             "enum": [ "c02f1f12-966d-4eab-9f21-dcf265ceac71" ]
         },
+        "ModelInstance": {
+            "type": "object",
+            "required": [
+                "model"
+            ],
+            "properties": {
+                "model": {
+                    "type": "string",
+                    "format": "uri"
+                }
+            }
+        },
         "SimulationParameters": {
             "type": "object",
             "required": [
@@ -205,6 +229,15 @@
             "type": "string",
             "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
             "x-example": "c02f1f12-966d-4eab-9f21-dcf265ceac71"
+        },
+        "ModelInstance": {
+            "name": "modelInstance",
+            "in": "body",
+            "description": "A representation of a model instance, used for instantiating a model",
+            "required": true,
+            "schema": {
+                "$ref": "#/definitions/ModelInstance"
+            }
         },
         "ExperimentSetup": {
             "name": "experimentSetup",

@@ -275,6 +275,7 @@ async function init () {
       next()
     })
     app.get('/model-instances', respondWithNotImplemented)
+    app.post('/model-instances', respondWithNotImplemented)
     app.get('/model-instances/:modelInstanceID', respondWithNotImplemented)
     app.delete('/model-instances/:modelInstanceID', respondWithNotImplemented)
     app.get('/experiments', respondWithNotImplemented)

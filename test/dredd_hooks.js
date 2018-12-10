@@ -13,6 +13,7 @@ const delay = require('delay')
 // info: Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json
 const STEPS = {
   GET_MODEL_INSTANCES_501: 'Model Instances > /model-instances > A list of all available model instances > 501 > application/json',
+  POST_MODEL_INSTANCES_501: 'Model Instances > /model-instances > Instantiate a model for a specific system > 501 > application/json',
   GET_MODEL_INSTANCE_UUID_501: 'Model Instances > /model-instances/{uuid} > A specific model instance > 501 > application/json',
   DELETE_MODEL_INSTANCE_UUID_501: 'Model Instances > /model-instances/{uuid} > Delete a specific model instance > 501 > application/json',
   GET_EXPERIMENTS_501: 'Experiments > /experiments > A list of all available experiments > 501 > application/json',
@@ -51,6 +52,10 @@ hooks.beforeEach((transaction, done) => {
 // Activate checking of non-2xx responses
 // https://dredd.org/en/latest/how-to-guides.html?highlight=skip#id13
 hooks.before(STEPS.GET_MODEL_INSTANCES_501, function (transaction) {
+  transaction.skip = false
+})
+
+hooks.before(STEPS.POST_MODEL_INSTANCES_501, function (transaction) {
   transaction.skip = false
 })
 
