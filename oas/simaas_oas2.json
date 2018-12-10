@@ -37,6 +37,14 @@
             ]
         },
         "/experiments": {
+            "get": {
+                "tags": ["Experiments"],
+                "summary": "A list of all available experiments",
+                "produces": ["application/json"],
+                "responses": {
+                    "501": {"$ref": "#/responses/NotImplemented"}
+                }
+            },
             "post": {
                 "tags": ["Experiments"],
                 "summary": "Trigger the simulation of a model instance by defining an experiment",
@@ -58,6 +66,19 @@
                     }
                 }
             }
+        },
+        "/experiments/{uuid}": {
+            "get": {
+                "tags": ["Experiments"],
+                "summary": "A specific experiment",
+                "produces": ["application/json"],
+                "responses": {
+                    "501": {"$ref": "#/responses/NotImplemented"}
+                }
+            },
+            "parameters": [
+                { "$ref": "#/parameters/ExperimentID" }
+            ]
         },
         "/experiments/{uuid}/status": {
             "get": {
