@@ -276,6 +276,7 @@ async function init () {
     })
     app.get('/model-instances', respondWithNotImplemented)
     app.get('/model-instances/:modelInstanceID', respondWithNotImplemented)
+    app.delete('/model-instances/:modelInstanceID', respondWithNotImplemented)
     app.post('/experiments', simulateModelInstance)
     app.get('/experiments/:experimentID/status', getExperimentStatus)
     app.get('/experiments/:experimentID/result', getExperimentResult)

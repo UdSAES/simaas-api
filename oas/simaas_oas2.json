@@ -20,13 +20,21 @@
                 "tags": ["Model Instances"],
                 "summary": "A specific model instance",
                 "produces": ["application/json"],
-                "parameters": [
-                    {"$ref": "#/parameters/ModelInstanceID"}
-                ],
                 "responses": {
                     "501": {"$ref": "#/responses/NotImplemented"}
                 }
-            }
+            },
+            "delete": {
+                "tags": ["Model Instances"],
+                "summary": "Delete a specific model instance",
+                "produces": ["application/json"],
+                "responses": {
+                    "501": {"$ref": "#/responses/NotImplemented"}
+                }
+            },
+            "parameters": [
+                {"$ref": "#/parameters/ModelInstanceID"}
+            ]
         },
         "/experiments": {
             "post": {
