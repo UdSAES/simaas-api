@@ -291,12 +291,18 @@ async function init () {
       if (res.headersSent) {
         return next(err)
       }
-      if (err.code === 'SCHEMA_VALIDATION_FAILED') {
-        log.any('schema validation failed -- request dropped', 401099, err)
-        res.status(400).json({ error: serializeError(err) })
-      } else {
-        log.any('an internal server error occured and was caught at the end of the chain', 501000, err)
-        res.status(500).json({ error: serializeError(err) })
+      switch (err.code) {
+        case 'SCHEMA_VALIDATION_FAILED':
+          log.any('schema validation failed -- request dropped', 401099, err)
+          res.status(400).json({ error: serializeError(err) })
+          break
+        case 'PATTERN':
+          log.any('schema validation failed -- request dropped', 401099, err)
+          res.status(400).json({ error: serializeError(err) })
+          break
+        default:
+          log.any('an internal server error occured and was caught at the end of the chain', 501000, err)
+          res.status(500).json({ error: serializeError(err) })
       }
     })
 
