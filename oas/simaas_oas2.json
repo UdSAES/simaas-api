@@ -88,7 +88,7 @@
         "ModelInstanceID": {
             "description": "The UUID of the model instance to be simulated",
             "type": "string",
-            "pattern": "[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}",
+            "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
             "enum": [ "c02f1f12-966d-4eab-9f21-dcf265ceac71" ]
         },
         "SimulationParameters": {
@@ -174,7 +174,7 @@
             "description": "The UUID of the model instance to be simulated",
             "required": true,
             "type": "string",
-            "pattern": "[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}",
+            "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
             "x-example": "c02f1f12-966d-4eab-9f21-dcf265ceac71"
         },
         "ExperimentSetup": {
@@ -208,7 +208,7 @@
             "description": "A unique identifier for a specific experiment",
             "required": true,
             "type": "string",
-            "pattern": "[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}",
+            "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
             "x-example": "d9a23e72-b01a-4be7-a598-c3f31071da2c"
         }
     },
