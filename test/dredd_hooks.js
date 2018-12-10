@@ -12,11 +12,11 @@ const delay = require('delay')
 // info: Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json
 // info: Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json
 const STEPS = {
-  MODEL_INSTANCES_LIST_501: 'Model Instances > /model-instances > A list of all available model instances > 501 > application/json',
-  MODEL_INSTANCE_501: 'Model Instances > /model-instances/{uuid} > A specific model instance > 501 > application/json',
-  MODEL_INSTANCES_SIMULATE_SUCCESS: 'Experiments > /experiments > Trigger the simulation of a model instance by defining an experiment > 202',
-  EXPERIMENT_STATUS_SUCCESS: 'Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json',
-  EXPERIMENT_RESULT_SUCCESS: 'Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json'
+  GET_MODEL_INSTANCES_501: 'Model Instances > /model-instances > A list of all available model instances > 501 > application/json',
+  GET_MODEL_INSTANCE_UUID_501: 'Model Instances > /model-instances/{uuid} > A specific model instance > 501 > application/json',
+  POST_EXPERIMENTS_202: 'Experiments > /experiments > Trigger the simulation of a model instance by defining an experiment > 202',
+  GET_EXPERIMENT_UUID_STATUS_200: 'Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json',
+  GET_EXPERIMENT_UUID_RESULT_200: 'Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json'
 }
 
 // Create response stash for passing data between test steps
@@ -47,16 +47,16 @@ hooks.beforeEach((transaction, done) => {
 
 // Activate checking of non-2xx responses
 // https://dredd.org/en/latest/how-to-guides.html?highlight=skip#id13
-hooks.before(STEPS.MODEL_INSTANCES_LIST_501, function (transaction) {
+hooks.before(STEPS.GET_MODEL_INSTANCES_501, function (transaction) {
   transaction.skip = false
 })
 
-hooks.before(STEPS.MODEL_INSTANCE_501, function (transaction) {
+hooks.before(STEPS.GET_MODEL_INSTANCE_UUID_501, function (transaction) {
   transaction.skip = false
 })
 
 // Retrieve UUID of newly created experiment
-hooks.after(STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS, async function (transaction, done) {
+hooks.after(STEPS.POST_EXPERIMENTS_202, async function (transaction, done) {
   await delay(3000) // give the simulation 3 seconds to finish
 
   responseStash[transaction.name] = transaction.real // HTTP response to stash
@@ -64,9 +64,9 @@ hooks.after(STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS, async function (transaction,
 })
 
 // Use UUID for checking /experiments/{uuid}/status
-hooks.before(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
-  if (responseStash[STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS].statusCode === 202) {
-    const experimentStatusURL = url.parse(responseStash[STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS].headers.location)
+hooks.before(STEPS.GET_EXPERIMENT_UUID_STATUS_200, function (transaction) {
+  if (responseStash[STEPS.POST_EXPERIMENTS_202].statusCode === 202) {
+    const experimentStatusURL = url.parse(responseStash[STEPS.POST_EXPERIMENTS_202].headers.location)
     const transactionID = _.replace(
       transaction.id,
       transaction.protocol + '//' + transaction.host + ':' + transaction.port + transaction.fullPath,
@@ -80,11 +80,11 @@ hooks.before(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
   }
 })
 
-hooks.after(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
+hooks.after(STEPS.GET_EXPERIMENT_UUID_STATUS_200, function (transaction) {
   if (transaction.skip === false) {
     const status = JSON.parse(transaction.real.body).status
     if (status !== 'DONE') {
-      transaction.fail = 'Fail ' + STEPS.EXPERIMENT_RESULT_SUCCESS + ' because status is not "DONE"'
+      transaction.fail = 'Fail ' + STEPS.GET_EXPERIMENT_UUID_RESULT_200 + ' because status is not "DONE"'
     } else {
       responseStash[transaction.name] = transaction.real // HTTP response to stash
     }
@@ -92,9 +92,9 @@ hooks.after(STEPS.EXPERIMENT_STATUS_SUCCESS, function (transaction) {
 })
 
 // Use UUID for checking /experiments/{uuid}/result
-hooks.before(STEPS.EXPERIMENT_RESULT_SUCCESS, function (transaction) {
-  if (responseStash[STEPS.EXPERIMENT_STATUS_SUCCESS] !== undefined) {
-    const experimentStatus = JSON.parse(responseStash[STEPS.EXPERIMENT_STATUS_SUCCESS].body)
+hooks.before(STEPS.GET_EXPERIMENT_UUID_RESULT_200, function (transaction) {
+  if (responseStash[STEPS.GET_EXPERIMENT_UUID_STATUS_200] !== undefined) {
+    const experimentStatus = JSON.parse(responseStash[STEPS.GET_EXPERIMENT_UUID_STATUS_200].body)
     if ('linkToResult' in experimentStatus) {
       const experimentResultURL = url.parse(experimentStatus['linkToResult'])
       const transactionID = _.replace(
@@ -106,7 +106,7 @@ hooks.before(STEPS.EXPERIMENT_RESULT_SUCCESS, function (transaction) {
       transaction.fullPath = experimentResultURL.pathname
     } else {
       // Correct transaction.id, but still fail the test
-      const experimentStatusURL = url.parse(responseStash[STEPS.MODEL_INSTANCES_SIMULATE_SUCCESS].headers.location)
+      const experimentStatusURL = url.parse(responseStash[STEPS.POST_EXPERIMENTS_202].headers.location)
       const transactionID = _.replace(
         transaction.id,
         transaction.fullPath,
@@ -117,7 +117,7 @@ hooks.before(STEPS.EXPERIMENT_RESULT_SUCCESS, function (transaction) {
       transaction.fullPath = experimentStatusURL.pathname
 
       // transaction.skip = true
-      transaction.fail = 'Fail ' + STEPS.EXPERIMENT_RESULT_SUCCESS + ' because property `linkToResult` did not exist'
+      transaction.fail = 'Fail ' + STEPS.GET_EXPERIMENT_UUID_RESULT_200 + ' because property `linkToResult` did not exist'
     }
   } else {
     transaction.skip = true
