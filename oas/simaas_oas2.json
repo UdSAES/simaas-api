@@ -192,7 +192,7 @@
                 {
                     "allOf": [
                         {
-                            "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/master/schemata/timeseries/schema_v1.2.0-oas2.json#/Timeseries"
+                            "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
                         },
                         {
                             "required": [
@@ -212,7 +212,7 @@
                 {
                     "allOf":[
                         {
-                            "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/master/schemata/timeseries/schema_v1.2.0-oas2.json#/Timeseries"
+                            "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
                         },
                         {
                             "required": [ "label" ]
@@ -288,7 +288,7 @@
     },
     "responses": {
         "NotImplemented": {
-            "description": "The API's response to requests that cannot be answered yet, format inspired by [RFC7807](https://tools.ietf.org/html/rfc7807) (descriptions schema copied verbatim)",
+            "description": "The API's response to requests that cannot be answered yet (format inspired by [RFC7807](https://tools.ietf.org/html/rfc7807) -- descriptions in schema copied verbatim)",
             "schema": {
                 "type": "object",
                 "required": [
@@ -335,12 +335,13 @@
                     },
                     "linkToResult": {
                         "type": "string",
+                        "format": "uri",
                         "description": "The link to the initially requested resource (the simulation result) that is now available. This property only exists if the status has reached 'DONE' and the result is indeed available."
                     }
                 }
             },
             "examples": {
-                "application/json": { "status": "DONE", "linkToResult": "https://host.tld/experiments/uuid/result"}
+                "application/json": { "status": "DONE", "linkToResult": "http://example.com/experiments/d9a23e72-b01a-4be7-a598-c3f31071da2c/result"}
             }
         },
         "SimulationResult": {
@@ -358,7 +359,7 @@
                     "result": {
                         "type": "array",
                         "items": {
-                            "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/master/schemata/timeseries/schema_v1.2.0-oas2.json#/Timeseries"
+                            "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
                         }
                     }
                 }
