@@ -202,8 +202,7 @@
                         {
                             "properties": {
                                 "label": {
-                                    "type": "string",
-                                    "enum": [ "SaaSu" ]
+                                    "pattern": "^SaaSu$"
                                 }
                             }
                         }
@@ -220,8 +219,7 @@
                         {
                             "properties": {
                                 "label": {
-                                    "type":"string",
-                                    "enum": [ "SaaSu1" ]
+                                    "pattern": "^SaaSu1$"
                                 }
                             }
                         }
