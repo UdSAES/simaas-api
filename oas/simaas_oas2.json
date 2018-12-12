@@ -127,6 +127,16 @@
             "parameters": [
                 { "$ref": "#/parameters/ExperimentID" }
             ]
+        },
+        "/notfound": {
+            "get": {
+                "tags": ["Unsuccessful Operations"],
+                "summary": "A resource that does not exist",
+                "produces": ["application/json"],
+                "responses": {
+                    "404": { "$ref": "#/responses/NotFound" }
+                }
+            }
         }
     },
     "definitions": {
@@ -372,6 +382,17 @@
         }
     },
     "responses": {
+        "NotFound": {
+            "description": "The requested resource was not found on this server",
+            "schema": { "$ref": "#/definitions/ProblemDetail" },
+            "examples": {
+                "application/json": {
+                    "title": "Not Found",
+                    "status": 404,
+                    "detail": "The requested resource was not found on this server"
+                }
+            }
+        },
         "SchemaValidationFailed": {
             "description": "The response for requests that were dropped because they were syntactically invalid and failed schema validation",
             "schema": { "$ref": "#/definitions/ErrorInstance" },
@@ -451,6 +472,10 @@
         {
             "name": "Experiments",
             "description": "An experiment denotes the execution of a model instance for given boundary conditions and simulation settings; in other words, a specific simulation."
+        },
+        {
+            "name": "Unsuccessful Operations",
+            "description": "Paths/operations using this tag only exist for demonstrating the API's responses to malformed requests."
         }
     ]
 }

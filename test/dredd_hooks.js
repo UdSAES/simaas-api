@@ -21,7 +21,8 @@ const STEPS = {
   POST_EXPERIMENTS_202: 'Experiments > /experiments > Trigger the simulation of a model instance by defining an experiment > 202 > application/json',
   GET_EXPERIMENT_UUID_501: 'Experiments > /experiments/{uuid} > A specific experiment > 501 > application/json',
   GET_EXPERIMENT_UUID_STATUS_200: 'Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json',
-  GET_EXPERIMENT_UUID_RESULT_200: 'Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json'
+  GET_EXPERIMENT_UUID_RESULT_200: 'Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json',
+  GET_NOT_FOUND_404: 'Unsuccessful Operations > /notfound > A resource that does not exist > 404 > application/json'
 }
 
 // Create response stash for passing data between test steps
@@ -83,6 +84,9 @@ hooks.before(STEPS.GET_EXPERIMENT_UUID_501, function (transaction) {
   transaction.skip = false
 })
 
+hooks.before(STEPS.GET_NOT_FOUND_404, function (transaction) {
+  transaction.skip = false
+})
 
 // Modify Dredd-requests to ensure their correctness ///////////////////////////
 // Retrieve UUID of newly created experiment

@@ -286,7 +286,9 @@ async function init () {
 
     app.use(function (req, res, next) {
       res.status(404).json({
-        msg: 'Not Found'
+        'title': 'Not Found',
+        'status': 404,
+        'detail': 'The requested resource was not found on this server'
       })
     }) // http://expressjs.com/en/starter/faq.html
 
