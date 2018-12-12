@@ -23,12 +23,6 @@ const dreddConfig = {
       './test/dredd_hooks.js'
     ],
     sorted: true,
-    reporter: [
-      'html'
-    ],
-    output: [
-      './test/dredd_report.html'
-    ],
     level: 'verbose',
     silence: false,
     color: true
