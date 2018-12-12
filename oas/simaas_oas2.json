@@ -127,6 +127,35 @@
         }
     },
     "definitions": {
+        "ErrorInstance": {
+            "type": "object",
+            "required": [ "error" ],
+            "properties": {
+                "error": {
+                    "type": "object",
+                    "description": "A serialization of an instance of the [Node.js-class](https://nodejs.org/dist/latest-v10.x/docs/api/errors.html#errors_errors) `Error`",
+                    "required": [
+                        "code",
+                        "message",
+                        "stack"
+                    ],
+                    "properties": {
+                        "code": {
+                            "type": "string",
+                            "description": "A string label for identifying the kind of error"
+                        },
+                        "message": {
+                            "type": "string",
+                            "description": "A description of the specific error instance"
+                        },
+                        "stack": {
+                            "type": "string",
+                            "description": "The stack trace describing the point in the code at which the error occured"
+                        }
+                    }
+                }
+            }
+        },
         "ModelInstanceID": {
             "description": "The UUID of the model instance to be simulated",
             "type": "string",
@@ -320,39 +349,11 @@
     },
     "responses": {
         "SchemaValidationFailed": {
-            "description": "The response for requests that were dropped because they did not match the schema",
-            "schema": {
-                "type": "object",
-                "required": [ "error" ],
-                "properties": {
-                    "error": {
-                        "type": "object",
-                        "required": [
-                            "name",
-                            "message",
-                            "stack"
-                        ],
-                        "properties": {
-                            "name": {
-                                "type": "string"
-                            },
-                            "message": {
-                                "type": "string"
-                            },
-                            "stack": {
-                                "type": "string"
-                            },
-                            "code": {
-                                "type": "string",
-                                "enum": [
-                                    "SCHEMA_VALIDATION_FAILED",
-                                    "PATTERN"
-                                ]
-                            }
-                        }
-                    }
+            "description": "The response for requests that were dropped because they were syntactically invalid and failed schema validation",
+            "schema": { "$ref": "#/definitions/ErrorInstance" },
+            "examples": {
+                "application/json": {"error":{"code":"PATTERN","failedValidation":true,"path":["paths","/model-instances/{uuid}","parameters","0"],"paramName":"uuid","name":"Error","message":"Request validation failed: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$","stack":"Error: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$\n    at throwErrorWithCode [...]"}}
                 }
-            }
         },
         "NotImplemented": {
             "description": "The API's response to requests that cannot be answered yet (format inspired by [RFC7807](https://tools.ietf.org/html/rfc7807) -- descriptions in schema copied verbatim)",
