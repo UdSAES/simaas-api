@@ -23,7 +23,8 @@
                     {"$ref": "#/parameters/ModelInstance"}
                 ],
                 "responses": {
-                    "501": {"$ref": "#/responses/NotImplemented"}
+                    "501": {"$ref": "#/responses/NotImplemented"},
+                    "400": { "$ref": "#/responses/SchemaValidationFailed" }
                 }
             }
         },
@@ -42,7 +43,8 @@
                 "summary": "Delete a specific model instance",
                 "produces": ["application/json"],
                 "responses": {
-                    "501": {"$ref": "#/responses/NotImplemented"}
+                    "501": {"$ref": "#/responses/NotImplemented"},
+                    "400": { "$ref": "#/responses/SchemaValidationFailed" }
                 }
             },
             "parameters": [
@@ -62,6 +64,7 @@
                 "tags": ["Experiments"],
                 "summary": "Trigger the simulation of a model instance by defining an experiment",
                 "consumes": [ "application/json" ],
+                "produces": [ "application/json" ],
                 "parameters": [
                     {
                         "$ref": "#/parameters/ExperimentSetup"
@@ -76,7 +79,8 @@
                                 "type": "string"
                             }
                         }
-                    }
+                    },
+                    "400": { "$ref": "#/responses/SchemaValidationFailed" }
                 }
             }
         },
@@ -86,7 +90,8 @@
                 "summary": "A specific experiment",
                 "produces": ["application/json"],
                 "responses": {
-                    "501": {"$ref": "#/responses/NotImplemented"}
+                    "501": {"$ref": "#/responses/NotImplemented"},
+                    "400": { "$ref": "#/responses/SchemaValidationFailed" }
                 }
             },
             "parameters": [
@@ -100,9 +105,8 @@
                 "consumes": [ "application/json" ],
                 "produces": [ "application/json" ],
                 "responses": {
-                    "200": {
-                        "$ref": "#/responses/ExperimentStatus"
-                    }
+                    "200": { "$ref": "#/responses/ExperimentStatus" },
+                    "400": { "$ref": "#/responses/SchemaValidationFailed" }
                 }
             },
             "parameters": [
@@ -116,9 +120,8 @@
                 "consumes": [ "application/json" ],
                 "produces": [ "application/json" ],
                 "responses": {
-                    "200": {
-                        "$ref": "#/responses/SimulationResult"
-                    }
+                    "200": { "$ref": "#/responses/SimulationResult" },
+                    "400": { "$ref": "#/responses/SchemaValidationFailed" }
                 }
             },
             "parameters": [
