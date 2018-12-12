@@ -154,6 +154,39 @@
                         }
                     ]
                 }
+            },
+            "example": {
+                "model": "http://example.com/models/d8b032d4-44a0-4bc5-9ded-c73703f3e5fc",
+                "parameters": {
+                    "latitude": {
+                        "unit": "deg",
+                        "value": 49.2553
+                    },
+                    "longitude": {
+                        "unit": "deg",
+                        "value": 7.0405
+                    },
+                    "elevation": {
+                        "unit": "m",
+                        "value": 273
+                    },
+                    "panelArea": {
+                        "unit": "m2",
+                        "value": 2
+                    },
+                    "panelTilt": {
+                        "unit": "deg",
+                        "value": 30
+                    },
+                    "panelAzimuth": {
+                        "unit": "deg",
+                        "value": 0
+                    },
+                    "T_cell_ref": {
+                        "unit": "K",
+                        "value": 298.15
+                    }
+                }
             }
         },
         "SimulationParameters": {
