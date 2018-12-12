@@ -39,7 +39,7 @@
                             }
                         }
                     }
-                ],
+                ]
             },
             "panelTilt": {
                 "type": "object",
@@ -62,7 +62,7 @@
                             }
                         }
                     }
-                ],
+                ]
             },
             "panelAzimuth": {
                 "type": "object",
@@ -85,7 +85,7 @@
                             }
                         }
                     }
-                ],
+                ]
             },
             "T_cell_ref": {
                 "type": "object",
@@ -107,7 +107,7 @@
                             }
                         }
                     }
-                ],
+                ]
             },
             "plantEfficiency": {
                 "type": "object",

@@ -150,7 +150,7 @@
                             "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/location/schema_v0.1.0_oas2.json#/Location"
                         },
                         {
-                            "$ref": "./oas/schema_pv_plant_v0.1.0_oas2.json#/PVplant"
+                            "$ref": "./oas/schema_pv_plant_oas2.json#/PVplant"
                         }
                     ]
                 }
