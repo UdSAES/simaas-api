@@ -23,12 +23,12 @@ ENVVAR                          | Description                                   
 :wavy_dash: Worker              |                                                     |
 `QUEUE_ORIGIN`\*                | __The origin of the task queue__                    |
 `MODEL_BASE_PATH`\*             | __The path to the model instances__ (stored as FMU) |
-`WAIT_TIME`\*                   | Cycle time for polling the existence of new jobs    | `50 ms`
+`WAIT_TIME`                     | Cycle time for polling the existence of new jobs    | `50 ms`
 `ALIVE_EVENT_WAIT_TIME`         | The cycle time of the heartbeat (worker)            | `3600 s`
 
 ### Using Docker
 ```bash
-# Create flat version of OAS to ensure that container can run without web access
+# Create flat version of OAS to ensure that the container can run without web access
 npm run api-resolve
 
 # Build image

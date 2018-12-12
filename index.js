@@ -316,6 +316,7 @@ async function init () {
       log.any('now listening on port ' + LISTEN_PORT, 300040)
     })
 
+    // XXX is this even functional?
     app.on('error', function (error) {
       log.any('cannot bind to listening port ' + LISTEN_PORT, 600030, error)
       process.exit(1)

@@ -1,6 +1,10 @@
 # Version History
 Details about each release _and_ the features being worked on in reverse order (most recent first).
 
+## v0.4.0
+### User Stories
+* [ ] As a user, I want to add new instances of the supported models/model types
+
 ### To Taiga
 * Hinzufügen Modellinstanzen implementieren
 * Lesen Definition Experiment implementieren
@@ -16,6 +20,8 @@ Details about each release _and_ the features being worked on in reverse order (
 * [ ] As a user, I want to retrieve a representation of a specific model instance
 * [x] As a user, I want to trigger simulations of the available model instances
 * [x] As a user, I want to retrieve the results of a simulation
+* [x] As a user, I want to get `400 Bad Request`-responses if send malformed requests
+* [x] As a user, I want to get `404 Not Found`-responses if I request sth. non-existent
 
 ### Endpoints
 * [ ] `GET    /model-instances`
@@ -31,12 +37,14 @@ Details about each release _and_ the features being worked on in reverse order (
 * [x] `ExperimentSetup`
 * [x] `ExperimentStatus`
 * [x] `ExperimentResult`
-* [ ] `NotImplemented`
+* [x] `NotImplemented`
 
 ### Testing Strategy
 * Linting of OAS using Speccy (enforced in CI/CD)
 * Linting of source code using JavaScript Standard Style (enforced in CI/CD)
 * Verification of intended behaviour in case all goes well using Dredd (enforced in CI/CD)
+* Verify that microservice returns `4xx` in case schema and/or pattern validation fails
+* Verify that microservice returns `404` for non-existent resources
 * Verification of everything else _not_ automated
 
 ### Internal Todos

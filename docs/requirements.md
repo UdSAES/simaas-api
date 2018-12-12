@@ -90,6 +90,8 @@ Requirements marked in __bold__ are to be realized sooner rather than later; tho
 * __The API MUST use identifiers that are guaranteed to be unique__
 * __The microservice MUST validate all requests__
     * __The OAS MUST define all inputs via regular expressions__
+    * __The OAS MUST provide at least one response schema__
+    * The OAS SHOULD provide schemata of responses for all known errors
 * The microservice MUST implement a specified strategy for forgetting old simulation results
 * The microservice SHOULD support `x-request-id` headers and include them in all relevant logs
 * The microservice SHOULD implement a specified strategy against (D)DOS (aka "choking to death")
