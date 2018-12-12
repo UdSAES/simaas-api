@@ -38,7 +38,7 @@ const main = async function () {
       console.log('"err" !== null: ', err)
       process.exit(1)
     } else {
-      if (stats.failures !== 0) {
+      if ((stats.failures + stats.errors) !== 0) {
         console.log('Implementation does not match OAS -- FAILURE')
         process.exit(1)
       }
