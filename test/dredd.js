@@ -44,7 +44,11 @@ const main = async function () {
       console.log('"err" !== null: ', err)
       process.exit(1)
     } else {
-      console.log(stats)
+      if (stats.failures !== 0) {
+        console.log('Implementation does not match OAS -- FAILURE')
+        process.exit(1)
+      }
+      console.log('Ran Dredd successfully!')
     }
   })
 }
