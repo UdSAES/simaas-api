@@ -33,7 +33,8 @@
                 "summary": "A specific model instance",
                 "produces": ["application/json"],
                 "responses": {
-                    "501": {"$ref": "#/responses/NotImplemented"}
+                    "501": {"$ref": "#/responses/NotImplemented"},
+                    "400": { "$ref": "#/responses/SchemaValidationFailed" }
                 }
             },
             "delete": {
@@ -318,6 +319,41 @@
         }
     },
     "responses": {
+        "SchemaValidationFailed": {
+            "description": "The response for requests that were dropped because they did not match the schema",
+            "schema": {
+                "type": "object",
+                "required": [ "error" ],
+                "properties": {
+                    "error": {
+                        "type": "object",
+                        "required": [
+                            "name",
+                            "message",
+                            "stack"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "message": {
+                                "type": "string"
+                            },
+                            "stack": {
+                                "type": "string"
+                            },
+                            "code": {
+                                "type": "string",
+                                "enum": [
+                                    "SCHEMA_VALIDATION_FAILED",
+                                    "PATTERN"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "NotImplemented": {
             "description": "The API's response to requests that cannot be answered yet (format inspired by [RFC7807](https://tools.ietf.org/html/rfc7807) -- descriptions in schema copied verbatim)",
             "schema": {
