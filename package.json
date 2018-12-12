@@ -10,7 +10,8 @@
     "api-resolve": "node ./scripts/api-resolve.js",
     "api-2oas3": "npm run api-resolve && ./node_modules/swagger2openapi/swagger2openapi.js -o ./oas/simaas_oas3_flat.json ./oas/simaas_oas2_flat.json",
     "api-lint": "npm run api-2oas3 && ./node_modules/speccy/speccy.js lint --rules ./test/speccy_rules.json ./oas/simaas_oas3_flat.json",
-    "dredd": "npm run api-resolve && node ./test/dredd.js"
+    "dredd": "npm run api-resolve && node ./test/dredd.js",
+    "test-all": "npm run lint && npm run api-lint && npm run dredd"
   },
   "repository": {
     "type": "git",

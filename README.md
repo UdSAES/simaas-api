@@ -11,7 +11,7 @@ The microservice can be configured using the environment variables described bel
 
 ENVVAR                          | Description                                         | Default Value
 ---                             | ---                                                 | ---     
-:wavy_dash: API                 |                                                     | 
+:wavy_dash: API                 |                                                     |
 `QUEUE_ORIGIN`\*                | __The origin of the task queue__                    |
 `LISTEN_PORT`\*                 | __The port on which the service listens__           |
 `ALIVE_EVENT_WAIT_TIME`         | The cycle time of the heartbeat (API)               | `3600 s`     
@@ -20,7 +20,7 @@ ENVVAR                          | Description                                   
 :wavy_dash: Queue               |                                                     |
 `LISTEN_PORT`\*                 | __The port on which the queue listens__             |
 `ALIVE_EVENT_WAIT_TIME`         | The cycle time of the heartbeat (queue)             | `3600 s`
-:wavy_dash: Worker              |                                                     | 
+:wavy_dash: Worker              |                                                     |
 `QUEUE_ORIGIN`\*                | __The origin of the task queue__                    |
 `MODEL_BASE_PATH`\*             | __The path to the model instances__ (stored as FMU) |
 `WAIT_TIME`\*                   | Cycle time for polling the existence of new jobs    | `50 ms`
@@ -101,7 +101,7 @@ The SIMaaS-microservice exposes a REST-based HTTP API, which is formally describ
 Consult the description of the API, located at [`./oas/simaas_oas2.json`](./oas/simaas_oas2.json), for details of how to interact with a service instance. A website visualizing the specification using [ReDoc](https://github.com/Rebilly/ReDoc) can be started locally by executing `npm run api-serve` from a shell (iff development dependencies are installed, see section [Development](#development)). Alternatively, view it online in the [Swagger Editor](https://editor.swagger.io/#?url=https://raw.githubusercontent.com/UdSAES/simaas_api/master/oas/simaas_oas2.json) (link broken unless repository is made public as `?url=..`-parameter cannot be resolved).
 
 ## Development
-For the developer's convenience, a series of [npm package scripts](https://docs.npmjs.com/cli/run-script) are defined for facilitating development. Ensure that the development dependencies are installed and then invoke the scripts using `npm run <cmd> --silent`.
+For the developer's convenience, a series of [npm package scripts](https://docs.npmjs.com/cli/run-script) are defined for facilitating development. Ensure that the development dependencies are installed and then invoke the scripts using `npm run <cmd> --silent`. The commands marked with an asterisk\* require `SIMAAS_INSTANCE` to be set to the full URL of a running service instance!
 
 Command       | Description
 ---           | ---
@@ -111,4 +111,5 @@ Command       | Description
 `api-resolve` | Dereference all `$ref` instructions in the OAS (version 2 only, resulting file excluded from git!)
 `api-2oas3`   | Convert the OAS from version 2 to version 3 (resolves `$ref`, resulting file excluded from git!)
 `api-lint`    | Lint generated OAS3 using [Speccy](https://speccy.io/) and a [custom ruleset](https://speccy.io/rules/2-custom-rulesets)
-`dredd`       | Verify implementation against OAS using [Dredd](https://github.com/apiaryio/dredd) (requires `SIMAAS_INSTANCE` to be set to the full URL of a running service instance!)
+`dredd`\*     | Verify implementation against OAS using [Dredd](https://github.com/apiaryio/dredd)
+`test-all`\*  | Run `lint`, `api-lint` and `dredd`; fail if any of them fails
