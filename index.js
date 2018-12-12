@@ -155,7 +155,7 @@ async function simulateModelInstance (req, res) {
       }
     })
   } catch (error) {
-    res.status(error.statusCode).send({ 'error': error.error.err })
+    res.status(error.statusCode).json({ 'error': error.error.err })
     return
   }
 
@@ -167,7 +167,7 @@ async function simulateModelInstance (req, res) {
   const sourceLocationHeader = _.get(postTaskResult, ['headers', 'location'])
   const u = new URL(sourceLocationHeader, 'http://127.0.0.1')
 
-  res.status(202).location(origin + u.pathname.replace('/tasks/', '/experiments/')).send()
+  res.status(202).location(origin + u.pathname.replace('/tasks/', '/experiments/')).json()
 }
 
 async function getExperimentStatus (req, res) {
@@ -186,7 +186,7 @@ async function getExperimentStatus (req, res) {
       resolveWithFullResponse: true
     })
   } catch (error) {
-    res.status(error.statusCode).send({ 'error': error.error.err })
+    res.status(error.statusCode).json({ 'error': error.error.err })
     return
   }
 
@@ -205,7 +205,7 @@ async function getExperimentStatus (req, res) {
     resultBody.linkToResult = targetLinkToResult
   }
 
-  res.status(200).send(resultBody)
+  res.status(200).json(resultBody)
 }
 
 async function getExperimentResult (req, res) {
@@ -220,7 +220,7 @@ async function getExperimentResult (req, res) {
       resolveWithFullResponse: true
     })
   } catch (error) {
-    res.status(error.statusCode).send({ 'error': error.error.err })
+    res.status(error.statusCode).json({ 'error': error.error.err })
     return
   }
 
@@ -233,7 +233,7 @@ async function getExperimentResult (req, res) {
   delete resultBody.id
   delete resultBody.err
 
-  res.status(200).send(resultBody)
+  res.status(200).json(resultBody)
 }
 
 // Define main program
