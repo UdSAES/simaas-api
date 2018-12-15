@@ -13,6 +13,7 @@
     },
     "PVplant": {
         "type": "object",
+        "description": "The parameters of the model instance representing a specific solar power plant",
         "required": [
             "panelArea",
             "panelTilt",

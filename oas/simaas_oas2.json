@@ -291,43 +291,28 @@
             "items": [
                 {
                     "allOf": [
-                        {
-                            "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
-                        },
-                        {
-                            "required": [
-                                "label"
-                            ]
-                        },
-                        {
-                            "properties": {
-                                "label": {
-                                    "pattern": "^SaaSu$"
-                                }
-                            }
-                        }
+                        { "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries" },
+                        { "required": [ "label" ] },
+                        { "properties": { "label": { "pattern": "^temperature$" } } }
                     ]
                 },
                 {
                     "allOf":[
-                        {
-                            "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
-                        },
-                        {
-                            "required": [ "label" ]
-                        },
-                        {
-                            "properties": {
-                                "label": {
-                                    "pattern": "^SaaSu1$"
-                                }
-                            }
-                        }
+                        { "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries" },
+                        { "required": [ "label" ] },
+                        { "properties": { "label": { "pattern": "^directHorizontalIrradiance$" } } }
+                    ]
+                },
+                {
+                    "allOf":[
+                        { "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries" },
+                        { "required": [ "label" ] },
+                        { "properties": { "label": { "pattern": "^diffuseHorizontalIrradiance$" } } }
                     ]
                 }
             ],
-            "minItems":2,
-            "maxItems":2
+            "minItems":3,
+            "maxItems":3
         }
     },
     "parameters": {
@@ -371,7 +356,7 @@
                         "$ref": "#/definitions/InputTimeseries"
                     }
                 },
-                "example": {"modelInstanceID":"c02f1f12-966d-4eab-9f21-dcf265ceac71","simulationParameters":{"startTime":1526558400000,"stopTime":1526569200000,"outputInterval":900},"inputTimeseries":[{"label":"SaaSu","unit":"W/m2","timeseries":[{"timestamp":1526558400000,"value":555.125},{"timestamp":1526559300000,"value":551.1875},{"timestamp":1526560200000,"value":568.28125},{"timestamp":1526561100000,"value":628.59375},{"timestamp":1526562000000,"value":631.875},{"timestamp":1526562900000,"value":607.7968750000724},{"timestamp":1526563800000,"value":593.4218750190755},{"timestamp":1526564700000,"value":559.8906250641351},{"timestamp":1526565600000,"value":515.2031250833663},{"timestamp":1526566500000,"value":458.42187504998253},{"timestamp":1526567400000,"value":401.109375043708},{"timestamp":1526568300000,"value":360.6250000271315},{"timestamp":1526569200000,"value":338.6562500432486}]},{"label":"SaaSu1","unit":"W/m2","timeseries":[{"timestamp":1526558400000,"value":238.53135991096497},{"timestamp":1526559300000,"value":238.43617391586304},{"timestamp":1526560200000,"value":220.99572658538818},{"timestamp":1526561100000,"value":171.54822373390198},{"timestamp":1526562000000,"value":158.77959752082825},{"timestamp":1526562900000,"value":161.28478050231934},{"timestamp":1526563800000,"value":157.22860145568848},{"timestamp":1526564700000,"value":164.33479499816895},{"timestamp":1526565600000,"value":176.16250228881836},{"timestamp":1526566500000,"value":193.0199851989746},{"timestamp":1526567400000,"value":207.74025344848633},{"timestamp":1526568300000,"value":210.68580627441406},{"timestamp":1526569200000,"value":201.1289520263672}]}]}
+                "example": {"modelInstanceID":"c02f1f12-966d-4eab-9f21-dcf265ceac71","simulationParameters":{"startTime":1542326400000,"stopTime":1542412800000,"outputInterval":3600},"inputTimeseries":[{"label":"temperature","unit":"K","timeseries":[{"timestamp":0,"value":278.19512939453125},{"timestamp":3600,"value":278.215576171875},{"timestamp":7200,"value":278.0497741699219},{"timestamp":10800,"value":278.00384521484375},{"timestamp":14400,"value":278.2565612792969},{"timestamp":18000,"value":278.49554443359375},{"timestamp":21600,"value":278.43145751953125},{"timestamp":25200,"value":278.3800964355469},{"timestamp":28800,"value":278.0195617675781},{"timestamp":32400,"value":277.91796875},{"timestamp":36000,"value":278.8022766113281},{"timestamp":39600,"value":279.6802062988281},{"timestamp":43200,"value":280.3817138671875},{"timestamp":46800,"value":280.2247009277344},{"timestamp":50400,"value":280.041015625},{"timestamp":54000,"value":278.9366149902344},{"timestamp":57600,"value":277.5219421386719},{"timestamp":61200,"value":276.64959716796875},{"timestamp":64800,"value":275.8999938964844},{"timestamp":68400,"value":275.3359069824219},{"timestamp":72000,"value":275.12396240234375},{"timestamp":75600,"value":274.9482421875},{"timestamp":79200,"value":274.85357666015625},{"timestamp":82800,"value":274.45611572265625},{"timestamp":86400,"value":274.0621337890625}]},{"label":"directHorizontalIrradiance","unit":"W/m²","timeseries":[{"timestamp":0,"value":0},{"timestamp":3600,"value":0},{"timestamp":7200,"value":0},{"timestamp":10800,"value":0},{"timestamp":14400,"value":0},{"timestamp":18000,"value":0},{"timestamp":21600,"value":0},{"timestamp":25200,"value":0},{"timestamp":28800,"value":0},{"timestamp":32400,"value":0.26611328125},{"timestamp":36000,"value":3.4267578125},{"timestamp":39600,"value":120.26953125025734},{"timestamp":43200,"value":189.79492195235423},{"timestamp":46800,"value":131.05468808034462},{"timestamp":50400,"value":92.70703140548973},{"timestamp":54000,"value":22.308593750018108},{"timestamp":57600,"value":-0.04687499998499536},{"timestamp":61200,"value":0.005859375012417635},{"timestamp":64800,"value":0.015625000011382832},{"timestamp":68400,"value":0.09765625001034803},{"timestamp":72000,"value":-0.031249999990686773},{"timestamp":75600,"value":-0.021484374991204175},{"timestamp":79200,"value":-0.11328124999223897},{"timestamp":82800,"value":-0.03710937499223898},{"timestamp":86400,"value":-0.014648437493273781}]},{"label":"diffuseHorizontalIrradiance","unit":"W/m²","timeseries":[{"timestamp":0,"value":0},{"timestamp":3600,"value":0},{"timestamp":7200,"value":0},{"timestamp":10800,"value":0},{"timestamp":14400,"value":0},{"timestamp":18000,"value":0},{"timestamp":21600,"value":0},{"timestamp":25200,"value":1.3330078125},{"timestamp":28800,"value":32.233642578125},{"timestamp":32400,"value":88.14252650737762},{"timestamp":36000,"value":135.14795458316803},{"timestamp":39600,"value":146.50878405570984},{"timestamp":43200,"value":105.37438011169434},{"timestamp":46800,"value":109.1113030910492},{"timestamp":50400,"value":76.60409712791443},{"timestamp":54000,"value":45.17407441139221},{"timestamp":57600,"value":-0.022092819213867188},{"timestamp":61200,"value":-0.05955910682678223},{"timestamp":64800,"value":0.0907127857208252},{"timestamp":68400,"value":-0.024605274200439453},{"timestamp":72000,"value":0.018280982971191406},{"timestamp":75600,"value":-0.04622960090637207},{"timestamp":79200,"value":0.010348081588745117},{"timestamp":82800,"value":0.11771965026855469},{"timestamp":86400,"value":0.028800249099731445}]}]}
             }
         },
         "ExperimentID": {
