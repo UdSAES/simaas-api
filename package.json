@@ -25,7 +25,6 @@
   "contributors": [
     "Florian Wagner <florian.wagner@aut.uni-saarland.de>"
   ],
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/UdSAES/simaas_api/issues"
   },

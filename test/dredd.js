@@ -7,6 +7,10 @@ const Dredd = require('dredd')
 
 // Load configuration
 const SERVER_URL = process.env.SIMAAS_INSTANCE
+if (!SERVER_URL) {
+  console.log(`SERVER_URL was "${SERVER_URL}", but must be the URL to a running instance`)
+  process.exit(1)
+}
 
 // Accept self-signed certificates
 // https://github.com/apiaryio/dredd/issues/913#issuecomment-381419699

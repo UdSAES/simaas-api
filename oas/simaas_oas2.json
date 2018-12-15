@@ -132,6 +132,7 @@
                 "tags": ["Unsuccessful Operations"],
                 "summary": "A resource that does not exist",
                 "produces": [ "application/problem+json" ],
+                "deprecated": true,
                 "responses": {
                     "404": { "$ref": "#/responses/NotFound" }
                 }

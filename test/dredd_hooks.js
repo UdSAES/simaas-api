@@ -25,6 +25,8 @@ const STEPS = {
   GET_NOT_FOUND_404: 'Unsuccessful Operations > /notfound > A resource that does not exist > 404 > application/problem+json'
 }
 
+const WAIT_FOR_SIMULATION = 1000 // milliseconds to wait for completion of simulation run
+
 // Create response stash for passing data between test steps
 let responseStash = {}
 
@@ -90,7 +92,7 @@ hooks.before(STEPS.POST_EXPERIMENTS_202, function (transaction) {
 
 // Retrieve UUID of newly created experiment
 hooks.after(STEPS.POST_EXPERIMENTS_202, async function (transaction, done) {
-  await delay(3000) // give the simulation 3 seconds to finish
+  await delay(WAIT_FOR_SIMULATION) // give the simulation some time to finish
 
   responseStash[transaction.name] = transaction.real // HTTP response to stash
   done()
