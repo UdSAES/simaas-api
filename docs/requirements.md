@@ -73,6 +73,21 @@ Requirements marked in __bold__ are to be realized sooner rather than later; tho
     * _A containerized service instance MUST function correctly if started with `--readonly`_
     * _..._    
 * _The implementation MUST comply with the internal (team-) requirements_
+    * __The API MUST match its specification__
+    * __The API MUST reuse schemata whenever possible__
+    * __The API MUST use identifiers that cannot be guessed__
+    * __The API MUST use identifiers that are guaranteed to be unique__
+    * __The API MUST make use of [RFC 7807](https://tools.ietf.org/html/rfc7807) for all 4xx/5xx-responses__
+        * The API MUST NOT disclose sensitive information through 4xx/5xx-responses -- compare section on [security considerations](https://tools.ietf.org/html/rfc7807#section-5)
+    * __The microservice MUST validate all requests__
+        * __The OAS MUST define all inputs via regular expressions__
+        * __The OAS MUST provide at least one response schema__
+        * The OAS MUST specify the media type of all responses using the "content-type"-header to avoid ambiguity present in version 2 of the OAS
+        * The OAS SHOULD provide schemata of responses for all known errors
+    * The microservice SHOULD support `x-request-id` headers and include them in all relevant logs
+    * The microservice SHOULD NOT depend on outdated or insecure packages
+    * A service instance MUST handle unavailable peer services gracefully
+    * The Docker image MUST NOT contain any unnecessary files/binaries
     * _..._
 * __The API MUST allow triggering a simulation__
 * __The API MUST provide access to the results of a simulation__
@@ -84,21 +99,9 @@ Requirements marked in __bold__ are to be realized sooner rather than later; tho
 * The API MAY provide a list of executed experiments that can be filtered
 * The API MAY provide a list of executed experiments that can be sorted hierarchically
 * The API SHOULD allow deleting model instances
-* __The API MUST match its specification__
-* __The API MUST reuse schemata whenever possible__
-* __The API MUST use identifiers that cannot be guessed__
-* __The API MUST use identifiers that are guaranteed to be unique__
-* __The microservice MUST validate all requests__
-    * __The OAS MUST define all inputs via regular expressions__
-    * __The OAS MUST provide at least one response schema__
-    * The OAS SHOULD provide schemata of responses for all known errors
 * The microservice MUST implement a specified strategy for forgetting old simulation results
-* The microservice SHOULD support `x-request-id` headers and include them in all relevant logs
 * The microservice SHOULD implement a specified strategy against (D)DOS (aka "choking to death")
-* The microservice SHOULD scale across processors and machines dynamically iff necessary
-* The microservice SHOULD NOT depend on outdated or insecure packages
-* A service instance MUST handle unavailable peer services gracefully
-* The Docker image MUST NOT contain any unnecessary files/binaries
+* The microservice SHOULD scale across threads, processors and machines dynamically iff necessary
 * __The worker-process MUST simulate a given FMU 2.0 for co-simulation__
     * The worker-process MUST allow the specification of start time, stop time, and output interval
     * The worker-process MUST allow providing input to the simulation of an FMU
