@@ -12,17 +12,17 @@ const delay = require('delay')
 // info: Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json
 // info: Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json
 const STEPS = {
-  GET_MODEL_INSTANCES_501: 'Model Instances > /model-instances > A list of all available model instances > 501 > application/json',
-  POST_MODEL_INSTANCES_501: 'Model Instances > /model-instances > Instantiate a model for a specific system > 501 > application/json',
-  GET_MODEL_INSTANCE_UUID_400: 'Model Instances > /model-instances/{uuid} > A specific model instance > 400 > application/json',
-  GET_MODEL_INSTANCE_UUID_501: 'Model Instances > /model-instances/{uuid} > A specific model instance > 501 > application/json',
-  DELETE_MODEL_INSTANCE_UUID_501: 'Model Instances > /model-instances/{uuid} > Delete a specific model instance > 501 > application/json',
-  GET_EXPERIMENTS_501: 'Experiments > /experiments > A list of all available experiments > 501 > application/json',
+  GET_MODEL_INSTANCES_501: 'Model Instances > /model-instances > A list of all available model instances > 501 > application/problem+json',
+  POST_MODEL_INSTANCES_501: 'Model Instances > /model-instances > Instantiate a model for a specific system > 501 > application/problem+json',
+  GET_MODEL_INSTANCE_UUID_400: 'Model Instances > /model-instances/{uuid} > A specific model instance > 400 > application/problem+json',
+  GET_MODEL_INSTANCE_UUID_501: 'Model Instances > /model-instances/{uuid} > A specific model instance > 501 > application/problem+json',
+  DELETE_MODEL_INSTANCE_UUID_501: 'Model Instances > /model-instances/{uuid} > Delete a specific model instance > 501 > application/problem+json',
+  GET_EXPERIMENTS_501: 'Experiments > /experiments > A list of all available experiments > 501 > application/problem+json',
   POST_EXPERIMENTS_202: 'Experiments > /experiments > Trigger the simulation of a model instance by defining an experiment > 202 > application/json',
-  GET_EXPERIMENT_UUID_501: 'Experiments > /experiments/{uuid} > A specific experiment > 501 > application/json',
+  GET_EXPERIMENT_UUID_501: 'Experiments > /experiments/{uuid} > A specific experiment > 501 > application/problem+json',
   GET_EXPERIMENT_UUID_STATUS_200: 'Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json',
   GET_EXPERIMENT_UUID_RESULT_200: 'Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json',
-  GET_NOT_FOUND_404: 'Unsuccessful Operations > /notfound > A resource that does not exist > 404 > application/json'
+  GET_NOT_FOUND_404: 'Unsuccessful Operations > /notfound > A resource that does not exist > 404 > application/problem+json'
 }
 
 // Create response stash for passing data between test steps
@@ -33,12 +33,7 @@ let responseStash = {}
 hooks.beforeEach((transaction, done) => {
   // Accept definition of charset
   // -- XXX careful, this means accepting a deviation from the specification!
-  if (transaction.expected.statusCode === '202') {
-    delete transaction.expected.headers['Content-Type']
-  } else {
-    transaction.request.headers['Accept'] = 'application/json'
-    transaction.expected.headers['Content-Type'] = 'application/json; charset=utf-8'
-  }
+  transaction.expected.headers['Content-Type'] += '; charset=utf-8'
 
   const transactionID = _.replace(
     transaction.id,
@@ -89,6 +84,10 @@ hooks.before(STEPS.GET_NOT_FOUND_404, function (transaction) {
 })
 
 // Modify Dredd-requests to ensure their correctness ///////////////////////////
+hooks.before(STEPS.POST_EXPERIMENTS_202, function (transaction) {
+  delete transaction.expected.headers['Content-Type']
+})
+
 // Retrieve UUID of newly created experiment
 hooks.after(STEPS.POST_EXPERIMENTS_202, async function (transaction, done) {
   await delay(3000) // give the simulation 3 seconds to finish

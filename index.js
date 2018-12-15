@@ -125,6 +125,7 @@ function shutDownGracefully () {
 
 // Define handlers
 async function respondWithNotImplemented (req, res) {
+  res.set('Content-Type', 'application/problem+json')
   res.status(501).json({
     'title': 'Not Implemented',
     'status': 501,
@@ -285,6 +286,7 @@ async function init () {
     app.get('/experiments/:experimentID/result', getExperimentResult)
 
     app.use(function (req, res, next) {
+      res.set('Content-Type', 'application/problem+json')
       res.status(404).json({
         'title': 'Not Found',
         'status': 404,
@@ -300,14 +302,17 @@ async function init () {
       switch (err.code) {
         case 'SCHEMA_VALIDATION_FAILED':
           log.any('schema validation failed -- request dropped', 401099, err)
+          res.set('Content-Type', 'application/problem+json')
           res.status(400).json({ error: serializeError(err) })
           break
         case 'PATTERN':
           log.any('schema validation failed -- request dropped', 401099, err)
+          res.set('Content-Type', 'application/problem+json')
           res.status(400).json({ error: serializeError(err) })
           break
         default:
           log.any('an internal server error occured and was caught at the end of the chain', 501000, err)
+          res.set('Content-Type', 'application/problem+json')
           res.status(500).json({ error: serializeError(err) })
       }
     })

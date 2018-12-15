@@ -9,7 +9,7 @@
             "get": {
                 "tags": ["Model Instances"],
                 "summary": "A list of all available model instances",
-                "produces": ["application/json"],
+                "produces": [ "application/problem+json" ],
                 "responses": {
                     "501": {"$ref": "#/responses/NotImplemented"}
                 }
@@ -18,7 +18,7 @@
                 "tags": ["Model Instances"],
                 "summary": "Instantiate a model for a specific system",
                 "consumes": ["application/json"],
-                "produces": ["application/json"],
+                "produces": [ "application/problem+json" ],
                 "parameters": [
                     {"$ref": "#/parameters/ModelInstance"}
                 ],
@@ -32,7 +32,7 @@
             "get": {
                 "tags": ["Model Instances"],
                 "summary": "A specific model instance",
-                "produces": ["application/json"],
+                "produces": [ "application/problem+json" ],
                 "responses": {
                     "501": {"$ref": "#/responses/NotImplemented"},
                     "400": { "$ref": "#/responses/SchemaValidationFailed" }
@@ -41,7 +41,7 @@
             "delete": {
                 "tags": ["Model Instances"],
                 "summary": "Delete a specific model instance",
-                "produces": ["application/json"],
+                "produces": [ "application/problem+json" ],
                 "responses": {
                     "501": {"$ref": "#/responses/NotImplemented"},
                     "400": { "$ref": "#/responses/SchemaValidationFailed" }
@@ -55,7 +55,7 @@
             "get": {
                 "tags": ["Experiments"],
                 "summary": "A list of all available experiments",
-                "produces": ["application/json"],
+                "produces": [ "application/problem+json" ],
                 "responses": {
                     "501": {"$ref": "#/responses/NotImplemented"}
                 }
@@ -64,7 +64,7 @@
                 "tags": ["Experiments"],
                 "summary": "Trigger the simulation of a model instance by defining an experiment",
                 "consumes": [ "application/json" ],
-                "produces": [ "application/json" ],
+                "produces": [ "application/json", "application/problem+json" ],
                 "parameters": [
                     {
                         "$ref": "#/parameters/ExperimentSetup"
@@ -88,7 +88,7 @@
             "get": {
                 "tags": ["Experiments"],
                 "summary": "A specific experiment",
-                "produces": ["application/json"],
+                "produces": [ "application/problem+json" ],
                 "responses": {
                     "501": {"$ref": "#/responses/NotImplemented"},
                     "400": { "$ref": "#/responses/SchemaValidationFailed" }
@@ -102,8 +102,7 @@
             "get": {
                 "tags": ["Experiments"],
                 "summary": "A resource indicating the status of an experiment",
-                "consumes": [ "application/json" ],
-                "produces": [ "application/json" ],
+                "produces": [ "application/json", "application/problem+json" ],
                 "responses": {
                     "200": { "$ref": "#/responses/ExperimentStatus" },
                     "400": { "$ref": "#/responses/SchemaValidationFailed" }
@@ -118,7 +117,7 @@
                 "tags": ["Experiments"],
                 "summary": "The results of performing the experiment/simulation",
                 "consumes": [ "application/json" ],
-                "produces": [ "application/json" ],
+                "produces": [ "application/json", "application/problem+json" ],
                 "responses": {
                     "200": { "$ref": "#/responses/SimulationResult" },
                     "400": { "$ref": "#/responses/SchemaValidationFailed" }
@@ -132,7 +131,7 @@
             "get": {
                 "tags": ["Unsuccessful Operations"],
                 "summary": "A resource that does not exist",
-                "produces": ["application/json"],
+                "produces": [ "application/problem+json" ],
                 "responses": {
                     "404": { "$ref": "#/responses/NotFound" }
                 }
@@ -171,11 +170,13 @@
         },
         "ProblemDetail": {
             "type": "object",
-            "required": [
-                "title",
-                "status"
-            ],
+            "description": "This schema attempts to formalize the guidelines on how to convey details about problems of HTTP API interactions by means of a _problem detail object_, as defined in [RFC 7807](https://tools.ietf.org/html/rfc7807). The descriptions of the individual members of such objects are copied verbatim from the RFC-document.",
             "properties": {
+                "type": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                },
                 "title": {
                     "type": "string",
                     "description": "A short, human-readable summary of the problem type"
@@ -187,6 +188,11 @@
                 "detail": {
                     "type": "string",
                     "description": "A human-readable explanation specific to this occurrence of the problem"
+                },
+                "instance": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "A URI reference that identifies the specific occurrence of the problem"
                 }
             }
         },
@@ -382,8 +388,11 @@
         "NotFound": {
             "description": "The requested resource was not found on this server",
             "schema": { "$ref": "#/definitions/ProblemDetail" },
+            "headers": {
+                "Content-Type": { "type": "string", "enum": ["application/problem+json"] }
+            },
             "examples": {
-                "application/json": {
+                "application/problem+json": {
                     "title": "Not Found",
                     "status": 404,
                     "detail": "The requested resource was not found on this server"
@@ -392,16 +401,22 @@
         },
         "SchemaValidationFailed": {
             "description": "The response for requests that were dropped because they were syntactically invalid and failed schema validation",
-            "schema": { "$ref": "#/definitions/ErrorInstance" },
+            "schema": { "$ref": "#/definitions/ProblemDetail" },
+            "headers": {
+                "Content-Type": { "type": "string", "enum": ["application/problem+json"] }
+            },
             "examples": {
-                "application/json": {"error":{"code":"PATTERN","failedValidation":true,"path":["paths","/model-instances/{uuid}","parameters","0"],"paramName":"uuid","name":"Error","message":"Request validation failed: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$","stack":"Error: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$\n    at throwErrorWithCode [...]"}}
+                "application/problem+json": {"error":{"code":"PATTERN","failedValidation":true,"path":["paths","/model-instances/{uuid}","parameters","0"],"paramName":"uuid","name":"Error","message":"Request validation failed: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$","stack":"Error: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$\n    at throwErrorWithCode [...]"}}
                 }
         },
         "NotImplemented": {
-            "description": "The API's response to requests that cannot be answered yet (format inspired by [RFC7807](https://tools.ietf.org/html/rfc7807) -- descriptions in schema copied verbatim)",
+            "description": "The API's response to requests that cannot be answered yet",
             "schema": { "$ref": "#/definitions/ProblemDetail" },
+            "headers": {
+                "Content-Type": { "type": "string", "enum": ["application/problem+json"] }
+            },
             "examples": {
-                "application/json": {
+                "application/problem+json": {
                     "title": "Not Implemented",
                     "status": 501,
                     "detail": "The request was understood, but the underlying implementation is not available yet."
@@ -428,6 +443,9 @@
                     }
                 }
             },
+            "headers": {
+                "Content-Type": { "type": "string", "enum": ["application/json"] }
+            },
             "examples": {
                 "application/json": { "status": "DONE", "linkToResult": "http://example.com/experiments/d9a23e72-b01a-4be7-a598-c3f31071da2c/result"}
             }
@@ -451,6 +469,9 @@
                         }
                     }
                 }
+            },
+            "headers": {
+                "Content-Type": { "type": "string", "enum": ["application/json"] }
             },
             "examples": {
                 "application/json": {"description": "An exemplary simulation result", "data": [ { "label": "albedo_ground", "unit": "1", "timeseries": [ { "timestamp":
