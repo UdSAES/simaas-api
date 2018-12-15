@@ -299,22 +299,54 @@ async function init () {
       if (res.headersSent) {
         return next(err)
       }
+
       switch (err.code) {
         case 'SCHEMA_VALIDATION_FAILED':
           log.any('schema validation failed -- request dropped', 401099, err)
           res.set('Content-Type', 'application/problem+json')
-          res.status(400).json({ error: serializeError(err) })
+          res.status(400).json({
+            title: 'Schema Validation Failed',
+            status: 400,
+            error: serializeError(err)
+          })
           break
         case 'PATTERN':
           log.any('schema validation failed -- request dropped', 401099, err)
           res.set('Content-Type', 'application/problem+json')
-          res.status(400).json({ error: serializeError(err) })
+          res.status(400).json({
+            title: 'Schema Validation Failed',
+            status: 400,
+            error: serializeError(err)
+          })
           break
         default:
-          log.any('an internal server error occured and was caught at the end of the chain', 501000, err)
-          res.set('Content-Type', 'application/problem+json')
-          res.status(500).json({ error: serializeError(err) })
+          next(err)
+
+          // XXX currently, you're busted if response validation fails!!  -- so:
+          // TODO explicitly handle response validation failure -- this doesn't work
+
+          // if (_.startsWith(err.message, 'Response validation failed')) {
+          //   log.any('a response did not validate agains its schema', 501099, err)
+          //   res.status(500).json({ error: serializeError(err) })
+          //   break
+          // } else {
+          //   next(err)
+          // }
       }
+    })
+
+    app.use(function (err, req, res, next) {
+      log.any('an internal server error occured and was caught at the end of the chain', 501000, err)
+      if (res.headersSent) {
+        return next(err)
+      }
+
+      res.set('Content-Type', 'application/problem+json')
+      res.status(500).json({
+        title: 'Internal Server Error',
+        status: 500,
+        error: serializeError(err)
+      })
     })
 
     server = app.listen(LISTEN_PORT, function () {

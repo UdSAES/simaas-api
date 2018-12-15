@@ -373,7 +373,12 @@
     "responses": {
         "NotFound": {
             "description": "The requested resource was not found on this server",
-            "schema": { "$ref": "#/definitions/ProblemDetail" },
+            "schema": {
+                "allOf": [
+                    { "$ref": "#/definitions/ProblemDetail" },
+                    { "required": [ "title", "status" ]}
+                ]
+            },
             "headers": {
                 "Content-Type": { "type": "string", "enum": ["application/problem+json"] }
             },
@@ -387,17 +392,27 @@
         },
         "SchemaValidationFailed": {
             "description": "The response for requests that were dropped because they were syntactically invalid and failed schema validation",
-            "schema": { "$ref": "#/definitions/ProblemDetail" },
+            "schema": {
+                "allOf": [
+                    { "$ref": "#/definitions/ProblemDetail" },
+                    { "required": [ "title", "status" ]}
+                ]
+            },
             "headers": {
                 "Content-Type": { "type": "string", "enum": ["application/problem+json"] }
             },
             "examples": {
-                "application/problem+json": {"error":{"code":"PATTERN","failedValidation":true,"path":["paths","/model-instances/{uuid}","parameters","0"],"paramName":"uuid","name":"Error","message":"Request validation failed: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$","stack":"Error: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$\n    at throwErrorWithCode [...]"}}
+                "application/problem+json": {"title": "Schema Validation Failed", "status": 400, "error":{"code":"PATTERN","failedValidation":true,"path":["paths","/model-instances/{uuid}","parameters","0"],"paramName":"uuid","name":"Error","message":"Request validation failed: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$","stack":"Error: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$\n    at throwErrorWithCode [...]"}}
                 }
         },
         "NotImplemented": {
             "description": "The API's response to requests that cannot be answered yet",
-            "schema": { "$ref": "#/definitions/ProblemDetail" },
+            "schema": {
+                "allOf": [
+                    { "$ref": "#/definitions/ProblemDetail" },
+                    { "required": [ "title", "status" ]}
+                ]
+            },
             "headers": {
                 "Content-Type": { "type": "string", "enum": ["application/problem+json"] }
             },
