@@ -8,8 +8,8 @@ const { URL } = require('url')
 const request = require('request-promise-native')
 
 // Define configuration
-const OAS_PATH = "../oas/simaas_oas2.json"
-const WEATHER_API_ORIGIN = "https://weather.designetz.saarland"
+const WEATHER_API_ORIGIN = 'https://weather.designetz.saarland'
+// const OAS_PATH = '../oas/simaas_oas2.json'
 
 // Define constants
 const location = {
@@ -20,7 +20,7 @@ const location = {
 
 const simulationParameters = {
   startTime: new Date(2018, 10, 16, 1).valueOf(), // perfect sunny day
-  stopTime: new Date(2018, 10, 17, 1).valueOf(),  // perfect sunny day
+  stopTime: new Date(2018, 10, 17, 1).valueOf(),
   outputInterval: 3600
 }
 
@@ -28,7 +28,7 @@ const simulationParameters = {
 // console.log(JSON.stringify(simulationParameters))
 
 // Define request to weather API
-async function getWeatherForecast(voi) {
+async function getWeatherForecast (voi) {
   let weatherForecast = null
   let requestURL = new URL(
     '/weather/cosmo/d2/' + simulationParameters.startTime + `/` + voi,
@@ -41,8 +41,7 @@ async function getWeatherForecast(voi) {
     weatherForecast = await request({
       url: requestURL,
       method: 'get',
-
-      json: true,
+      json: true
     })
   } catch (error) {
     console.log(JSON.serialize(error))
@@ -52,7 +51,7 @@ async function getWeatherForecast(voi) {
 }
 
 // Get weather forecasts for relevant variables of interest
-async function getInputTimeseries() {
+async function getInputTimeseries () {
   const voi = {
     temperature: 't_2m',
     directHorizontalIrradiance: 'aswdir_s',
@@ -73,7 +72,7 @@ async function getInputTimeseries() {
     if (forecast.data.length <= 28) {
       forecast.timeseries = forecast.data.slice(0, 24 + 1)
     } else {
-      forecast.timeseries = forecast.data.slice(0, 24*4 + 1)
+      forecast.timeseries = forecast.data.slice(0, 24 * 4 + 1)
 
       // What follows is a workaround for the inability of the worker to cope
       // with timeseries of different lenghts --- XXX remove eventually
@@ -83,7 +82,7 @@ async function getInputTimeseries() {
       })
     }
     forecast.timeseries = _.map(forecast.timeseries, function (objTsValue) {
-      objTsValue.timestamp = (objTsValue.timestamp - simulationParameters.startTime)/1000
+      objTsValue.timestamp = (objTsValue.timestamp - simulationParameters.startTime) / 1000
       return objTsValue
     })
     delete forecast.data
@@ -94,13 +93,12 @@ async function getInputTimeseries() {
   return inputTimeseries
 }
 
-
-async function main() {
+async function main () {
   const inputTimeseries = await getInputTimeseries()
 
   // Construct exemplary body of POST-request to /experiments
   const example = {
-    modelInstanceID: "c02f1f12-966d-4eab-9f21-dcf265ceac71",
+    modelInstanceID: 'c02f1f12-966d-4eab-9f21-dcf265ceac71',
     simulationParameters,
     inputTimeseries
   }
