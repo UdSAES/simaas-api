@@ -131,6 +131,7 @@ async function respondWithNotImplemented (req, res) {
     'status': 501,
     'detail': 'The request was understood, but the underlying implementation is not available yet.'
   })
+  log.info('successfully handled ' + req.method + '-request on ' + req.path)
 }
 
 async function simulateModelInstance (req, res) {
@@ -169,6 +170,7 @@ async function simulateModelInstance (req, res) {
   const u = new URL(sourceLocationHeader, 'http://127.0.0.1')
 
   res.status(202).location(origin + u.pathname.replace('/tasks/', '/experiments/')).json()
+  log.info('successfully handled ' + req.method + '-request on ' + req.path)
 }
 
 async function getExperimentStatus (req, res) {
@@ -207,6 +209,7 @@ async function getExperimentStatus (req, res) {
   }
 
   res.status(200).json(resultBody)
+  log.info('successfully handled ' + req.method + '-request on ' + req.path)
 }
 
 async function getExperimentResult (req, res) {
@@ -235,6 +238,7 @@ async function getExperimentResult (req, res) {
   delete resultBody.err
 
   res.status(200).json(resultBody)
+  log.info('successfully handled ' + req.method + '-request on ' + req.path)
 }
 
 // Define main program
@@ -264,8 +268,6 @@ async function init () {
       validateResponse: true
     }))
 
-    log.any('configuration successfull', 300030)
-
     // Define routing
     // MUST happen after enabling swaggerValidator or validation doesn't work
     app.use((req, res, next) => {
@@ -292,6 +294,7 @@ async function init () {
         'status': 404,
         'detail': 'The requested resource was not found on this server'
       })
+      log.info('sent `404 Not Found` as response to ' + req.method + '-request on ' + req.path)
     }) // http://expressjs.com/en/starter/faq.html
 
     // Ensure that any remaining errors are serialized as JSON
@@ -349,6 +352,8 @@ async function init () {
         status: 500
       })
     })
+
+    log.any('configuration successfull', 300030)
 
     server = app.listen(LISTEN_PORT, function () {
       log.any('now listening on port ' + LISTEN_PORT, 300040)
