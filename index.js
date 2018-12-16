@@ -157,12 +157,12 @@ async function simulateModelInstance (req, res) {
       }
     })
   } catch (error) {
-    res.status(error.statusCode).json({ 'error': error.error.err })
+    res.status(error.statusCode).json({ 'error': error.error.err }) // XXX RFC7807
     return
   }
 
   if (postTaskResult.statusCode !== 202) {
-    res.status(500).json({ 'error': 'got status code ' + postTaskResult.statusCode + ' instead of 202' })
+    res.status(500).json({ 'error': 'got status code ' + postTaskResult.statusCode + ' instead of 202' }) // XXX RFC7807
     return
   }
 
@@ -189,7 +189,7 @@ async function getExperimentStatus (req, res) {
       resolveWithFullResponse: true
     })
   } catch (error) {
-    res.status(error.statusCode).json({ 'error': error.error.err })
+    res.status(error.statusCode).json({ 'error': error.error.err }) // XXX RFC7807
     return
   }
 
@@ -224,7 +224,7 @@ async function getExperimentResult (req, res) {
       resolveWithFullResponse: true
     })
   } catch (error) {
-    res.status(error.statusCode).json({ 'error': error.error.err })
+    res.status(error.statusCode).json({ 'error': error.error.err }) // XXX RFC7807
     return
   }
 
@@ -332,7 +332,7 @@ async function init () {
 
           // if (_.startsWith(err.message, 'Response validation failed')) {
           //   log.any('a response did not validate agains its schema', 501099, err)
-          //   res.status(500).json({ error: serializeError(err) })
+          //   res.status(500).json({ error: serializeError(err) }) // XXX RFC7807
           //   break
           // } else {
           //   next(err)

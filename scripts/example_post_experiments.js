@@ -103,7 +103,8 @@ async function main () {
     inputTimeseries
   }
 
-  // Inject updated example into OpenAPI-specification
+  // XXX Inject updated example into OpenAPI-specification?
+
   console.log(JSON.stringify(example, null, 4))
 }
 
