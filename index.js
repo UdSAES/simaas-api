@@ -307,7 +307,8 @@ async function init () {
           res.status(400).json({
             title: 'Schema Validation Failed',
             status: 400,
-            error: serializeError(err)
+            detail: serializeError(err).message,
+            path: serializeError(err).path
           })
           break
         case 'PATTERN':
@@ -316,7 +317,8 @@ async function init () {
           res.status(400).json({
             title: 'Schema Validation Failed',
             status: 400,
-            error: serializeError(err)
+            detail: serializeError(err).message,
+            path: serializeError(err).path
           })
           break
         default:
@@ -344,8 +346,7 @@ async function init () {
       res.set('Content-Type', 'application/problem+json')
       res.status(500).json({
         title: 'Internal Server Error',
-        status: 500,
-        error: serializeError(err)
+        status: 500
       })
     })
 
