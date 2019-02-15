@@ -1,0 +1,5 @@
+# Ignore locally installed node modules
+node_modules/
+
+# Ignore files for local development
+local/
