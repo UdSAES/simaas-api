@@ -8,7 +8,7 @@ const Dredd = require('dredd')
 // Load configuration
 const SERVER_URL = process.env.SIMAAS_INSTANCE
 if (!SERVER_URL) {
-  console.log(`SERVER_URL was "${SERVER_URL}", but must be the URL to a running instance`)
+  console.log(`SIMAAS_INSTANCE was "${SERVER_URL}", but must be the URL to a running instance`)
   process.exit(1)
 }
 
