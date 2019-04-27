@@ -254,7 +254,7 @@ async function getExperimentResult (req, res) {
   const resultBody = postTaskResult.body
 
   // Transform body to specified format
-  resultBody.description = 'The results of simulating model instance [ID] from [startTime] to [stopTime].'
+  resultBody.description = 'The results of simulating model instance ${modelInstanceID} from ${startTime} to ${stopTime}'
 
   // Delete properties that shall not be exposed to the consumer
   delete resultBody.id
