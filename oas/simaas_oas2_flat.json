@@ -26,7 +26,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -596,7 +596,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -658,7 +658,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -727,7 +727,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -789,7 +789,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -856,7 +856,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -918,7 +918,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -998,7 +998,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -1639,7 +1639,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -1714,7 +1714,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -1776,7 +1776,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -1896,7 +1896,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -2088,7 +2088,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -2175,7 +2175,7 @@
                                         "type": {
                                             "type": "string",
                                             "format": "uri",
-                                            "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                            "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                                         },
                                         "title": {
                                             "type": "string",
@@ -2263,7 +2263,7 @@
                 "type": {
                     "type": "string",
                     "format": "uri",
-                    "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                    "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                 },
                 "title": {
                     "type": "string",
@@ -4082,7 +4082,7 @@
                             "type": {
                                 "type": "string",
                                 "format": "uri",
-                                "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                             },
                             "title": {
                                 "type": "string",
@@ -4138,7 +4138,7 @@
                             "type": {
                                 "type": "string",
                                 "format": "uri",
-                                "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                             },
                             "title": {
                                 "type": "string",
@@ -4200,7 +4200,7 @@
                             "type": {
                                 "type": "string",
                                 "format": "uri",
-                                "description": "A URI reference [RFC3986](https://tools.ietf.org/html/rfc3986) that identifies the problem type"
+                                "description": "A URI reference ([RFC3986](https://tools.ietf.org/html/rfc3986)) that identifies the problem type"
                             },
                             "title": {
                                 "type": "string",
