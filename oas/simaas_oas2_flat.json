@@ -1290,8 +1290,8 @@
                             "example": {
                                 "modelInstanceID": "c02f1f12-966d-4eab-9f21-dcf265ceac71",
                                 "simulationParameters": {
-                                    "startTime": 1542326400000,
-                                    "stopTime": 1542412800000,
+                                    "startTime": 1542412800000,
+                                    "stopTime": 1542499199999,
                                     "outputInterval": 3600
                                 },
                                 "inputTimeseries": [
@@ -1300,104 +1300,104 @@
                                         "unit": "K",
                                         "timeseries": [
                                             {
-                                                "timestamp": 0,
-                                                "value": 278.19512939453125
+                                                "timestamp": 1542412800000,
+                                                "value": 274.6336669921875
                                             },
                                             {
-                                                "timestamp": 3600,
-                                                "value": 278.215576171875
+                                                "timestamp": 1542416400000,
+                                                "value": 274.4828796386719
                                             },
                                             {
-                                                "timestamp": 7200,
-                                                "value": 278.0497741699219
+                                                "timestamp": 1542420000000,
+                                                "value": 274.01922607421875
                                             },
                                             {
-                                                "timestamp": 10800,
-                                                "value": 278.00384521484375
+                                                "timestamp": 1542423600000,
+                                                "value": 273.8811340332031
                                             },
                                             {
-                                                "timestamp": 14400,
-                                                "value": 278.2565612792969
+                                                "timestamp": 1542427200000,
+                                                "value": 273.7162628173828
                                             },
                                             {
-                                                "timestamp": 18000,
-                                                "value": 278.49554443359375
+                                                "timestamp": 1542430800000,
+                                                "value": 273.4994201660156
                                             },
                                             {
-                                                "timestamp": 21600,
-                                                "value": 278.43145751953125
+                                                "timestamp": 1542434400000,
+                                                "value": 273.3451385498047
                                             },
                                             {
-                                                "timestamp": 25200,
-                                                "value": 278.3800964355469
+                                                "timestamp": 1542438000000,
+                                                "value": 273.2210388183594
                                             },
                                             {
-                                                "timestamp": 28800,
-                                                "value": 278.0195617675781
+                                                "timestamp": 1542441600000,
+                                                "value": 273.4631805419922
                                             },
                                             {
-                                                "timestamp": 32400,
-                                                "value": 277.91796875
+                                                "timestamp": 1542445200000,
+                                                "value": 274.3274230957031
                                             },
                                             {
-                                                "timestamp": 36000,
-                                                "value": 278.8022766113281
+                                                "timestamp": 1542448800000,
+                                                "value": 275.4784393310547
                                             },
                                             {
-                                                "timestamp": 39600,
-                                                "value": 279.6802062988281
+                                                "timestamp": 1542452400000,
+                                                "value": 276.50999450683594
                                             },
                                             {
-                                                "timestamp": 43200,
-                                                "value": 280.3817138671875
+                                                "timestamp": 1542456000000,
+                                                "value": 277.6051940917969
                                             },
                                             {
-                                                "timestamp": 46800,
-                                                "value": 280.2247009277344
+                                                "timestamp": 1542459600000,
+                                                "value": 278.2355194091797
                                             },
                                             {
-                                                "timestamp": 50400,
-                                                "value": 280.041015625
+                                                "timestamp": 1542463200000,
+                                                "value": 278.0879669189453
                                             },
                                             {
-                                                "timestamp": 54000,
-                                                "value": 278.9366149902344
+                                                "timestamp": 1542466800000,
+                                                "value": 277.3506317138672
                                             },
                                             {
-                                                "timestamp": 57600,
-                                                "value": 277.5219421386719
+                                                "timestamp": 1542470400000,
+                                                "value": 276.5809631347656
                                             },
                                             {
-                                                "timestamp": 61200,
-                                                "value": 276.64959716796875
+                                                "timestamp": 1542474000000,
+                                                "value": 275.99607849121094
                                             },
                                             {
-                                                "timestamp": 64800,
-                                                "value": 275.8999938964844
+                                                "timestamp": 1542477600000,
+                                                "value": 275.36585998535156
                                             },
                                             {
-                                                "timestamp": 68400,
-                                                "value": 275.3359069824219
+                                                "timestamp": 1542481200000,
+                                                "value": 274.8233642578125
                                             },
                                             {
-                                                "timestamp": 72000,
-                                                "value": 275.12396240234375
+                                                "timestamp": 1542484800000,
+                                                "value": 274.35382080078125
                                             },
                                             {
-                                                "timestamp": 75600,
-                                                "value": 274.9482421875
+                                                "timestamp": 1542488400000,
+                                                "value": 273.8891143798828
                                             },
                                             {
-                                                "timestamp": 79200,
-                                                "value": 274.85357666015625
+                                                "timestamp": 1542492000000,
+                                                "value": 273.6193542480469
                                             },
                                             {
-                                                "timestamp": 82800,
-                                                "value": 274.45611572265625
+                                                "timestamp": 1542495600000,
+                                                "value": 273.1964416503906
                                             },
                                             {
-                                                "timestamp": 86400,
-                                                "value": 274.0621337890625
+                                                "timestamp": 1542499200000,
+                                                "value": 272.87730407714844
                                             }
                                         ]
                                     },
@@ -1406,104 +1406,104 @@
                                         "unit": "W/m²",
                                         "timeseries": [
                                             {
-                                                "timestamp": 0,
+                                                "timestamp": 1542412800000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 3600,
+                                                "timestamp": 1542416400000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 7200,
+                                                "timestamp": 1542420000000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 10800,
+                                                "timestamp": 1542423600000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 14400,
+                                                "timestamp": 1542427200000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 18000,
+                                                "timestamp": 1542430800000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 21600,
+                                                "timestamp": 1542434400000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 25200,
-                                                "value": 0
+                                                "timestamp": 1542438000000,
+                                                "value": 0.01708984375
                                             },
                                             {
-                                                "timestamp": 28800,
-                                                "value": 0
+                                                "timestamp": 1542441600000,
+                                                "value": 32.473876953125
                                             },
                                             {
-                                                "timestamp": 32400,
-                                                "value": 0.26611328125
+                                                "timestamp": 1542445200000,
+                                                "value": 106.16259765625
                                             },
                                             {
-                                                "timestamp": 36000,
-                                                "value": 3.4267578125
+                                                "timestamp": 1542448800000,
+                                                "value": 172.1171875
                                             },
                                             {
-                                                "timestamp": 39600,
-                                                "value": 120.26953125025734
+                                                "timestamp": 1542452400000,
+                                                "value": 207.6816406250005
                                             },
                                             {
-                                                "timestamp": 43200,
-                                                "value": 189.79492195235423
+                                                "timestamp": 1542456000000,
+                                                "value": 203.74609375089045
                                             },
                                             {
-                                                "timestamp": 46800,
-                                                "value": 131.05468808034462
+                                                "timestamp": 1542459600000,
+                                                "value": 161.24023440730758
                                             },
                                             {
-                                                "timestamp": 50400,
-                                                "value": 92.70703140548973
+                                                "timestamp": 1542463200000,
+                                                "value": 92.67578142064986
                                             },
                                             {
-                                                "timestamp": 54000,
-                                                "value": 22.308593750018108
+                                                "timestamp": 1542466800000,
+                                                "value": 21.17968753655803
                                             },
                                             {
-                                                "timestamp": 57600,
-                                                "value": -0.04687499998499536
+                                                "timestamp": 1542470400000,
+                                                "value": 0.013671875010348028
                                             },
                                             {
-                                                "timestamp": 61200,
-                                                "value": 0.005859375012417635
+                                                "timestamp": 1542474000000,
+                                                "value": -0.011718749990169372
                                             },
                                             {
-                                                "timestamp": 64800,
-                                                "value": 0.015625000011382832
+                                                "timestamp": 1542477600000,
+                                                "value": 0.027343750008278423
                                             },
                                             {
-                                                "timestamp": 68400,
-                                                "value": 0.09765625001034803
+                                                "timestamp": 1542481200000,
+                                                "value": 0.003906250007761022
                                             },
                                             {
-                                                "timestamp": 72000,
-                                                "value": -0.031249999990686773
+                                                "timestamp": 1542484800000,
+                                                "value": -0.013671874993791184
                                             },
                                             {
-                                                "timestamp": 75600,
-                                                "value": -0.021484374991204175
+                                                "timestamp": 1542488400000,
+                                                "value": -0.046874999994825986
                                             },
                                             {
-                                                "timestamp": 79200,
-                                                "value": -0.11328124999223897
+                                                "timestamp": 1542492000000,
+                                                "value": -0.07421874999482599
                                             },
                                             {
-                                                "timestamp": 82800,
-                                                "value": -0.03710937499223898
+                                                "timestamp": 1542495600000,
+                                                "value": -0.041015624994825986
                                             },
                                             {
-                                                "timestamp": 86400,
-                                                "value": -0.014648437493273781
+                                                "timestamp": 1542499200000,
+                                                "value": -0.041015624995343385
                                             }
                                         ]
                                     },
@@ -1512,104 +1512,104 @@
                                         "unit": "W/m²",
                                         "timeseries": [
                                             {
-                                                "timestamp": 0,
+                                                "timestamp": 1542412800000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 3600,
+                                                "timestamp": 1542416400000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 7200,
+                                                "timestamp": 1542420000000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 10800,
+                                                "timestamp": 1542423600000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 14400,
+                                                "timestamp": 1542427200000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 18000,
+                                                "timestamp": 1542430800000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 21600,
+                                                "timestamp": 1542434400000,
                                                 "value": 0
                                             },
                                             {
-                                                "timestamp": 25200,
-                                                "value": 1.3330078125
+                                                "timestamp": 1542438000000,
+                                                "value": 3.03173828125
                                             },
                                             {
-                                                "timestamp": 28800,
-                                                "value": 32.233642578125
+                                                "timestamp": 1542441600000,
+                                                "value": 51.814697265625
                                             },
                                             {
-                                                "timestamp": 32400,
-                                                "value": 88.14252650737762
+                                                "timestamp": 1542445200000,
+                                                "value": 80.36165171861649
                                             },
                                             {
-                                                "timestamp": 36000,
-                                                "value": 135.14795458316803
+                                                "timestamp": 1542448800000,
+                                                "value": 95.63700693845749
                                             },
                                             {
-                                                "timestamp": 39600,
-                                                "value": 146.50878405570984
+                                                "timestamp": 1542452400000,
+                                                "value": 102.13556969165802
                                             },
                                             {
-                                                "timestamp": 43200,
-                                                "value": 105.37438011169434
+                                                "timestamp": 1542456000000,
+                                                "value": 101.35517811775208
                                             },
                                             {
-                                                "timestamp": 46800,
-                                                "value": 109.1113030910492
+                                                "timestamp": 1542459600000,
+                                                "value": 93.04704689979553
                                             },
                                             {
-                                                "timestamp": 50400,
-                                                "value": 76.60409712791443
+                                                "timestamp": 1542463200000,
+                                                "value": 74.65015459060669
                                             },
                                             {
-                                                "timestamp": 54000,
-                                                "value": 45.17407441139221
+                                                "timestamp": 1542466800000,
+                                                "value": 43.18778944015503
                                             },
                                             {
-                                                "timestamp": 57600,
-                                                "value": -0.022092819213867188
+                                                "timestamp": 1542470400000,
+                                                "value": -0.00856328010559082
                                             },
                                             {
-                                                "timestamp": 61200,
-                                                "value": -0.05955910682678223
+                                                "timestamp": 1542474000000,
+                                                "value": -0.06733894348144531
                                             },
                                             {
-                                                "timestamp": 64800,
-                                                "value": 0.0907127857208252
+                                                "timestamp": 1542477600000,
+                                                "value": 0.03996133804321289
                                             },
                                             {
-                                                "timestamp": 68400,
-                                                "value": -0.024605274200439453
+                                                "timestamp": 1542481200000,
+                                                "value": -0.05777382850646973
                                             },
                                             {
-                                                "timestamp": 72000,
-                                                "value": 0.018280982971191406
+                                                "timestamp": 1542484800000,
+                                                "value": 0.086669921875
                                             },
                                             {
-                                                "timestamp": 75600,
-                                                "value": -0.04622960090637207
+                                                "timestamp": 1542488400000,
+                                                "value": 0.07489943504333496
                                             },
                                             {
-                                                "timestamp": 79200,
-                                                "value": 0.010348081588745117
+                                                "timestamp": 1542492000000,
+                                                "value": -0.03650379180908203
                                             },
                                             {
-                                                "timestamp": 82800,
-                                                "value": 0.11771965026855469
+                                                "timestamp": 1542495600000,
+                                                "value": 0.022024869918823242
                                             },
                                             {
-                                                "timestamp": 86400,
-                                                "value": 0.028800249099731445
+                                                "timestamp": 1542499200000,
+                                                "value": 0.025892019271850586
                                             }
                                         ]
                                     }
@@ -3733,8 +3733,8 @@
                 "example": {
                     "modelInstanceID": "c02f1f12-966d-4eab-9f21-dcf265ceac71",
                     "simulationParameters": {
-                        "startTime": 1542326400000,
-                        "stopTime": 1542412800000,
+                        "startTime": 1542412800000,
+                        "stopTime": 1542499199999,
                         "outputInterval": 3600
                     },
                     "inputTimeseries": [
@@ -3743,104 +3743,104 @@
                             "unit": "K",
                             "timeseries": [
                                 {
-                                    "timestamp": 0,
-                                    "value": 278.19512939453125
+                                    "timestamp": 1542412800000,
+                                    "value": 274.6336669921875
                                 },
                                 {
-                                    "timestamp": 3600,
-                                    "value": 278.215576171875
+                                    "timestamp": 1542416400000,
+                                    "value": 274.4828796386719
                                 },
                                 {
-                                    "timestamp": 7200,
-                                    "value": 278.0497741699219
+                                    "timestamp": 1542420000000,
+                                    "value": 274.01922607421875
                                 },
                                 {
-                                    "timestamp": 10800,
-                                    "value": 278.00384521484375
+                                    "timestamp": 1542423600000,
+                                    "value": 273.8811340332031
                                 },
                                 {
-                                    "timestamp": 14400,
-                                    "value": 278.2565612792969
+                                    "timestamp": 1542427200000,
+                                    "value": 273.7162628173828
                                 },
                                 {
-                                    "timestamp": 18000,
-                                    "value": 278.49554443359375
+                                    "timestamp": 1542430800000,
+                                    "value": 273.4994201660156
                                 },
                                 {
-                                    "timestamp": 21600,
-                                    "value": 278.43145751953125
+                                    "timestamp": 1542434400000,
+                                    "value": 273.3451385498047
                                 },
                                 {
-                                    "timestamp": 25200,
-                                    "value": 278.3800964355469
+                                    "timestamp": 1542438000000,
+                                    "value": 273.2210388183594
                                 },
                                 {
-                                    "timestamp": 28800,
-                                    "value": 278.0195617675781
+                                    "timestamp": 1542441600000,
+                                    "value": 273.4631805419922
                                 },
                                 {
-                                    "timestamp": 32400,
-                                    "value": 277.91796875
+                                    "timestamp": 1542445200000,
+                                    "value": 274.3274230957031
                                 },
                                 {
-                                    "timestamp": 36000,
-                                    "value": 278.8022766113281
+                                    "timestamp": 1542448800000,
+                                    "value": 275.4784393310547
                                 },
                                 {
-                                    "timestamp": 39600,
-                                    "value": 279.6802062988281
+                                    "timestamp": 1542452400000,
+                                    "value": 276.50999450683594
                                 },
                                 {
-                                    "timestamp": 43200,
-                                    "value": 280.3817138671875
+                                    "timestamp": 1542456000000,
+                                    "value": 277.6051940917969
                                 },
                                 {
-                                    "timestamp": 46800,
-                                    "value": 280.2247009277344
+                                    "timestamp": 1542459600000,
+                                    "value": 278.2355194091797
                                 },
                                 {
-                                    "timestamp": 50400,
-                                    "value": 280.041015625
+                                    "timestamp": 1542463200000,
+                                    "value": 278.0879669189453
                                 },
                                 {
-                                    "timestamp": 54000,
-                                    "value": 278.9366149902344
+                                    "timestamp": 1542466800000,
+                                    "value": 277.3506317138672
                                 },
                                 {
-                                    "timestamp": 57600,
-                                    "value": 277.5219421386719
+                                    "timestamp": 1542470400000,
+                                    "value": 276.5809631347656
                                 },
                                 {
-                                    "timestamp": 61200,
-                                    "value": 276.64959716796875
+                                    "timestamp": 1542474000000,
+                                    "value": 275.99607849121094
                                 },
                                 {
-                                    "timestamp": 64800,
-                                    "value": 275.8999938964844
+                                    "timestamp": 1542477600000,
+                                    "value": 275.36585998535156
                                 },
                                 {
-                                    "timestamp": 68400,
-                                    "value": 275.3359069824219
+                                    "timestamp": 1542481200000,
+                                    "value": 274.8233642578125
                                 },
                                 {
-                                    "timestamp": 72000,
-                                    "value": 275.12396240234375
+                                    "timestamp": 1542484800000,
+                                    "value": 274.35382080078125
                                 },
                                 {
-                                    "timestamp": 75600,
-                                    "value": 274.9482421875
+                                    "timestamp": 1542488400000,
+                                    "value": 273.8891143798828
                                 },
                                 {
-                                    "timestamp": 79200,
-                                    "value": 274.85357666015625
+                                    "timestamp": 1542492000000,
+                                    "value": 273.6193542480469
                                 },
                                 {
-                                    "timestamp": 82800,
-                                    "value": 274.45611572265625
+                                    "timestamp": 1542495600000,
+                                    "value": 273.1964416503906
                                 },
                                 {
-                                    "timestamp": 86400,
-                                    "value": 274.0621337890625
+                                    "timestamp": 1542499200000,
+                                    "value": 272.87730407714844
                                 }
                             ]
                         },
@@ -3849,104 +3849,104 @@
                             "unit": "W/m²",
                             "timeseries": [
                                 {
-                                    "timestamp": 0,
+                                    "timestamp": 1542412800000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 3600,
+                                    "timestamp": 1542416400000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 7200,
+                                    "timestamp": 1542420000000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 10800,
+                                    "timestamp": 1542423600000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 14400,
+                                    "timestamp": 1542427200000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 18000,
+                                    "timestamp": 1542430800000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 21600,
+                                    "timestamp": 1542434400000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 25200,
-                                    "value": 0
+                                    "timestamp": 1542438000000,
+                                    "value": 0.01708984375
                                 },
                                 {
-                                    "timestamp": 28800,
-                                    "value": 0
+                                    "timestamp": 1542441600000,
+                                    "value": 32.473876953125
                                 },
                                 {
-                                    "timestamp": 32400,
-                                    "value": 0.26611328125
+                                    "timestamp": 1542445200000,
+                                    "value": 106.16259765625
                                 },
                                 {
-                                    "timestamp": 36000,
-                                    "value": 3.4267578125
+                                    "timestamp": 1542448800000,
+                                    "value": 172.1171875
                                 },
                                 {
-                                    "timestamp": 39600,
-                                    "value": 120.26953125025734
+                                    "timestamp": 1542452400000,
+                                    "value": 207.6816406250005
                                 },
                                 {
-                                    "timestamp": 43200,
-                                    "value": 189.79492195235423
+                                    "timestamp": 1542456000000,
+                                    "value": 203.74609375089045
                                 },
                                 {
-                                    "timestamp": 46800,
-                                    "value": 131.05468808034462
+                                    "timestamp": 1542459600000,
+                                    "value": 161.24023440730758
                                 },
                                 {
-                                    "timestamp": 50400,
-                                    "value": 92.70703140548973
+                                    "timestamp": 1542463200000,
+                                    "value": 92.67578142064986
                                 },
                                 {
-                                    "timestamp": 54000,
-                                    "value": 22.308593750018108
+                                    "timestamp": 1542466800000,
+                                    "value": 21.17968753655803
                                 },
                                 {
-                                    "timestamp": 57600,
-                                    "value": -0.04687499998499536
+                                    "timestamp": 1542470400000,
+                                    "value": 0.013671875010348028
                                 },
                                 {
-                                    "timestamp": 61200,
-                                    "value": 0.005859375012417635
+                                    "timestamp": 1542474000000,
+                                    "value": -0.011718749990169372
                                 },
                                 {
-                                    "timestamp": 64800,
-                                    "value": 0.015625000011382832
+                                    "timestamp": 1542477600000,
+                                    "value": 0.027343750008278423
                                 },
                                 {
-                                    "timestamp": 68400,
-                                    "value": 0.09765625001034803
+                                    "timestamp": 1542481200000,
+                                    "value": 0.003906250007761022
                                 },
                                 {
-                                    "timestamp": 72000,
-                                    "value": -0.031249999990686773
+                                    "timestamp": 1542484800000,
+                                    "value": -0.013671874993791184
                                 },
                                 {
-                                    "timestamp": 75600,
-                                    "value": -0.021484374991204175
+                                    "timestamp": 1542488400000,
+                                    "value": -0.046874999994825986
                                 },
                                 {
-                                    "timestamp": 79200,
-                                    "value": -0.11328124999223897
+                                    "timestamp": 1542492000000,
+                                    "value": -0.07421874999482599
                                 },
                                 {
-                                    "timestamp": 82800,
-                                    "value": -0.03710937499223898
+                                    "timestamp": 1542495600000,
+                                    "value": -0.041015624994825986
                                 },
                                 {
-                                    "timestamp": 86400,
-                                    "value": -0.014648437493273781
+                                    "timestamp": 1542499200000,
+                                    "value": -0.041015624995343385
                                 }
                             ]
                         },
@@ -3955,104 +3955,104 @@
                             "unit": "W/m²",
                             "timeseries": [
                                 {
-                                    "timestamp": 0,
+                                    "timestamp": 1542412800000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 3600,
+                                    "timestamp": 1542416400000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 7200,
+                                    "timestamp": 1542420000000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 10800,
+                                    "timestamp": 1542423600000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 14400,
+                                    "timestamp": 1542427200000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 18000,
+                                    "timestamp": 1542430800000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 21600,
+                                    "timestamp": 1542434400000,
                                     "value": 0
                                 },
                                 {
-                                    "timestamp": 25200,
-                                    "value": 1.3330078125
+                                    "timestamp": 1542438000000,
+                                    "value": 3.03173828125
                                 },
                                 {
-                                    "timestamp": 28800,
-                                    "value": 32.233642578125
+                                    "timestamp": 1542441600000,
+                                    "value": 51.814697265625
                                 },
                                 {
-                                    "timestamp": 32400,
-                                    "value": 88.14252650737762
+                                    "timestamp": 1542445200000,
+                                    "value": 80.36165171861649
                                 },
                                 {
-                                    "timestamp": 36000,
-                                    "value": 135.14795458316803
+                                    "timestamp": 1542448800000,
+                                    "value": 95.63700693845749
                                 },
                                 {
-                                    "timestamp": 39600,
-                                    "value": 146.50878405570984
+                                    "timestamp": 1542452400000,
+                                    "value": 102.13556969165802
                                 },
                                 {
-                                    "timestamp": 43200,
-                                    "value": 105.37438011169434
+                                    "timestamp": 1542456000000,
+                                    "value": 101.35517811775208
                                 },
                                 {
-                                    "timestamp": 46800,
-                                    "value": 109.1113030910492
+                                    "timestamp": 1542459600000,
+                                    "value": 93.04704689979553
                                 },
                                 {
-                                    "timestamp": 50400,
-                                    "value": 76.60409712791443
+                                    "timestamp": 1542463200000,
+                                    "value": 74.65015459060669
                                 },
                                 {
-                                    "timestamp": 54000,
-                                    "value": 45.17407441139221
+                                    "timestamp": 1542466800000,
+                                    "value": 43.18778944015503
                                 },
                                 {
-                                    "timestamp": 57600,
-                                    "value": -0.022092819213867188
+                                    "timestamp": 1542470400000,
+                                    "value": -0.00856328010559082
                                 },
                                 {
-                                    "timestamp": 61200,
-                                    "value": -0.05955910682678223
+                                    "timestamp": 1542474000000,
+                                    "value": -0.06733894348144531
                                 },
                                 {
-                                    "timestamp": 64800,
-                                    "value": 0.0907127857208252
+                                    "timestamp": 1542477600000,
+                                    "value": 0.03996133804321289
                                 },
                                 {
-                                    "timestamp": 68400,
-                                    "value": -0.024605274200439453
+                                    "timestamp": 1542481200000,
+                                    "value": -0.05777382850646973
                                 },
                                 {
-                                    "timestamp": 72000,
-                                    "value": 0.018280982971191406
+                                    "timestamp": 1542484800000,
+                                    "value": 0.086669921875
                                 },
                                 {
-                                    "timestamp": 75600,
-                                    "value": -0.04622960090637207
+                                    "timestamp": 1542488400000,
+                                    "value": 0.07489943504333496
                                 },
                                 {
-                                    "timestamp": 79200,
-                                    "value": 0.010348081588745117
+                                    "timestamp": 1542492000000,
+                                    "value": -0.03650379180908203
                                 },
                                 {
-                                    "timestamp": 82800,
-                                    "value": 0.11771965026855469
+                                    "timestamp": 1542495600000,
+                                    "value": 0.022024869918823242
                                 },
                                 {
-                                    "timestamp": 86400,
-                                    "value": 0.028800249099731445
+                                    "timestamp": 1542499200000,
+                                    "value": 0.025892019271850586
                                 }
                             ]
                         }
