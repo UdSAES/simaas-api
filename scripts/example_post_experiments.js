@@ -4,8 +4,10 @@
 
 // Load modules
 const _ = require('lodash')
+const fs = require('fs-extra')
 const { URL } = require('url')
 const request = require('request-promise-native')
+const moment = require('moment')
 
 // Define configuration
 const WEATHER_API_ORIGIN = 'https://weather.designetz.saarland'
@@ -19,8 +21,8 @@ const location = {
 }
 
 const simulationParameters = {
-  startTime: new Date(2018, 10, 16, 1).valueOf(), // perfect sunny day
-  stopTime: new Date(2018, 10, 17, 1).valueOf(),
+  startTime: moment.utc('20181117', 'YYYYMMDD').startOf('day').valueOf(), // perfect sunny day
+  stopTime: moment.utc('20181117', 'YYYYMMDD').endOf('day').valueOf(),
   outputInterval: 3600
 }
 
@@ -81,10 +83,10 @@ async function getInputTimeseries () {
         return date.getMinutes() !== 0
       })
     }
-    forecast.timeseries = _.map(forecast.timeseries, function (objTsValue) {
-      objTsValue.timestamp = (objTsValue.timestamp - simulationParameters.startTime) / 1000
-      return objTsValue
-    })
+    // forecast.timeseries = _.map(forecast.timeseries, function (objTsValue) {
+    //   objTsValue.timestamp = (objTsValue.timestamp - simulationParameters.startTime) / 1000
+    //   return objTsValue
+    // }) // 20190427: not necessary anymore!
     delete forecast.data
     delete forecast.location
     inputTimeseries.push(forecast)
@@ -106,6 +108,7 @@ async function main () {
   // XXX Inject updated example into OpenAPI-specification?
 
   console.log(JSON.stringify(example, null, 4))
+  console.log(JSON.stringify(example, null, 0))
 }
 
 main()

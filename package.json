@@ -39,6 +39,7 @@
     "fs-extra": "^7.0.1",
     "json-schema-ref-parser": "^6.0.2",
     "lodash": "^4.17.11",
+    "moment": "^2.24.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "serialize-error": "^3.0.0",
