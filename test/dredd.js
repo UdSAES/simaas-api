@@ -38,8 +38,8 @@ const dredd = new Dredd(dreddConfig)
 // Define main function
 const main = async function () {
   dredd.run(function (err, stats) {
-    if (err !== null) {
-      console.log('"err" !== null: ', err)
+    if (err) {
+      console.log('There were errors while running Dredd', err)
       process.exit(1)
     } else {
       if ((stats.failures + stats.errors) !== 0) {
