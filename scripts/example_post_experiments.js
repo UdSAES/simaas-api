@@ -4,10 +4,10 @@
 
 // Load modules
 const _ = require('lodash')
-const fs = require('fs-extra')
 const { URL } = require('url')
 const request = require('request-promise-native')
 const moment = require('moment')
+const convertTimeseriesArrayToCsv = require('../simaas_worker').convertTimeseriesArrayToCsv
 
 // Define configuration
 const WEATHER_API_ORIGIN = 'https://weather.designetz.saarland'
@@ -109,6 +109,10 @@ async function main () {
 
   console.log(JSON.stringify(example, null, 4))
   console.log(JSON.stringify(example, null, 0))
+
+  // For debugging: export timeseries as .csv for fmpy.gui and as .txt for Dymola
+  const csv = convertTimeseriesArrayToCsv(example.inputTimeseries)
+  console.log(csv)
 }
 
 main()
