@@ -2044,7 +2044,7 @@
                         "examples": {
                             "application/json": {
                                 "description": "An exemplary simulation result",
-                                "data": [
+                                "result": [
                                     {
                                         "label": "albedo_ground",
                                         "unit": "1",
@@ -4353,7 +4353,7 @@
             "examples": {
                 "application/json": {
                     "description": "An exemplary simulation result",
-                    "data": [
+                    "result": [
                         {
                             "label": "albedo_ground",
                             "unit": "1",

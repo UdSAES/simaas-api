@@ -448,7 +448,7 @@
                 "Content-Type": { "type": "string", "enum": ["application/json"] }
             },
             "examples": {
-                "application/json": {"description": "An exemplary simulation result", "data": [ { "label": "albedo_ground", "unit": "1", "timeseries": [ { "timestamp":
+                "application/json": {"description": "An exemplary simulation result", "result": [ { "label": "albedo_ground", "unit": "1", "timeseries": [ { "timestamp":
                 1526634000000, "value": 0.15174804687500001 }, { "timestamp": 1526637600000,
                 "value": 0.15174804687500001 } ] }, { "label": "temperature_2m_ag", "unit": "K",
                 "timeseries": [ { "timestamp": 1526634000000, "value": 286.0401916503906 }, {
