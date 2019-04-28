@@ -1,22 +1,18 @@
-FROM node:10-alpine
+FROM registry.leela.msaas.me:9097/simaas_api_generic:latest
 
-LABEL me.msaas.vendor="UdS AES"
-LABEL me.msaas.maintainer="moritz.stueber@aut.uni-saarland.de"
 LABEL me.msaas.subject="SIMaaS Automated Tests"
 
 # git is required by `npm install`
+USER root
 RUN set -ex && apk add --no-cache git
 
+WORKDIR /home/node/api
+RUN npm install --only=dev --no-optional
+
 USER node
-WORKDIR /home/node/
+COPY --chown=node:node oas/ /home/node/api/oas/
+COPY --chown=node:node scripts/ /home/node/api/scripts/
+COPY --chown=node:node test/ /home/node/api/test/
 
-COPY --chown=node:node ./package.json /home/node/
-
-RUN npm install --no-optional
-
-COPY --chown=node:node oas/ /home/node/oas/
-COPY --chown=node:node scripts/ /home/node/scripts/
-COPY --chown=node:node test/ /home/node/test/
-COPY --chown=node:node index.js /home/node/
 
 ENTRYPOINT [ "/bin/sh" ]
