@@ -42,7 +42,7 @@
     "moment": "^2.24.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
-    "serialize-error": "^3.0.0",
+    "serialize-error": "^4.1.0",
     "swagger-tools": "^0.10.4"
   },
   "devDependencies": {
