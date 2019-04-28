@@ -49,7 +49,7 @@
     "dredd": "^5.4.6",
     "speccy": "^0.8.7",
     "standard": "^12.0.1",
-    "swagger2openapi": "^3.2.14"
+    "swagger2openapi": "^5.2.5"
   },
   "standard": {
     "ignore": [
