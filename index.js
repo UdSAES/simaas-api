@@ -254,7 +254,9 @@ async function getExperimentResult (req, res) {
   const resultBody = postTaskResult.body
 
   // Transform body to specified format
+  /* eslint-disable no-template-curly-in-string */
   resultBody.description = 'The results of simulating model instance ${modelInstanceID} from ${startTime} to ${stopTime}'
+  /* eslint-enable no-template-curly-in-string */
 
   // Delete properties that shall not be exposed to the consumer
   delete resultBody.id
