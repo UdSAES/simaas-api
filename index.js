@@ -192,7 +192,8 @@ async function simulateModelInstance (req, res) {
   const sourceLocationHeader = _.get(postTaskResult, ['headers', 'location'])
   const u = new URL(sourceLocationHeader, 'http://127.0.0.1')
 
-  res.status(202).location(origin + u.pathname.replace('/tasks/', '/experiments/')).json()
+  res.set('Content-Type', 'application/json') //
+  res.status(202).location(origin + u.pathname.replace('/tasks/', '/experiments/')).json() // XXX does this properly set the header if no body is present? only if not already set, thus explicitly set to 'application/json' above
   log.info('successfully handled ' + req.method + '-request on ' + req.path)
 }
 
