@@ -1,4 +1,14 @@
-# Version History
+# API Version History
+The API is versioned using [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) (semver) and follows the semver specification.
+
+## Overview
+Version   | Date       | Notes
+---       | ---        | ---
+0.1.0     |            |
+0.2.0     |            |
+0.3.0     |            |
+
+## Release Notes
 Details about each release _and_ the features being worked on in reverse order (most recent first).
 
 ## v0.4.0
@@ -13,7 +23,8 @@ Details about each release _and_ the features being worked on in reverse order (
 * Zusammenarbeit/Aufgabenteilung `simulation aas` -- `models aas` fundiert definieren
 * Zusammenarbeit/Aufgabenteilung `simulation aas` -- `models aas` implementieren
 
-## v0.3.0
+
+### v0.3.0
 * specific to model instance representing a fictive 15kWp PV plant in Saarbrücken
     * replace parameter set, example required to run simulation
     * replace FMU in deployment
@@ -29,15 +40,14 @@ Details about each release _and_ the features being worked on in reverse order (
     * revise npm run scripts
 * bugfixes/housekeeping
 
-
-### User Stories
+#### User Stories
 * [x] As a user, I want to trigger simulations of the available model instances
 * [x] As a user, I want to retrieve the results of a simulation
 * [x] As a user, I want to get `400 Bad Request`-responses if send malformed requests
 * [x] As a user, I want to get `404 Not Found`-responses if I request sth. non-existent
 * [x] As a user, I want to get `501 Not Implemented`-responses for all endpoints that are not yet implemented
 
-### Endpoints
+#### Endpoints
 * [x] ~~`GET    /model-instances`~~
 * [x] ~~`POST   /model-instances`~~
 * [x] ~~`GET    /model-instances/{uuid}`~~
@@ -47,14 +57,14 @@ Details about each release _and_ the features being worked on in reverse order (
 * [x]   `GET    /experiments/{uuid}/status`
 * [x]   `GET    /experiments/{uuid}/result`
 
-### Schemata
+#### Schemata
 * [x] `ModelInstance`
 * [x] `ExperimentSetup`
 * [x] `ExperimentStatus`
 * [x] `ExperimentResult`
 * [x] `NotImplemented`
 
-### Testing Strategy
+#### Testing Strategy
 * [x] Linting of OAS using Speccy (enforced in CI/CD)
 * [x] Linting of source code using JavaScript Standard Style (enforced in CI/CD)
 * [x] Verification of intended behaviour in case all goes well using Dredd (enforced in CI/CD)
@@ -63,7 +73,7 @@ Details about each release _and_ the features being worked on in reverse order (
 * [x] Verify that microservice returns `501` for resources not yet implemented
 * Verification of everything else _not_ automated
 
-## v0.2.0
+### v0.2.0
 * specific to instances of `SolarPlantWithInput3Outputs.fmu`
 * new features
     * kebab-case resources, camelCase parameters, PascalCase schemata
