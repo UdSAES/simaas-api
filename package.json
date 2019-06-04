@@ -34,9 +34,9 @@
     "cors": "^2.8.5",
     "delay": "^4.2.0",
     "designetz_logger": "^1.0.2",
-    "express": "^4.16.4",
+    "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
-    "fs-extra": "^7.0.1",
+    "fs-extra": "^8.0.1",
     "json-schema-ref-parser": "^6.1.0",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
@@ -47,9 +47,9 @@
   },
   "devDependencies": {
     "dredd": "^9.0.5",
-    "speccy": "^0.9.0",
+    "speccy": "^0.10.1",
     "standard": "^12.0.1",
-    "swagger2openapi": "^5.2.5"
+    "swagger2openapi": "^5.3.0"
   },
   "standard": {
     "ignore": [
