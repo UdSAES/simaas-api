@@ -52,6 +52,7 @@ const $RefParser = require('json-schema-ref-parser')
 const fs = require('fs-extra')
 const delay = require('delay')
 const serializeError = require('serialize-error')
+const addRequestId = require('express-request-id')()
 
 log.info({ code: 300010 }, 'successfully loaded modules')
 
@@ -119,7 +120,7 @@ async function respondWithNotImplemented (req, res) {
     'status': 501,
     'detail': 'The request was understood, but the underlying implementation is not available yet.'
   })
-  log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
+  req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
 }
 
 async function simulateModelInstance (req, res) {
@@ -182,7 +183,7 @@ async function simulateModelInstance (req, res) {
 
   res.set('Content-Type', 'application/json') //
   res.status(202).location(origin + u.pathname.replace('/tasks/', '/experiments/')).json() // XXX does this properly set the header if no body is present? only if not already set, thus explicitly set to 'application/json' above
-  log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
+  req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
 }
 
 async function getExperimentStatus (req, res) {
@@ -221,7 +222,7 @@ async function getExperimentStatus (req, res) {
   }
 
   res.status(200).json(resultBody)
-  log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
+  req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
 }
 
 async function getExperimentResult (req, res) {
@@ -252,7 +253,7 @@ async function getExperimentResult (req, res) {
   delete resultBody.err
 
   res.status(200).json(resultBody)
-  log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
+  req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
 }
 
 // Define main program
@@ -263,6 +264,7 @@ async function init () {
   const app = express()
   app.use(bodyParser.json())
   app.use(cors())
+  app.use(addRequestId)
 
   // Expose OpenAPI-specification as /oas
   app.use('/oas', express.static(API_SPECIFICATION_FILE_PATH))
@@ -311,10 +313,8 @@ async function init () {
 
     // Define routing -- MUST happen after enabling swaggerValidator or validation doesn't work
     app.use((req, res, next) => {
-      log.info(
-        'received ' + req.method + '-request on ' + req.path +
-        ', accepted media types are: ' + req.headers.accept
-      )
+      req.log = log.child({ req_id: req.id })
+      req.log.info({ req: req }, `received ${req.method}-request on ${req.originalUrl}`)
       next()
     })
     app.get('/model-instances', respondWithNotImplemented)
@@ -335,18 +335,19 @@ async function init () {
         'status': 404,
         'detail': 'The requested resource was not found on this server'
       })
-      log.info({ res: res }, 'sent `404 Not Found` as response to ' + req.method + '-request on ' + req.path)
+      req.log.info({ res: res }, 'sent `404 Not Found` as response to ' + req.method + '-request on ' + req.path)
     }) // http://expressjs.com/en/starter/faq.html
 
     // Ensure that any remaining errors are serialized as JSON
     app.use(function (err, req, res, next) {
       if (res.headersSent) {
-        return next(err)
+        req.log.fatal({ code: 600050, err: err }, 'headers already sent')
+        process.exit(1)
       }
 
       switch (err.code) {
         case 'SCHEMA_VALIDATION_FAILED':
-          log.warn({ code: 401099, err: err }, 'schema validation failed -- request dropped')
+          req.log.warn({ code: 401099, err: err }, 'schema validation failed -- request dropped')
           res.set('Content-Type', 'application/problem+json')
           res.status(400).json({
             title: 'Schema Validation Failed',
@@ -356,7 +357,7 @@ async function init () {
           })
           break
         case 'PATTERN':
-          log.warn({ code: 401099, err: err }, 'schema validation failed -- request dropped')
+          req.log.warn({ code: 401099, err: err }, 'schema validation failed -- request dropped')
           res.set('Content-Type', 'application/problem+json')
           res.status(400).json({
             title: 'Schema Validation Failed',
@@ -372,7 +373,7 @@ async function init () {
           // TODO explicitly handle response validation failure -- this doesn't work
 
           // if (_.startsWith(err.message, 'Response validation failed')) {
-          //   log.error({ code: 501099, err: err }, 'a response did not validate agains its schema')
+          //   req.log.error({ code: 501099, err: err }, 'a response did not validate agains its schema')
           //   res.status(500).json({ error: serializeError(err) }) // XXX RFC7807
           //   break
           // } else {
@@ -382,16 +383,19 @@ async function init () {
     })
 
     app.use(function (err, req, res, next) {
-      log.error({ code: 501000, err: err }, 'an internal server error occured and was caught at the end of the chain')
+      req.log.error({ code: 501000, err: err }, 'an internal server error occured and was caught at the end of the chain')
       if (res.headersSent) {
-        return next(err)
+        req.log.fatal({ code: 600050, err: err }, 'headers already sent')
+        process.exit(1)
       }
 
       res.set('Content-Type', 'application/problem+json')
       res.status(500).json({
         title: 'Internal Server Error',
-        status: 500
+        status: 500,
+        detail: 'An internal server error occured, please try again later'
       })
+      req.log.error({ err: err }, 'sent `500 Internal Server Error` as response to ' + req.method + '-request on ' + req.path)
     })
 
     log.info({ code: 300030 }, 'configuration successfull')
