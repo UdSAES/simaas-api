@@ -35,6 +35,7 @@ process.on('uncaughtException', function (error) {
 })
 
 // Handle shutdown signals gracefully
+let server // global server object, populated when binding to port in init()
 process.on('SIGINT', shutDownGracefully)
 process.on('SIGTERM', shutDownGracefully)
 
@@ -62,7 +63,7 @@ const UI_URL_PATH = String(process.env.UI_URL_PATH) || ''
 const ALIVE_EVENT_WAIT_TIME = parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 3600 * 1000
 const API_SPECIFICATION_FILE_PATH = './oas/simaas_oas2.json'
 
-// Check if configuration is valid
+// Define functions
 async function checkIfConfigIsValid () {
   if (!_.isString(QUEUE_ORIGIN)) {
     log.fatal({ code: 600020 }, 'QUEUE_ORIGIN is ' + QUEUE_ORIGIN + ' but must be a valid protocol+host-combination (e.g. http://127.0.0.1:12345)')
@@ -81,40 +82,13 @@ async function checkIfConfigIsValid () {
 
   // TODO check validity of UI_STATIC_FILES_PATH
   // TODO check validity of UI_URL_PATH
+  // TODO check validity of LOG_LEVEL?
   // TODO check validity of ALIVE_EVENT_WAIT_TIME
   // TODO check validity of API_SPECIFICATION_FILE_PATH
 
   log.info({ code: 300020 }, 'configuration is valid, moving on')
 }
 
-// Instantiate express-application and set up middleware-stack
-let server // global server object, populated when binding to port in init()
-const app = express()
-app.use(bodyParser.json())
-app.use(cors())
-
-// Expose OpenAPI-specification as /oas
-app.use('/oas', express.static(API_SPECIFICATION_FILE_PATH))
-
-// Expose UI iff UI_URL_PATH is not empty
-if (UI_URL_PATH !== '') {
-  if (UI_STATIC_FILES_PATH !== '') {
-    // Expose locally defined UI
-    app.use(UI_URL_PATH, express.static(UI_STATIC_FILES_PATH))
-    log.info({ code: 300020 }, 'exposing UI as ' + UI_URL_PATH)
-  } else {
-    // Fall back to default-UI
-    log.fatal({ code: 600020 }, 'default-UI not implemented')
-    process.exit(1)
-  }
-
-  // Redirect GET-request on origin to UI iff UI is exposed
-  app.get('', async (req, res) => {
-    res.redirect(UI_URL_PATH)
-  })
-}
-
-// Define functions
 async function aliveLoop () {
   while (true) {
     await delay(ALIVE_EVENT_WAIT_TIME)
@@ -285,6 +259,33 @@ async function getExperimentResult (req, res) {
 async function init () {
   await checkIfConfigIsValid()
 
+  // Instantiate express-application and set up middleware-stack
+  const app = express()
+  app.use(bodyParser.json())
+  app.use(cors())
+
+  // Expose OpenAPI-specification as /oas
+  app.use('/oas', express.static(API_SPECIFICATION_FILE_PATH))
+
+  // Expose UI iff UI_URL_PATH is not empty
+  if (UI_URL_PATH !== '') {
+    if (UI_STATIC_FILES_PATH !== '') {
+      // Expose locally defined UI
+      app.use(UI_URL_PATH, express.static(UI_STATIC_FILES_PATH))
+      log.info({ code: 300020 }, 'exposing UI as ' + UI_URL_PATH)
+    } else {
+      // Fall back to default-UI
+      log.fatal({ code: 600020 }, 'default-UI not implemented')
+      process.exit(1)
+    }
+
+    // Redirect GET-request on origin to UI iff UI is exposed
+    app.get('', async (req, res) => {
+      res.redirect(UI_URL_PATH)
+    })
+  }
+
+  // Read API-specification and initialize backend
   let api = null
   try {
     api = await fs.readJson(API_SPECIFICATION_FILE_PATH, {
@@ -308,8 +309,7 @@ async function init () {
       validateResponse: true
     }))
 
-    // Define routing
-    // MUST happen after enabling swaggerValidator or validation doesn't work
+    // Define routing -- MUST happen after enabling swaggerValidator or validation doesn't work
     app.use((req, res, next) => {
       log.info(
         'received ' + req.method + '-request on ' + req.path +
@@ -327,6 +327,7 @@ async function init () {
     app.get('/experiments/:experimentID/status', getExperimentStatus)
     app.get('/experiments/:experimentID/result', getExperimentResult)
 
+    // Handle unsuccessfull requests
     app.use(function (req, res, next) {
       res.set('Content-Type', 'application/problem+json')
       res.status(404).json({
@@ -408,5 +409,7 @@ async function init () {
 }
 
 // Enter main tasks
-init()
-aliveLoop()
+if (require.main === module) {
+  init()
+  aliveLoop()
+}
