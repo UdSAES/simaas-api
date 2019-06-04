@@ -300,6 +300,12 @@ async function init () {
     process.exit(1)
   }
 
+  app.use((req, res, next) => {
+    req.log = log.child({ req_id: req.id })
+    req.log.info({ req: req }, `received ${req.method}-request on ${req.originalUrl}`)
+    next()
+  })
+
   swaggerTools.initializeMiddleware(api, function (middleware) {
     // Interpret Swagger resources and attach metadata to request
     // -- must be first in swagger-tools middleware chain
@@ -312,11 +318,6 @@ async function init () {
     }))
 
     // Define routing -- MUST happen after enabling swaggerValidator or validation doesn't work
-    app.use((req, res, next) => {
-      req.log = log.child({ req_id: req.id })
-      req.log.info({ req: req }, `received ${req.method}-request on ${req.originalUrl}`)
-      next()
-    })
     app.get('/model-instances', respondWithNotImplemented)
     app.post('/model-instances', respondWithNotImplemented)
     app.get('/model-instances/:modelInstanceID', respondWithNotImplemented)
