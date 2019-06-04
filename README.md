@@ -19,6 +19,7 @@ ENVVAR                          | Description                                   
 `ALIVE_EVENT_WAIT_TIME`         | The cycle time of the heartbeat (API)               | `3600 s`     
 `UI_STATIC_FILES_PATH`          | Path in file system to custom static website/UI     | `''`
 `UI_URL_PATH`                   | Path (in URL) under which static content is exposed | `''`
+`LOG_LEVEL`                     | Log verbosity (e.g. `30` -> `"info"` and above)     | `30`
 :wavy_dash: Queue               |                                                     |
 `LISTEN_PORT`\*                 | __The port on which the queue listens__             |
 `ALIVE_EVENT_WAIT_TIME`         | The cycle time of the heartbeat (queue)             | `3600 s`
