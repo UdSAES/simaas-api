@@ -7,21 +7,69 @@ Version   | Date       | Notes
 0.1.0     |            |
 0.2.0     |            |
 0.3.0     |            |
+0.4.0     |            |
+0.5.0     |            |
 
 ## Release Notes
 Details about each release _and_ the features being worked on in reverse order (most recent first).
 
-## v0.4.0
-### User Stories
+### v0.5.0
+#### User Stories
 * [ ] As a user, I want to add new instances of the supported models/model types
 * [ ] As a user, I want to retrieve a list of available model instances
 * [ ] As a user, I want to retrieve a representation of a specific model instance
 
-### To Taiga
-* Hinzufügen Modellinstanzen implementieren
-* Lesen Definition Experiment implementieren
-* Zusammenarbeit/Aufgabenteilung `simulation aas` -- `models aas` fundiert definieren
-* Zusammenarbeit/Aufgabenteilung `simulation aas` -- `models aas` implementieren
+#### Endpoints
+
+#### Representations
+
+#### Testing Strategy
+
+#### Housekeeping
+
+#### To Taiga
+Hinzufügen Modellinstanzen implementieren
+Lesen Definition Experiment implementieren
+Zusammenarbeit/Aufgabenteilung `simulation aas` -- `models aas` fundiert definieren
+Zusammenarbeit/Aufgabenteilung `simulation aas` -- `models aas` implementieren
+
+
+### v0.4.0
+
+#### User Stories
+* [ ] As a devops-engineer, I expect that relevant information is logged according to specification
+    * [ ] As a devops-engineer, I want to specify the log level via the environment
+    * [ ] As a devops-engineer, I want to search for requests via indexed fields (instead of parsing messages)
+    * [ ] As a devops-engineer, I want to be able to trace requests across microservices
+    * [ ] __POP STASH @ 9656da740b8d84745fa84eebe26d1920318f6788__
+* [ ] As a devops-engineer, I want to properly separate API, message broker, worker and result storage
+    * [ ] As a developer, I want to use an established implementation of a distributed task queue instead of a shaky prototype
+    * [ ] As a developer, I want to make use of the excellent packages for scientific computing available in Python
+    * [ ] As a developer, I no longer want to parse CLI output but use the native data structures directly
+* [ ] As the API, I expect the workers to...
+    * [ ] adhere to the format for exchanging data via message broker/result backend that has been agreed upon
+    * [ ] consume valid input that has _not_ been preprocessed
+    * [ ] execute a given FMU 2.0 for CS and return the simulation result
+    * [ ] provide auxiliary information based on the metadata of the FMU
+* [ ] As a user, I expect the API to adhere to standard HTTP-semantics
+* [ ] As a developer of SUCH, I expect the OAS to be nice to my code generator
+
+#### Data/Model Management
+* [ ] is it really a good idea to assume that the JSON representation of resource state exposed via the API is a good format for passing data to workers?
+* [ ] how to ensure that all workers have access to the FMUs, potentially even across a swarm?
+
+#### Testing Strategy
+* [ ] unit tests for worker tasks
+    * [ ] test that parameters like `epochOffset` are correctly set
+* [ ] functional tests for enqueuing tasks and retrieving results
+* [ ] API-tests using _an up-to-date version_ of Dredd
+
+#### Housekeeping
+* [ ] tag & release v0.3.0, merge into branch master
+* [ ] use ansible to deploy locally while developing?
+* [ ] do not show startup-script in README
+* [ ] archive deprecated software-libraries (logger, queue, ...)
+* [ ] check satisfaction of external requirements?
 
 
 ### v0.3.0
