@@ -48,7 +48,6 @@ const cors = require('cors')
 const _ = require('lodash')
 const request = require('request-promise-native')
 const swaggerTools = require('swagger-tools')
-const $RefParser = require('json-schema-ref-parser')
 const fs = require('fs-extra')
 const delay = require('delay')
 const serializeError = require('serialize-error')
@@ -307,17 +306,16 @@ async function init () {
   // Read API-specification and initialize backend
   let api = null
   try {
-    api = await fs.readJson(API_SPECIFICATION_FILE_PATH, { encoding: 'utf8' })
-    api = await $RefParser.dereference(api)
-    log.info({ code: 300020 }, 'successfully loaded API description ' + API_SPECIFICATION_FILE_PATH)
+    api = await fs.readJson(API_SPECIFICATION_FILE_PATH_FLAT, { encoding: 'utf8' })
+    log.info({ code: 300020 }, 'successfully loaded API description ' + API_SPECIFICATION_FILE_PATH_FLAT)
   } catch (error) {
-    log.fatal({ code: 600010, err: error }, 'error while loading API description ' + API_SPECIFICATION_FILE_PATH)
+    log.fatal({ code: 600010, err: error }, 'error while loading API description ' + API_SPECIFICATION_FILE_PATH_FLAT)
     process.exit(1)
   }
 
   app.use((req, res, next) => {
     req.log = log.child({ req_id: req.id })
-    req.log.info({ req: req }, `received ${req.method}-request on ${req.originalUrl}`)
+    req.log.info({ req: req }, `received ${req.method}-request on ${req.originalUrl}`) // XXX incompatible with GDPR!!
     next()
   })
 
