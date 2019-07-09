@@ -63,6 +63,7 @@ const UI_STATIC_FILES_PATH = String(process.env.UI_STATIC_FILES_PATH) || ''
 const UI_URL_PATH = String(process.env.UI_URL_PATH) || ''
 const ALIVE_EVENT_WAIT_TIME = parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 3600 * 1000
 const API_SPECIFICATION_FILE_PATH = './oas/simaas_oas2.json'
+const API_SPECIFICATION_FILE_PATH_FLAT = './oas/simaas_oas2_flat.json'
 
 // Define functions
 async function checkIfConfigIsValid () {
@@ -256,6 +257,25 @@ async function getExperimentResult (req, res) {
   req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
 }
 
+async function serveOAS (req, res) {
+  let flatVersionWanted
+  let oas
+
+  if (_.has(req.query, 'flat') === true) {
+    flatVersionWanted = req.query.flat
+  } else {
+    flatVersionWanted = true
+  }
+
+  if (flatVersionWanted === true) {
+    oas = await fs.readJson(API_SPECIFICATION_FILE_PATH_FLAT, { encoding: 'utf8' })
+  } else {
+    oas = await fs.readJson(API_SPECIFICATION_FILE_PATH, { encoding: 'utf8' })
+  }
+
+  res.status(200).json(oas)
+}
+
 // Define main program
 async function init () {
   await checkIfConfigIsValid()
@@ -265,9 +285,6 @@ async function init () {
   app.use(bodyParser.json())
   app.use(cors())
   app.use(addRequestId)
-
-  // Expose OpenAPI-specification as /oas
-  app.use('/oas', express.static(API_SPECIFICATION_FILE_PATH))
 
   // Expose UI iff UI_URL_PATH is not empty
   if (UI_URL_PATH !== '') {
@@ -290,9 +307,7 @@ async function init () {
   // Read API-specification and initialize backend
   let api = null
   try {
-    api = await fs.readJson(API_SPECIFICATION_FILE_PATH, {
-      encoding: 'utf8'
-    })
+    api = await fs.readJson(API_SPECIFICATION_FILE_PATH, { encoding: 'utf8' })
     api = await $RefParser.dereference(api)
     log.info({ code: 300020 }, 'successfully loaded API description ' + API_SPECIFICATION_FILE_PATH)
   } catch (error) {
@@ -316,6 +331,9 @@ async function init () {
     app.use(middleware.swaggerValidator({
       validateResponse: true
     }))
+
+    // Expose OpenAPI-specification as /oas
+    app.get('/oas', serveOAS)
 
     // Define routing -- MUST happen after enabling swaggerValidator or validation doesn't work
     app.get('/model-instances', respondWithNotImplemented)

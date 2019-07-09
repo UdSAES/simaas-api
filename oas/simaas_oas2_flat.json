@@ -2153,10 +2153,40 @@
                 }
             ]
         },
+        "/oas": {
+            "get": {
+                "tags": [
+                    "API Details"
+                ],
+                "summary": "The OpenAPI Specification of this API",
+                "produces": [
+                    "application/json",
+                    "application/problem+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "flat",
+                        "in": "query",
+                        "description": "Boolean value indicating whether a flattened version of the OAS is requested or not. Defaults to `true`.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The OpenAPI Specification of this API in flattened or non-flattened form",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "/notfound": {
             "get": {
                 "tags": [
-                    "Unsuccessful Operations"
+                    "API Details"
                 ],
                 "summary": "A resource that does not exist",
                 "produces": [
@@ -4068,6 +4098,14 @@
             "type": "string",
             "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
             "x-example": "d9a23e72-b01a-4be7-a598-c3f31071da2c"
+        },
+        "OASisFlattened": {
+            "name": "flat",
+            "in": "query",
+            "description": "Boolean value indicating whether a flattened version of the OAS is requested or not. Defaults to `true`.",
+            "required": false,
+            "type": "boolean",
+            "default": true
         }
     },
     "responses": {
@@ -4397,8 +4435,8 @@
             "description": "An experiment denotes the execution of a model instance for given boundary conditions and simulation settings; in other words, a specific simulation."
         },
         {
-            "name": "Unsuccessful Operations",
-            "description": "Paths/operations using this tag only exist for demonstrating the API's responses to malformed requests."
+            "name": "API Details",
+            "description": "Paths/operations using this tag document endpoints provided for the developer's convenience that are not part of the functionality provided _as a service_."
         }
     ]
 }
