@@ -60,7 +60,7 @@ COPY --chown=node:node ./package.json /home/node/api
 
 RUN npm install --production
 
-COPY --chown=node:node ./oas/simaas_oas2_flat.json /home/node/api/oas/simaas_oas2.json
+COPY --chown=node:node ./oas/ /home/node/api/oas/
 COPY --chown=node:node ./index.js /home/node/api
 
 # Start application ############################################################
