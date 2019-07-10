@@ -18,9 +18,8 @@ const STEPS = {
   GET_MODEL_INSTANCE_UUID_501: 'Model Instances > /model-instances/{uuid} > A specific model instance > 501 > application/problem+json',
   DELETE_MODEL_INSTANCE_UUID_501: 'Model Instances > /model-instances/{uuid} > Delete a specific model instance > 501 > application/problem+json',
   GET_EXPERIMENTS_501: 'Experiments > /experiments > A list of all available experiments > 501 > application/problem+json',
-  POST_EXPERIMENTS_202: 'Experiments > /experiments > Trigger the simulation of a model instance by defining an experiment > 202 > application/json',
-  GET_EXPERIMENT_UUID_501: 'Experiments > /experiments/{uuid} > A specific experiment > 501 > application/problem+json',
-  GET_EXPERIMENT_UUID_STATUS_200: 'Experiments > /experiments/{uuid}/status > A resource indicating the status of an experiment > 200 > application/json',
+  POST_EXPERIMENTS_201: 'Experiments > /experiments > Trigger the simulation of a model instance by defining an experiment > 201 > application/json',
+  GET_EXPERIMENT_UUID_200: 'Experiments > /experiments/{uuid} > A representation of a specific experiment and its status > 200 > application/json',
   GET_EXPERIMENT_UUID_RESULT_200: 'Experiments > /experiments/{uuid}/result > The results of performing the experiment/simulation > 200 > application/json',
   GET_NOT_FOUND_404: 'Unsuccessful Operations > /notfound > A resource that does not exist > 404 > application/problem+json'
 }
@@ -77,31 +76,27 @@ hooks.before(STEPS.GET_EXPERIMENTS_501, function (transaction) {
   transaction.skip = false
 })
 
-hooks.before(STEPS.GET_EXPERIMENT_UUID_501, function (transaction) {
-  transaction.skip = false
-})
-
 hooks.before(STEPS.GET_NOT_FOUND_404, function (transaction) {
   transaction.skip = false
 })
 
 // Modify Dredd-requests to ensure their correctness ///////////////////////////
-hooks.before(STEPS.POST_EXPERIMENTS_202, function (transaction) {
+hooks.before(STEPS.POST_EXPERIMENTS_201, function (transaction) {
   delete transaction.expected.headers['Content-Type']
 })
 
 // Retrieve UUID of newly created experiment
-hooks.after(STEPS.POST_EXPERIMENTS_202, async function (transaction, done) {
+hooks.after(STEPS.POST_EXPERIMENTS_201, async function (transaction, done) {
   await delay(WAIT_FOR_SIMULATION) // give the simulation some time to finish
 
   responseStash[transaction.name] = transaction.real // HTTP response to stash
   done()
 })
 
-// Use UUID for checking /experiments/{uuid}/status
-hooks.before(STEPS.GET_EXPERIMENT_UUID_STATUS_200, function (transaction) {
-  if (responseStash[STEPS.POST_EXPERIMENTS_202].statusCode === 202) {
-    const experimentStatusURL = url.parse(responseStash[STEPS.POST_EXPERIMENTS_202].headers.location)
+// Use UUID for checking /experiments/{uuid}
+hooks.before(STEPS.GET_EXPERIMENT_UUID_200, function (transaction) {
+  if (responseStash[STEPS.POST_EXPERIMENTS_201].statusCode === 201) {
+    const experimentStatusURL = url.parse(responseStash[STEPS.POST_EXPERIMENTS_201].headers.location)
     const transactionID = _.replace(
       transaction.id,
       transaction.protocol + '//' + transaction.host + ':' + transaction.port + transaction.fullPath,
@@ -115,7 +110,7 @@ hooks.before(STEPS.GET_EXPERIMENT_UUID_STATUS_200, function (transaction) {
   }
 })
 
-hooks.after(STEPS.GET_EXPERIMENT_UUID_STATUS_200, function (transaction) {
+hooks.after(STEPS.GET_EXPERIMENT_UUID_200, function (transaction) {
   if (transaction.skip === false) {
     const status = JSON.parse(transaction.real.body).status
     if (status !== 'DONE') {
@@ -128,8 +123,8 @@ hooks.after(STEPS.GET_EXPERIMENT_UUID_STATUS_200, function (transaction) {
 
 // Use UUID for checking /experiments/{uuid}/result
 hooks.before(STEPS.GET_EXPERIMENT_UUID_RESULT_200, function (transaction) {
-  if (responseStash[STEPS.GET_EXPERIMENT_UUID_STATUS_200] !== undefined) {
-    const experimentStatus = JSON.parse(responseStash[STEPS.GET_EXPERIMENT_UUID_STATUS_200].body)
+  if (responseStash[STEPS.GET_EXPERIMENT_UUID_200] !== undefined) {
+    const experimentStatus = JSON.parse(responseStash[STEPS.GET_EXPERIMENT_UUID_200].body)
     if ('linkToResult' in experimentStatus) {
       const experimentResultURL = url.parse(experimentStatus['linkToResult'])
       const transactionID = _.replace(
@@ -141,7 +136,7 @@ hooks.before(STEPS.GET_EXPERIMENT_UUID_RESULT_200, function (transaction) {
       transaction.fullPath = experimentResultURL.pathname
     } else {
       // Correct transaction.id, but still fail the test
-      const experimentStatusURL = url.parse(responseStash[STEPS.POST_EXPERIMENTS_202].headers.location)
+      const experimentStatusURL = url.parse(responseStash[STEPS.POST_EXPERIMENTS_201].headers.location)
       const transactionID = _.replace(
         transaction.id,
         transaction.fullPath,

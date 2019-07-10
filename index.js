@@ -64,6 +64,9 @@ const ALIVE_EVENT_WAIT_TIME = parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 360
 const API_SPECIFICATION_FILE_PATH = './oas/simaas_oas2.json'
 const API_SPECIFICATION_FILE_PATH_FLAT = './oas/simaas_oas2_flat.json'
 
+// Use global object as datastore
+let experiments = {}
+
 // Define functions
 async function checkIfConfigIsValid () {
   if (!_.isString(QUEUE_ORIGIN)) {
@@ -178,11 +181,22 @@ async function simulateModelInstance (req, res) {
     return
   }
 
-  const sourceLocationHeader = _.get(postTaskResult, ['headers', 'location'])
+  const sourceLocationHeader = _.get(postTaskResult, ['headers', 'location']).replace('/status', '')
   const u = new URL(sourceLocationHeader, 'http://127.0.0.1')
 
+  // Store experiment setup identified by UUID
+  const experimentId = _.last(_.split(sourceLocationHeader, '/'))
+  experiments[experimentId] = {
+    setup: {
+      modelInstanceID: modelInstanceID,
+      simulationParameters: simulationParameters,
+      inputTimeseries: inputTimeseries
+    }
+  }
+  req.log.debug({ experiments: experiments[experimentId] })
+
   res.set('Content-Type', 'application/json') //
-  res.status(202).location(origin + u.pathname.replace('/tasks/', '/experiments/')).json() // XXX does this properly set the header if no body is present? only if not already set, thus explicitly set to 'application/json' above
+  res.status(201).location(origin + u.pathname.replace('/tasks/', '/experiments/')).json() // XXX does this properly set the header if no body is present? only if not already set, thus explicitly set to 'application/json' above
   req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
 }
 
@@ -221,7 +235,7 @@ async function getExperimentStatus (req, res) {
     resultBody.linkToResult = targetLinkToResult
   }
 
-  res.status(200).json(resultBody)
+  res.status(200).json({ ...resultBody, ...experiments[experimentID].setup })
   req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
 }
 
@@ -340,8 +354,7 @@ async function init () {
     app.delete('/model-instances/:modelInstanceID', respondWithNotImplemented)
     app.get('/experiments', respondWithNotImplemented)
     app.post('/experiments', simulateModelInstance)
-    app.get('/experiments/:experimentID', respondWithNotImplemented)
-    app.get('/experiments/:experimentID/status', getExperimentStatus)
+    app.get('/experiments/:experimentID', getExperimentStatus)
     app.get('/experiments/:experimentID/result', getExperimentResult)
 
     // Handle unsuccessfull requests
