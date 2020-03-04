@@ -4,7 +4,7 @@ LABEL me.msaas.vendor="UdS AES"
 LABEL me.msaas.maintainer="moritz.stueber@aut.uni-saarland.de"
 LABEL me.msaas.subject="Simulation as a Service"
 
-RUN set -ex && apk add --no-cache gcc libc6-compat python3.6 py3.6-numpy py3.6-lxml
+RUN set -ex && apk add --no-cache gcc libc6-compat python3 py3-numpy py3-lxml
 RUN set -ex && python3 -m pip install pipenv --upgrade
 
 ENV PYTHON=/usr/bin/python3
