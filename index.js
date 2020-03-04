@@ -154,7 +154,7 @@ async function simulateModelInstance (req, res) {
       return o.timestamp % 3600 === 0
     })
 
-    simulationParameters.outputInterval = 3600
+    // simulationParameters.outputInterval = 3600 // this might be unnecessary, though
   })
 
   // Enqueue request
