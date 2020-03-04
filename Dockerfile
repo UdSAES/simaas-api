@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:10-alpine3.9
 
 LABEL me.msaas.vendor="UdS AES"
 LABEL me.msaas.maintainer="moritz.stueber@aut.uni-saarland.de"
