@@ -4,7 +4,9 @@ LABEL me.msaas.subject="SIMaaS Automated Tests"
 
 # git is required by `npm install`
 USER root
-RUN set -ex && apk add --no-cache git
+RUN set -ex && apt-get update
+RUN set -ex && apt-get install -y git
+RUN set -ex && apt-get clean
 
 WORKDIR /home/node/api
 RUN npm install --only=dev --no-optional
