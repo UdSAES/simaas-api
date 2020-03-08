@@ -130,6 +130,7 @@ async function simulateModelInstance (req, res) {
   const modelInstanceID = _.get(req, ['body', 'modelInstanceID'])
   const simulationParameters = _.get(req, ['body', 'simulationParameters'])
   const inputTimeseries = _.get(req, ['body', 'inputTimeseries'])
+  const startValues = _.get(req, ['body', 'startValues'])
 
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
@@ -146,7 +147,8 @@ async function simulateModelInstance (req, res) {
       body: {
         model_instance_id: modelInstanceID,
         simulation_parameters: simulationParameters,
-        input_timeseries: inputTimeseries
+        input_timeseries: inputTimeseries,
+        start_values: startValues
       }
     })
   } catch (error) {
@@ -168,7 +170,8 @@ async function simulateModelInstance (req, res) {
     setup: {
       modelInstanceID: modelInstanceID,
       simulationParameters: simulationParameters,
-      inputTimeseries: inputTimeseries
+      inputTimeseries: inputTimeseries,
+      start_values: startValues
     }
   }
   req.log.debug({ experiments: experiments[experimentId] })
