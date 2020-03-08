@@ -223,6 +223,10 @@ async function getExperimentStatus (req, res) {
 async function getExperimentResult (req, res) {
   const experimentID = _.get(req, ['params', 'experimentID'])
 
+  const modelInstanceID = _.get(experiments, [experimentID, 'setup', 'modelInstanceID'])
+  const startTime = _.get(experiments, [experimentID, 'setup', 'simulationParameters', 'startTime'])
+  const stopTime = _.get(experiments, [experimentID, 'setup', 'simulationParameters', 'stopTime'])
+
   let postTaskResult = null
   try {
     postTaskResult = await request({
@@ -239,9 +243,7 @@ async function getExperimentResult (req, res) {
   const resultBody = postTaskResult.body
 
   // Transform body to specified format
-  /* eslint-disable no-template-curly-in-string */
-  resultBody.description = 'The results of simulating model instance ${modelInstanceID} from ${startTime} to ${stopTime}'
-  /* eslint-enable no-template-curly-in-string */
+  resultBody.description = `The results of simulating model instance ${modelInstanceID} from ${startTime} to ${stopTime}`
 
   // Delete properties that shall not be exposed to the consumer
   delete resultBody.id
