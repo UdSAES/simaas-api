@@ -135,28 +135,6 @@ async function simulateModelInstance (req, res) {
   const protocol = _.get(req, ['protocol'])
   const origin = protocol + '://' + host
 
-  // Clean up incoming data
-  const offset = inputTimeseries[0].timeseries[0].timestamp // XXX assumes order
-  // const offset = _.min(inputTimeseries[0].timeseries)
-
-  _.forEach(inputTimeseries, function (tsObject) {
-    // Let timestamps begin at zero and convert to seconds
-    tsObject.timeseries = _.map(tsObject.timeseries, function (timestampObject) {
-      return {
-        value: timestampObject.value,
-        timestamp: _.round((timestampObject.timestamp - offset) / 1000, 0)
-      }
-    })
-
-    // Drop values at temporal resolution below 3600s
-    // -- necessary as long as fmpy is executed using its binary!
-    tsObject.timeseries = _.remove(tsObject.timeseries, function (o) {
-      return o.timestamp % 3600 === 0
-    })
-
-    // simulationParameters.outputInterval = 3600 // this might be unnecessary, though
-  })
-
   // Enqueue request
   let postTaskResult = null
   try {
