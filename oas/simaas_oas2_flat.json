@@ -1073,12 +1073,7 @@
                                 "modelInstanceID": {
                                     "description": "The UUID of the model instance to be simulated",
                                     "type": "string",
-                                    "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
-                                    "enum": [
-                                        "c02f1f12-966d-4eab-9f21-dcf265ceac71",
-                                        "29f11d50-f11e-46e7-ba2f-7d69f796a101",
-                                        "c17c78f3-5100-41a8-a189-cc9c2df0e3f9"
-                                    ]
+                                    "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
                                 },
                                 "simulationParameters": {
                                     "type": "object",
@@ -1720,12 +1715,7 @@
                                         "modelInstanceID": {
                                             "description": "The UUID of the model instance to be simulated",
                                             "type": "string",
-                                            "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
-                                            "enum": [
-                                                "c02f1f12-966d-4eab-9f21-dcf265ceac71",
-                                                "29f11d50-f11e-46e7-ba2f-7d69f796a101",
-                                                "c17c78f3-5100-41a8-a189-cc9c2df0e3f9"
-                                            ]
+                                            "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
                                         },
                                         "simulationParameters": {
                                             "type": "object",
@@ -2734,12 +2724,7 @@
         "ModelInstanceID": {
             "description": "The UUID of the model instance to be simulated",
             "type": "string",
-            "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
-            "enum": [
-                "c02f1f12-966d-4eab-9f21-dcf265ceac71",
-                "29f11d50-f11e-46e7-ba2f-7d69f796a101",
-                "c17c78f3-5100-41a8-a189-cc9c2df0e3f9"
-            ]
+            "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
         },
         "ModelInstance": {
             "type": "object",
@@ -3451,12 +3436,7 @@
                 "modelInstanceID": {
                     "description": "The UUID of the model instance to be simulated",
                     "type": "string",
-                    "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
-                    "enum": [
-                        "c02f1f12-966d-4eab-9f21-dcf265ceac71",
-                        "29f11d50-f11e-46e7-ba2f-7d69f796a101",
-                        "c17c78f3-5100-41a8-a189-cc9c2df0e3f9"
-                    ]
+                    "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
                 },
                 "simulationParameters": {
                     "type": "object",
@@ -4520,12 +4500,7 @@
                     "modelInstanceID": {
                         "description": "The UUID of the model instance to be simulated",
                         "type": "string",
-                        "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
-                        "enum": [
-                            "c02f1f12-966d-4eab-9f21-dcf265ceac71",
-                            "29f11d50-f11e-46e7-ba2f-7d69f796a101",
-                            "c17c78f3-5100-41a8-a189-cc9c2df0e3f9"
-                        ]
+                        "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
                     },
                     "simulationParameters": {
                         "type": "object",
@@ -5273,12 +5248,7 @@
                             "modelInstanceID": {
                                 "description": "The UUID of the model instance to be simulated",
                                 "type": "string",
-                                "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
-                                "enum": [
-                                    "c02f1f12-966d-4eab-9f21-dcf265ceac71",
-                                    "29f11d50-f11e-46e7-ba2f-7d69f796a101",
-                                    "c17c78f3-5100-41a8-a189-cc9c2df0e3f9"
-                                ]
+                                "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
                             },
                             "simulationParameters": {
                                 "type": "object",
