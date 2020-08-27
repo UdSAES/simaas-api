@@ -5,7 +5,7 @@ LABEL me.msaas.maintainer="moritz.stueber@aut.uni-saarland.de"
 LABEL me.msaas.subject="Simulation as a Service"
 
 RUN set -ex && apt-get update
-RUN set -ex && apt-get install -y gcc libc6 python3 python3-pip python3-numpy python3-lxml
+RUN set -ex && apt-get install -y gcc libc6 python3 python3-pip python3-numpy python3-lxml git
 RUN set -ex && apt-get clean
 RUN set -ex && python3 -m pip install pipenv --upgrade
 
