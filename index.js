@@ -41,17 +41,21 @@ process.on('SIGTERM', shutDownGracefully)
 
 // Load modules
 const express = require('express')
-const { URL } = require('url')
+// const { URL } = require('url')
 var bodyParser = require('body-parser')
 require('express-async-errors')
 const cors = require('cors')
 const _ = require('lodash')
-const request = require('request-promise-native')
+// const request = require('request-promise-native')
 const swaggerTools = require('swagger-tools')
 const fs = require('fs-extra')
 const delay = require('delay')
 const serializeError = require('serialize-error')
 const addRequestId = require('express-request-id')()
+const celery = require('celery-ts')
+const { promiseStatus } = require('promise-status-async')
+
+const uuid = require('uuid')
 
 log.info({ code: 300010 }, 'successfully loaded modules')
 
@@ -66,6 +70,21 @@ const API_SPECIFICATION_FILE_PATH_FLAT = './oas/simaas_oas2_flat.json'
 
 // Use global object as datastore
 let experiments = {}
+
+// Instantiate connections to messaging broker and result storage
+const options = {
+  hostname: 'localhost',
+  protocol: 'amqp',
+  frameMax: 0
+}
+const broker = new celery.AmqpBroker(options)
+const brokers = [broker]
+const backend = celery.createBackend(uuid.v4(), 'redis://localhost')
+
+const celeryClient = new celery.Client({
+  backend,
+  brokers
+})
 
 // Define functions
 async function checkIfConfigIsValid () {
@@ -127,58 +146,30 @@ async function respondWithNotImplemented (req, res) {
 }
 
 async function simulateModelInstance (req, res) {
-  const modelInstanceID = _.get(req, ['body', 'modelInstanceID'])
-  const simulationParameters = _.get(req, ['body', 'simulationParameters'])
-  const inputTimeseries = _.get(req, ['body', 'inputTimeseries'])
-  const startValues = _.get(req, ['body', 'startValues'])
+  const requestBody = _.get(req, ['body'])
 
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
   const origin = protocol + '://' + host
 
   // Enqueue request
-  let postTaskResult = null
-  try {
-    postTaskResult = await request({
-      url: QUEUE_ORIGIN + '/tasks',
-      method: 'post',
-      json: true,
-      resolveWithFullResponse: true,
-      body: {
-        model_instance_id: modelInstanceID,
-        simulation_parameters: simulationParameters,
-        input_timeseries: inputTimeseries,
-        start_values: startValues
-      }
-    })
-  } catch (error) {
-    res.status(error.statusCode).json({ 'error': error.error.err }) // XXX RFC7807
-    return
-  }
-
-  if (postTaskResult.statusCode !== 202) {
-    res.status(500).json({ 'error': 'got status code ' + postTaskResult.statusCode + ' instead of 202' }) // XXX RFC7807
-    return
-  }
-
-  const sourceLocationHeader = _.get(postTaskResult, ['headers', 'location']).replace('/status', '')
-  const u = new URL(sourceLocationHeader, 'http://127.0.0.1')
+  const task = celeryClient.createTask('worker.tasks.simulate')
+  const job = task.applyAsync({
+    args: [requestBody],
+    kwargs: {}
+  })
 
   // Store experiment setup identified by UUID
-  const experimentId = _.last(_.split(sourceLocationHeader, '/'))
+  const experimentId = job.taskId
   experiments[experimentId] = {
-    setup: {
-      modelInstanceID: modelInstanceID,
-      simulationParameters: simulationParameters,
-      inputTimeseries: inputTimeseries,
-      start_values: startValues
-    }
+    job: job,
+    setup: requestBody,
+    simulationResult: null
   }
-  req.log.debug({ experiments: experiments[experimentId] })
 
-  res.set('Content-Type', 'application/json') //
-  res.status(201).location(origin + u.pathname.replace('/tasks/', '/experiments/')).json() // XXX does this properly set the header if no body is present? only if not already set, thus explicitly set to 'application/json' above
-  req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
+  // Immediately return `201 Created` with corresponding `Location`-header
+  res.set('Content-Type', 'application/json')
+  res.status(201).location(origin + '/experiments/' + experimentId).json()
 }
 
 async function getExperimentStatus (req, res) {
@@ -188,35 +179,38 @@ async function getExperimentStatus (req, res) {
   const protocol = _.get(req, ['protocol'])
   const origin = protocol + '://' + host
 
-  let postTaskResult = null
-  try {
-    postTaskResult = await request({
-      url: QUEUE_ORIGIN + '/tasks/' + experimentID + '/status',
-      method: 'get',
-      json: true,
-      resolveWithFullResponse: true
-    })
-  } catch (error) {
-    res.status(error.statusCode).json({ 'error': error.error.err }) // XXX RFC7807
-    return
+  const resultBody = { ...experiments[experimentID].setup }
+
+  let jobStatus
+  let simulationResult
+  const promise = experiments[experimentID].job.result
+  if (await promiseStatus(promise) === 'resolved') {
+    jobStatus = 'SUCCESS'
+    simulationResult = await experiments[experimentID].job.get()
+  } else if (await promiseStatus(promise) === 'rejected') {
+    jobStatus = 'FAILURE'
+  } else {
+    jobStatus = 'PENDING'
   }
 
-  const sourceLinkToResult = _.get(postTaskResult, ['body', 'linkToResult'])
-  let targetLinkToResult = null
-  const resultBody = postTaskResult.body
+  const statusMapping = {
+    'PENDING': 'NEW',
+    'STARTED': 'IN_PROGRESS',
+    'SUCCESS': 'DONE',
+    'FAILURE': 'FAILED'
+  }
+  const status = statusMapping[jobStatus]
 
-  // Delete properties that shall not be exposed to the consumer
-  delete resultBody.id
-  delete resultBody.timestamp_created
-  delete resultBody.timestamp_process_started
+  resultBody.status = status
 
-  if (_.isString(sourceLinkToResult)) {
-    const u = new URL(sourceLinkToResult, 'http://127.0.0.1')
-    targetLinkToResult = origin + u.pathname.replace('/tasks/', '/experiments/')
-    resultBody.linkToResult = targetLinkToResult
+  if (status === 'DONE') {
+    resultBody.linkToResult = origin + '/experiments/' + experimentID + '/result'
+    experiments[experimentID].simulationResult = {
+      'data': simulationResult
+    }
   }
 
-  res.status(200).json({ ...resultBody, ...experiments[experimentID].setup })
+  res.status(200).json(resultBody)
   req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
 }
 
@@ -227,27 +221,10 @@ async function getExperimentResult (req, res) {
   const startTime = _.get(experiments, [experimentID, 'setup', 'simulationParameters', 'startTime'])
   const stopTime = _.get(experiments, [experimentID, 'setup', 'simulationParameters', 'stopTime'])
 
-  let postTaskResult = null
-  try {
-    postTaskResult = await request({
-      url: QUEUE_ORIGIN + '/tasks/' + experimentID + '/result',
-      method: 'get',
-      json: true,
-      resolveWithFullResponse: true
-    })
-  } catch (error) {
-    res.status(error.statusCode).json({ 'error': error.error.err }) // XXX RFC7807
-    return
-  }
-
-  const resultBody = postTaskResult.body
+  const resultBody = experiments[experimentID].simulationResult
 
   // Transform body to specified format
   resultBody.description = `The results of simulating model instance ${modelInstanceID} from ${startTime} to ${stopTime}`
-
-  // Delete properties that shall not be exposed to the consumer
-  delete resultBody.id
-  delete resultBody.err
 
   res.status(200).json(resultBody)
   req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
