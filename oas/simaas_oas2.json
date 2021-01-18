@@ -286,10 +286,15 @@
                         { "required": [ "label" ] },
                         { "properties": { "label": { "pattern": "^diffuseHorizontalIrradiance$" } } }
                     ]
+                },
+                {
+                    "allOf":[
+                        { "$ref":"https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries" },
+                        { "required": [ "label" ] },
+                        { "properties": { "label": { "pattern": "^windSpeed$" } } }
+                    ]
                 }
-            ],
-            "minItems":3,
-            "maxItems":3
+            ]
         },
         "ExperimentSetup": {
             "type": "object",

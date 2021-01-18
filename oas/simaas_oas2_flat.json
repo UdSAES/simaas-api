@@ -1278,10 +1278,65 @@
                                                     }
                                                 }
                                             ]
+                                        },
+                                        {
+                                            "allOf": [
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "unit",
+                                                        "timeseries"
+                                                    ],
+                                                    "properties": {
+                                                        "label": {
+                                                            "type": "string",
+                                                            "description": "Label of the timeseries"
+                                                        },
+                                                        "unit": {
+                                                            "type": "string",
+                                                            "description": "Unit of the data, formatted as defined in the [Modelica Specification v3.4](https://www.modelica.org/documents/ModelicaSpec34.pdf), Chapter 19"
+                                                        },
+                                                        "timeseries": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "required": [
+                                                                    "timestamp",
+                                                                    "value"
+                                                                ],
+                                                                "properties": {
+                                                                    "timestamp": {
+                                                                        "type": "integer",
+                                                                        "format": "int64",
+                                                                        "minimum": 0,
+                                                                        "description": "The timestamp (as [unix timestamp](https://en.wikipedia.org/wiki/Unix_time) in ms resolution) of the timeseries to which the value refers to",
+                                                                        "example": 1526551590000
+                                                                    },
+                                                                    "value": {
+                                                                        "type": "number",
+                                                                        "format": "double",
+                                                                        "description": "The value of the timeseries at the timestamp (unit as specified above)"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "required": [
+                                                        "label"
+                                                    ]
+                                                },
+                                                {
+                                                    "properties": {
+                                                        "label": {
+                                                            "pattern": "^windSpeed$"
+                                                        }
+                                                    }
+                                                }
+                                            ]
                                         }
-                                    ],
-                                    "minItems": 3,
-                                    "maxItems": 3
+                                    ]
                                 }
                             },
                             "example": {
@@ -1920,10 +1975,65 @@
                                                             }
                                                         }
                                                     ]
+                                                },
+                                                {
+                                                    "allOf": [
+                                                        {
+                                                            "type": "object",
+                                                            "required": [
+                                                                "unit",
+                                                                "timeseries"
+                                                            ],
+                                                            "properties": {
+                                                                "label": {
+                                                                    "type": "string",
+                                                                    "description": "Label of the timeseries"
+                                                                },
+                                                                "unit": {
+                                                                    "type": "string",
+                                                                    "description": "Unit of the data, formatted as defined in the [Modelica Specification v3.4](https://www.modelica.org/documents/ModelicaSpec34.pdf), Chapter 19"
+                                                                },
+                                                                "timeseries": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "required": [
+                                                                            "timestamp",
+                                                                            "value"
+                                                                        ],
+                                                                        "properties": {
+                                                                            "timestamp": {
+                                                                                "type": "integer",
+                                                                                "format": "int64",
+                                                                                "minimum": 0,
+                                                                                "description": "The timestamp (as [unix timestamp](https://en.wikipedia.org/wiki/Unix_time) in ms resolution) of the timeseries to which the value refers to",
+                                                                                "example": 1526551590000
+                                                                            },
+                                                                            "value": {
+                                                                                "type": "number",
+                                                                                "format": "double",
+                                                                                "description": "The value of the timeseries at the timestamp (unit as specified above)"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        {
+                                                            "required": [
+                                                                "label"
+                                                            ]
+                                                        },
+                                                        {
+                                                            "properties": {
+                                                                "label": {
+                                                                    "pattern": "^windSpeed$"
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
                                                 }
-                                            ],
-                                            "minItems": 3,
-                                            "maxItems": 3
+                                            ]
                                         }
                                     },
                                     "example": {
@@ -3421,10 +3531,65 @@
                             }
                         }
                     ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "type": "object",
+                            "required": [
+                                "unit",
+                                "timeseries"
+                            ],
+                            "properties": {
+                                "label": {
+                                    "type": "string",
+                                    "description": "Label of the timeseries"
+                                },
+                                "unit": {
+                                    "type": "string",
+                                    "description": "Unit of the data, formatted as defined in the [Modelica Specification v3.4](https://www.modelica.org/documents/ModelicaSpec34.pdf), Chapter 19"
+                                },
+                                "timeseries": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "required": [
+                                            "timestamp",
+                                            "value"
+                                        ],
+                                        "properties": {
+                                            "timestamp": {
+                                                "type": "integer",
+                                                "format": "int64",
+                                                "minimum": 0,
+                                                "description": "The timestamp (as [unix timestamp](https://en.wikipedia.org/wiki/Unix_time) in ms resolution) of the timeseries to which the value refers to",
+                                                "example": 1526551590000
+                                            },
+                                            "value": {
+                                                "type": "number",
+                                                "format": "double",
+                                                "description": "The value of the timeseries at the timestamp (unit as specified above)"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "required": [
+                                "label"
+                            ]
+                        },
+                        {
+                            "properties": {
+                                "label": {
+                                    "pattern": "^windSpeed$"
+                                }
+                            }
+                        }
+                    ]
                 }
-            ],
-            "minItems": 3,
-            "maxItems": 3
+            ]
         },
         "ExperimentSetup": {
             "type": "object",
@@ -3641,10 +3806,65 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "allOf": [
+                                {
+                                    "type": "object",
+                                    "required": [
+                                        "unit",
+                                        "timeseries"
+                                    ],
+                                    "properties": {
+                                        "label": {
+                                            "type": "string",
+                                            "description": "Label of the timeseries"
+                                        },
+                                        "unit": {
+                                            "type": "string",
+                                            "description": "Unit of the data, formatted as defined in the [Modelica Specification v3.4](https://www.modelica.org/documents/ModelicaSpec34.pdf), Chapter 19"
+                                        },
+                                        "timeseries": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "required": [
+                                                    "timestamp",
+                                                    "value"
+                                                ],
+                                                "properties": {
+                                                    "timestamp": {
+                                                        "type": "integer",
+                                                        "format": "int64",
+                                                        "minimum": 0,
+                                                        "description": "The timestamp (as [unix timestamp](https://en.wikipedia.org/wiki/Unix_time) in ms resolution) of the timeseries to which the value refers to",
+                                                        "example": 1526551590000
+                                                    },
+                                                    "value": {
+                                                        "type": "number",
+                                                        "format": "double",
+                                                        "description": "The value of the timeseries at the timestamp (unit as specified above)"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "required": [
+                                        "label"
+                                    ]
+                                },
+                                {
+                                    "properties": {
+                                        "label": {
+                                            "pattern": "^windSpeed$"
+                                        }
+                                    }
+                                }
+                            ]
                         }
-                    ],
-                    "minItems": 3,
-                    "maxItems": 3
+                    ]
                 }
             },
             "example": {
@@ -4705,10 +4925,65 @@
                                         }
                                     }
                                 ]
+                            },
+                            {
+                                "allOf": [
+                                    {
+                                        "type": "object",
+                                        "required": [
+                                            "unit",
+                                            "timeseries"
+                                        ],
+                                        "properties": {
+                                            "label": {
+                                                "type": "string",
+                                                "description": "Label of the timeseries"
+                                            },
+                                            "unit": {
+                                                "type": "string",
+                                                "description": "Unit of the data, formatted as defined in the [Modelica Specification v3.4](https://www.modelica.org/documents/ModelicaSpec34.pdf), Chapter 19"
+                                            },
+                                            "timeseries": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "timestamp",
+                                                        "value"
+                                                    ],
+                                                    "properties": {
+                                                        "timestamp": {
+                                                            "type": "integer",
+                                                            "format": "int64",
+                                                            "minimum": 0,
+                                                            "description": "The timestamp (as [unix timestamp](https://en.wikipedia.org/wiki/Unix_time) in ms resolution) of the timeseries to which the value refers to",
+                                                            "example": 1526551590000
+                                                        },
+                                                        "value": {
+                                                            "type": "number",
+                                                            "format": "double",
+                                                            "description": "The value of the timeseries at the timestamp (unit as specified above)"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "required": [
+                                            "label"
+                                        ]
+                                    },
+                                    {
+                                        "properties": {
+                                            "label": {
+                                                "pattern": "^windSpeed$"
+                                            }
+                                        }
+                                    }
+                                ]
                             }
-                        ],
-                        "minItems": 3,
-                        "maxItems": 3
+                        ]
                     }
                 },
                 "example": {
@@ -5453,10 +5728,65 @@
                                                 }
                                             }
                                         ]
+                                    },
+                                    {
+                                        "allOf": [
+                                            {
+                                                "type": "object",
+                                                "required": [
+                                                    "unit",
+                                                    "timeseries"
+                                                ],
+                                                "properties": {
+                                                    "label": {
+                                                        "type": "string",
+                                                        "description": "Label of the timeseries"
+                                                    },
+                                                    "unit": {
+                                                        "type": "string",
+                                                        "description": "Unit of the data, formatted as defined in the [Modelica Specification v3.4](https://www.modelica.org/documents/ModelicaSpec34.pdf), Chapter 19"
+                                                    },
+                                                    "timeseries": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "required": [
+                                                                "timestamp",
+                                                                "value"
+                                                            ],
+                                                            "properties": {
+                                                                "timestamp": {
+                                                                    "type": "integer",
+                                                                    "format": "int64",
+                                                                    "minimum": 0,
+                                                                    "description": "The timestamp (as [unix timestamp](https://en.wikipedia.org/wiki/Unix_time) in ms resolution) of the timeseries to which the value refers to",
+                                                                    "example": 1526551590000
+                                                                },
+                                                                "value": {
+                                                                    "type": "number",
+                                                                    "format": "double",
+                                                                    "description": "The value of the timeseries at the timestamp (unit as specified above)"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "required": [
+                                                    "label"
+                                                ]
+                                            },
+                                            {
+                                                "properties": {
+                                                    "label": {
+                                                        "pattern": "^windSpeed$"
+                                                    }
+                                                }
+                                            }
+                                        ]
                                     }
-                                ],
-                                "minItems": 3,
-                                "maxItems": 3
+                                ]
                             }
                         },
                         "example": {
