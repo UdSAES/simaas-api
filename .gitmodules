@@ -1,3 +1,0 @@
-[submodule "udsaes_async_queue"]
-	path = udsaes_async_queue
-	url = git@github.com:UdSAES/udsaes_async_queue.git
