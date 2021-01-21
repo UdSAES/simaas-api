@@ -47,9 +47,6 @@ const UI_URL_PATH = String(process.env.UI_URL_PATH) || ''
 const ALIVE_EVENT_WAIT_TIME = parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 3600 * 1000
 const API_SPECIFICATION_FILE_PATH_FLAT = './oas/simaas_oas2_flat.json'
 
-// Use global object as datastore
-let experiments = {}
-
 // Define functions
 async function checkIfConfigIsValid () {
   if (!_.isString(QUEUE_ORIGIN)) {
@@ -256,5 +253,3 @@ if (require.main === module) {
   init()
   aliveLoop()
 }
-
-module.exports = experiments
