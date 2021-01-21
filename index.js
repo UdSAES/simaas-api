@@ -37,6 +37,7 @@ const celery = require('celery-ts')
 const { promiseStatus } = require('promise-status-async')
 
 const uuid = require('uuid')
+const responseUtils = require('./lib/response_utils.js')
 
 log.info({ code: 300010 }, 'successfully loaded modules')
 
@@ -46,7 +47,6 @@ const LISTEN_PORT = parseInt(process.env.LISTEN_PORT)
 const UI_STATIC_FILES_PATH = String(process.env.UI_STATIC_FILES_PATH) || ''
 const UI_URL_PATH = String(process.env.UI_URL_PATH) || ''
 const ALIVE_EVENT_WAIT_TIME = parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 3600 * 1000
-const API_SPECIFICATION_FILE_PATH = './oas/simaas_oas2.json'
 const API_SPECIFICATION_FILE_PATH_FLAT = './oas/simaas_oas2_flat.json'
 
 // Use global object as datastore
@@ -116,16 +116,6 @@ function shutDownGracefully () {
 }
 
 // Define handlers
-async function respondWithNotImplemented (req, res) {
-  res.set('Content-Type', 'application/problem+json')
-  res.status(501).json({
-    'title': 'Not Implemented',
-    'status': 501,
-    'detail': 'The request was understood, but the underlying implementation is not available yet.'
-  })
-  req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
-}
-
 async function simulateModelInstance (req, res) {
   const requestBody = _.get(req, ['body'])
 
@@ -211,25 +201,6 @@ async function getExperimentResult (req, res) {
   req.log.info({ res: res }, `successfully handled ${req.method}-request on ${req.path}`)
 }
 
-async function serveOAS (req, res) {
-  let flatVersionWanted
-  let oas
-
-  if (_.has(req.query, 'flat') === true) {
-    flatVersionWanted = req.query.flat
-  } else {
-    flatVersionWanted = true
-  }
-
-  if (flatVersionWanted === true) {
-    oas = await fs.readJson(API_SPECIFICATION_FILE_PATH_FLAT, { encoding: 'utf8' })
-  } else {
-    oas = await fs.readJson(API_SPECIFICATION_FILE_PATH, { encoding: 'utf8' })
-  }
-
-  res.status(200).json(oas)
-}
-
 // Define main program
 async function init () {
   await checkIfConfigIsValid()
@@ -286,17 +257,17 @@ async function init () {
     }))
 
     // Expose OpenAPI-specification as /oas
-    app.get('/oas', serveOAS)
+    app.get('/oas', responseUtils.serveOAS)
 
     // Define routing -- MUST happen after enabling swaggerValidator or validation doesn't work
-    app.get('/model-instances', respondWithNotImplemented)
-    app.post('/model-instances', respondWithNotImplemented)
-    app.get('/model-instances/:modelInstanceID', respondWithNotImplemented)
-    app.delete('/model-instances/:modelInstanceID', respondWithNotImplemented)
-    app.get('/experiments', respondWithNotImplemented)
     app.post('/experiments', simulateModelInstance)
     app.get('/experiments/:experimentID', getExperimentStatus)
     app.get('/experiments/:experimentID/result', getExperimentResult)
+    app.get('/model-instances', responseUtils.respondWithNotImplemented)
+    app.post('/model-instances', responseUtils.respondWithNotImplemented)
+    app.get('/model-instances/:modelInstanceID', responseUtils.respondWithNotImplemented)
+    app.delete('/model-instances/:modelInstanceID', responseUtils.respondWithNotImplemented)
+    app.get('/experiments', responseUtils.respondWithNotImplemented)
 
     // Handle unsuccessfull requests
     app.use(function (req, res, next) {
