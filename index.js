@@ -155,7 +155,7 @@ async function init () {
 
     // Define routing -- MUST happen after enabling swaggerValidator or validation doesn't work
     app.get('/model-instances', responseUtils.respondWithNotImplemented)
-    app.post('/model-instances', responseUtils.respondWithNotImplemented)
+    app.post('/model-instances', handlers.createModelInstance)
     app.get('/model-instances/:modelInstanceID', responseUtils.respondWithNotImplemented)
     app.delete('/model-instances/:modelInstanceID', responseUtils.respondWithNotImplemented)
     app.get('/experiments', responseUtils.respondWithNotImplemented)

@@ -23,7 +23,15 @@
                     {"$ref": "#/parameters/ModelInstance"}
                 ],
                 "responses": {
-                    "501": {"$ref": "#/responses/NotImplemented"},
+                    "201": {
+                        "description": "An acknowledgement that the instance was successfully created",
+                        "headers": {
+                            "Location": {
+                                "description": "The URL of the resource that was just created.",
+                                "type": "string"
+                            }
+                        }
+                    },
                     "400": { "$ref": "#/responses/SchemaValidationFailed" }
                 }
             }
