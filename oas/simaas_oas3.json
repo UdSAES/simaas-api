@@ -1,1090 +1,1014 @@
 {
-    "openapi": "3.0.3",
-    "info": {
-        "title": "SIMaaS Using Queue, Workers and fmpy",
-        "version": "0.4.0"
-    },
-    "paths": {
-        "/model-instances": {
-            "get": {
-                "tags": [
-                    "Model Instances"
-                ],
-                "summary": "A list of all available model instances",
-                "operationId": "getListOfModelInstances",
-                "responses": {
-                    "501": {
-                        "$ref": "#/components/responses/NotImplemented"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Model Instances"
-                ],
-                "summary": "Instantiate a model for a specific system",
-                "operationId": "createModelInstance",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ModelInstance"
-                            }
-                        }
-                    },
-                    "description": "A representation of a model instance, used for instantiating a model",
-                    "required": true
-                },
-                "responses": {
-                    "201": {
-                        "description": "An acknowledgement that the instance was successfully created",
-                        "headers": {
-                            "Location": {
-                                "description": "The URL of the resource that was just created.",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/SchemaValidationFailed"
-                    }
-                }
-            }
-        },
-        "/model-instances/{uuid}": {
-            "get": {
-                "tags": [
-                    "Model Instances"
-                ],
-                "summary": "A specific model instance",
-                "operationId": "getModelInstance",
-                "responses": {
-                    "400": {
-                        "$ref": "#/components/responses/SchemaValidationFailed"
-                    },
-                    "501": {
-                        "$ref": "#/components/responses/NotImplemented"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Model Instances"
-                ],
-                "summary": "Delete a specific model instance",
-                "operationId": "deleteModelInstance",
-                "responses": {
-                    "400": {
-                        "$ref": "#/components/responses/SchemaValidationFailed"
-                    },
-                    "501": {
-                        "$ref": "#/components/responses/NotImplemented"
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/ModelInstanceID"
-                }
-            ]
-        },
-        "/experiments": {
-            "get": {
-                "tags": [
-                    "Experiments"
-                ],
-                "summary": "A list of all available experiments",
-                "operationId": "getListOfExperiments",
-                "responses": {
-                    "501": {
-                        "$ref": "#/components/responses/NotImplemented"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Experiments"
-                ],
-                "summary": "Trigger the simulation of a model instance by defining an experiment",
-                "operationId": "triggerSimulation",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ExperimentSetup"
-                            }
-                        }
-                    },
-                    "description": "The boundary conditions and simulation parameters that define an experiment",
-                    "required": true
-                },
-                "responses": {
-                    "201": {
-                        "description": "An acknowledgement that the simulation was successfully triggered",
-                        "headers": {
-                            "Location": {
-                                "description": "The URL of the resource that was just created. It indicates the status of the long-running background job that was just started and should thus be polled in order to obtain knowledge about its completion.",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/SchemaValidationFailed"
-                    }
-                }
-            }
-        },
-        "/experiments/{uuid}": {
-            "get": {
-                "tags": [
-                    "Experiments"
-                ],
-                "summary": "A representation of a specific experiment and its status",
-                "operationId": "getExperiment",
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/Experiment"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/SchemaValidationFailed"
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/ExperimentID"
-                }
-            ]
-        },
-        "/experiments/{uuid}/result": {
-            "get": {
-                "tags": [
-                    "Experiments"
-                ],
-                "summary": "The results of performing the experiment/simulation",
-                "operationId": "getExperimentResult",
-                "responses": {
-                    "200": {
-                        "$ref": "#/components/responses/SimulationResult"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/SchemaValidationFailed"
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/ExperimentID"
-                }
-            ]
-        },
-        "/oas": {
-            "get": {
-                "tags": [
-                    "API Details"
-                ],
-                "summary": "The OpenAPI Specification of this API",
-                "operationId": "getOAS",
-                "parameters": [
-                    {
-                        "$ref": "#/components/parameters/OASisFlattened"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The OpenAPI Specification of this API in flattened or non-flattened form",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                }
-                            },
-                            "application/problem+json": {
-                                "schema": {
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/notfound": {
-            "get": {
-                "tags": [
-                    "API Details"
-                ],
-                "summary": "A resource that does not exist",
-                "deprecated": true,
-                "responses": {
-                    "404": {
-                        "$ref": "#/components/responses/NotFound"
-                    }
-                }
-            }
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SIMaaS Using Queue, Workers and fmpy",
+    "version": "0.4.0"
+  },
+  "paths": {
+    "/model-instances": {
+      "get": {
+        "tags": ["Model Instances"],
+        "summary": "A list of all available model instances",
+        "operationId": "getListOfModelInstances",
+        "responses": {
+          "501": {
+            "$ref": "#/components/responses/NotImplemented"
+          }
         }
-    },
-    "tags": [
-        {
-            "name": "Model Instances",
-            "description": "A model instance is the executable version of a model with all parameters set, thus describing the behaviour of a specific system for all possible boundary conditions. The parameters of a model instance cannot be changed in order to ensure that identical service interactions always lead to the same result. Consequently, it is possible that different model instances describe the same specific system, which can be a result of different parameter sets or the use of different models."
-        },
-        {
-            "name": "Experiments",
-            "description": "An experiment denotes the execution of a model instance for given boundary conditions and simulation settings; in other words, a specific simulation."
-        },
-        {
-            "name": "API Details",
-            "description": "Paths/operations using this tag document endpoints provided for the developer's convenience that are not part of the functionality provided _as a service_."
-        }
-    ],
-    "components": {
-        "parameters": {
-            "ModelInstanceID": {
-                "name": "uuid",
-                "in": "path",
-                "description": "The UUID of the model instance to be simulated",
-                "required": true,
-                "example": "c02f1f12-966d-4eab-9f21-dcf265ceac71",
-                "schema": {
-                    "type": "string",
-                    "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
-                }
-            },
-            "ExperimentID": {
-                "name": "uuid",
-                "in": "path",
-                "description": "A unique identifier for a specific experiment",
-                "required": true,
-                "example": "d9a23e72-b01a-4be7-a598-c3f31071da2c",
-                "schema": {
-                    "type": "string",
-                    "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
-                }
-            },
-            "OASisFlattened": {
-                "name": "flat",
-                "in": "query",
-                "description": "Boolean value indicating whether a flattened version of the OAS is requested or not. Defaults to `true`.",
-                "required": false,
-                "schema": {
-                    "type": "boolean",
-                    "default": true
-                }
+      },
+      "post": {
+        "tags": ["Model Instances"],
+        "summary": "Instantiate a model for a specific system",
+        "operationId": "createModelInstance",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ModelInstance"
+              }
             }
+          },
+          "description": "A representation of a model instance, used for instantiating a model",
+          "required": true
         },
         "responses": {
-            "NotFound": {
-                "description": "The requested resource was not found on this server",
-                "headers": {
-                    "Content-Type": {
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "application/problem+json"
-                            ]
-                        }
-                    }
-                },
-                "content": {
-                    "application/problem+json": {
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/components/schemas/ProblemDetail"
-                                },
-                                {
-                                    "required": [
-                                        "title",
-                                        "status"
-                                    ]
-                                }
-                            ]
-                        },
-                        "examples": {
-                            "response": {
-                                "value": {
-                                    "title": "Not Found",
-                                    "status": 404,
-                                    "detail": "The requested resource was not found on this server"
-                                }
-                            }
-                        }
-                    }
+          "201": {
+            "description": "An acknowledgement that the instance was successfully created",
+            "headers": {
+              "Location": {
+                "description": "The URL of the resource that was just created.",
+                "schema": {
+                  "type": "string"
                 }
-            },
-            "SchemaValidationFailed": {
-                "description": "The response for requests that were dropped because they were syntactically invalid and failed schema validation",
-                "headers": {
-                    "Content-Type": {
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "application/problem+json"
-                            ]
-                        }
-                    }
-                },
-                "content": {
-                    "application/problem+json": {
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/components/schemas/ProblemDetail"
-                                },
-                                {
-                                    "required": [
-                                        "title",
-                                        "status"
-                                    ]
-                                }
-                            ]
-                        },
-                        "examples": {
-                            "response": {
-                                "value": {
-                                    "title": "Schema Validation Failed",
-                                    "status": 400,
-                                    "detail": "Request validation failed: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
-                                    "path": [
-                                        "paths",
-                                        "/model-instances/{uuid}",
-                                        "parameters",
-                                        "0"
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "NotImplemented": {
-                "description": "The API's response to requests that cannot be answered yet",
-                "headers": {
-                    "Content-Type": {
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "application/problem+json"
-                            ]
-                        }
-                    }
-                },
-                "content": {
-                    "application/problem+json": {
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/components/schemas/ProblemDetail"
-                                },
-                                {
-                                    "required": [
-                                        "title",
-                                        "status"
-                                    ]
-                                }
-                            ]
-                        },
-                        "examples": {
-                            "response": {
-                                "value": {
-                                    "title": "Not Implemented",
-                                    "status": 501,
-                                    "detail": "The request was understood, but the underlying implementation is not available yet."
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "Experiment": {
-                "description": "A representation of a specific experiment and its current status",
-                "headers": {
-                    "Content-Type": {
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "application/json"
-                            ]
-                        }
-                    }
-                },
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/components/schemas/ExperimentSetup"
-                                },
-                                {
-                                    "type": "object",
-                                    "required": [
-                                        "status"
-                                    ],
-                                    "properties": {
-                                        "status": {
-                                            "type": "string",
-                                            "enum": [
-                                                "NEW",
-                                                "IN_PROGRESS",
-                                                "DONE"
-                                            ],
-                                            "description": "The status of the background job, for example 'IN_PROGRESS'"
-                                        },
-                                        "linkToResult": {
-                                            "type": "string",
-                                            "format": "uri",
-                                            "description": "The link to the initially requested resource (the simulation result) that is now available. This property only exists if the status has reached 'DONE' and the result is indeed available."
-                                        }
-                                    },
-                                    "example": {
-                                        "status": "DONE",
-                                        "linkToResult": "http://example.com/experiments/d9a23e72-b01a-4be7-a598-c3f31071da2c/result"
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                }
-            },
-            "SimulationResult": {
-                "description": "The simulation result",
-                "headers": {
-                    "Content-Type": {
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "application/json"
-                            ]
-                        }
-                    }
-                },
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "required": [
-                                "description",
-                                "result"
-                            ],
-                            "properties": {
-                                "description": {
-                                    "type": "string"
-                                },
-                                "result": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
-                                    }
-                                }
-                            }
-                        },
-                        "examples": {
-                            "response": {
-                                "value": {
-                                    "description": "An exemplary simulation result",
-                                    "result": [
-                                        {
-                                            "label": "albedo_ground",
-                                            "unit": "1",
-                                            "timeseries": [
-                                                {
-                                                    "timestamp": 1526634000000,
-                                                    "value": 0.15174804687500001
-                                                },
-                                                {
-                                                    "timestamp": 1526637600000,
-                                                    "value": 0.15174804687500001
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "label": "temperature_2m_ag",
-                                            "unit": "K",
-                                            "timeseries": [
-                                                {
-                                                    "timestamp": 1526634000000,
-                                                    "value": 286.0401916503906
-                                                },
-                                                {
-                                                    "timestamp": 1526637600000,
-                                                    "value": 287.0859680175781
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
+              }
             }
-        },
-        "schemas": {
-            "ErrorInstance": {
-                "type": "object",
-                "required": [
-                    "error"
-                ],
-                "properties": {
-                    "error": {
-                        "type": "object",
-                        "description": "A serialization of an instance of the [Node.js-class](https://nodejs.org/dist/latest-v10.x/docs/api/errors.html#errors_errors) `Error`",
-                        "required": [
-                            "code",
-                            "message",
-                            "stack"
-                        ],
-                        "properties": {
-                            "code": {
-                                "type": "string",
-                                "description": "A string label for identifying the kind of error"
-                            },
-                            "message": {
-                                "type": "string",
-                                "description": "A description of the specific error instance"
-                            },
-                            "stack": {
-                                "type": "string",
-                                "description": "The stack trace describing the point in the code at which the error occured"
-                            }
-                        }
-                    }
-                }
-            },
-            "ProblemDetail": {
-                "$ref": "./schema_v0.1.0_oas2.json#/ProblemDetail"
-            },
-            "ModelInstanceID": {
-                "description": "The UUID of the model instance to be simulated",
-                "type": "string",
-                "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
-            },
-            "ModelInstance": {
-                "type": "object",
-                "required": [
-                    "model",
-                    "parameters"
-                ],
-                "properties": {
-                    "model": {
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "parameters": {
-                        "allOf": [
-                            {
-                                "description": "The parameter set that defines the model instance"
-                            },
-                            {
-                                "$ref": "./location_schema_v0.1.0_oas2.json#/Location"
-                            },
-                            {
-                                "$ref": "./schema_pv_plant_oas2.json#/PVplant"
-                            },
-                            {
-                                "description": "The parameter set that defines the model instance"
-                            }
-                        ]
-                    }
-                },
-                "example": {
-                    "model": "http://example.com/models/d8b032d4-44a0-4bc5-9ded-c73703f3e5fc",
-                    "parameters": {
-                        "latitude": {
-                            "unit": "deg",
-                            "value": 49.2553
-                        },
-                        "longitude": {
-                            "unit": "deg",
-                            "value": 7.0405
-                        },
-                        "elevation": {
-                            "unit": "m",
-                            "value": 273
-                        },
-                        "panelArea": {
-                            "unit": "m2",
-                            "value": 2
-                        },
-                        "panelTilt": {
-                            "unit": "deg",
-                            "value": 30
-                        },
-                        "panelAzimuth": {
-                            "unit": "deg",
-                            "value": 0
-                        },
-                        "T_cell_ref": {
-                            "unit": "K",
-                            "value": 298.15
-                        }
-                    }
-                }
-            },
-            "SimulationParameters": {
-                "type": "object",
-                "required": [
-                    "startTime",
-                    "stopTime"
-                ],
-                "properties": {
-                    "startTime": {
-                        "description": "The beginning of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 0,
-                        "example": 1526637990000
-                    },
-                    "stopTime": {
-                        "description": "The end of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 0,
-                        "example": 1526551590000
-                    },
-                    "outputInterval": {
-                        "description": "The desired output interval in seconds (does _not_ affect step size of the integration algorithm)",
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 0,
-                        "example": 900
-                    }
-                }
-            },
-            "InputTimeseries": {
-                "type": "array",
-                "items": {
-                    "anyOf": [
-                        {
-                            "allOf": [
-                                {
-                                    "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
-                                },
-                                {
-                                    "required": [
-                                        "label"
-                                    ]
-                                },
-                                {
-                                    "properties": {
-                                        "label": {
-                                            "pattern": "^temperature$"
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "allOf": [
-                                {
-                                    "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
-                                },
-                                {
-                                    "required": [
-                                        "label"
-                                    ]
-                                },
-                                {
-                                    "properties": {
-                                        "label": {
-                                            "pattern": "^directHorizontalIrradiance$"
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "allOf": [
-                                {
-                                    "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
-                                },
-                                {
-                                    "required": [
-                                        "label"
-                                    ]
-                                },
-                                {
-                                    "properties": {
-                                        "label": {
-                                            "pattern": "^diffuseHorizontalIrradiance$"
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "allOf": [
-                                {
-                                    "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
-                                },
-                                {
-                                    "required": [
-                                        "label"
-                                    ]
-                                },
-                                {
-                                    "properties": {
-                                        "label": {
-                                            "pattern": "^windSpeed$"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            },
-            "ExperimentSetup": {
-                "type": "object",
-                "required": [
-                    "modelInstanceID",
-                    "simulationParameters"
-                ],
-                "properties": {
-                    "modelInstanceID": {
-                        "$ref": "#/components/schemas/ModelInstanceID"
-                    },
-                    "simulationParameters": {
-                        "$ref": "#/components/schemas/SimulationParameters"
-                    },
-                    "inputTimeseries": {
-                        "$ref": "#/components/schemas/InputTimeseries"
-                    }
-                },
-                "example": {
-                    "modelInstanceID": "c02f1f12-966d-4eab-9f21-dcf265ceac71",
-                    "simulationParameters": {
-                        "startTime": 1542412800000,
-                        "stopTime": 1542499199999,
-                        "outputInterval": 3600
-                    },
-                    "inputTimeseries": [
-                        {
-                            "label": "temperature",
-                            "unit": "K",
-                            "timeseries": [
-                                {
-                                    "timestamp": 1542412800000,
-                                    "value": 274.6336669921875
-                                },
-                                {
-                                    "timestamp": 1542416400000,
-                                    "value": 274.4828796386719
-                                },
-                                {
-                                    "timestamp": 1542420000000,
-                                    "value": 274.01922607421875
-                                },
-                                {
-                                    "timestamp": 1542423600000,
-                                    "value": 273.8811340332031
-                                },
-                                {
-                                    "timestamp": 1542427200000,
-                                    "value": 273.7162628173828
-                                },
-                                {
-                                    "timestamp": 1542430800000,
-                                    "value": 273.4994201660156
-                                },
-                                {
-                                    "timestamp": 1542434400000,
-                                    "value": 273.3451385498047
-                                },
-                                {
-                                    "timestamp": 1542438000000,
-                                    "value": 273.2210388183594
-                                },
-                                {
-                                    "timestamp": 1542441600000,
-                                    "value": 273.4631805419922
-                                },
-                                {
-                                    "timestamp": 1542445200000,
-                                    "value": 274.3274230957031
-                                },
-                                {
-                                    "timestamp": 1542448800000,
-                                    "value": 275.4784393310547
-                                },
-                                {
-                                    "timestamp": 1542452400000,
-                                    "value": 276.50999450683594
-                                },
-                                {
-                                    "timestamp": 1542456000000,
-                                    "value": 277.6051940917969
-                                },
-                                {
-                                    "timestamp": 1542459600000,
-                                    "value": 278.2355194091797
-                                },
-                                {
-                                    "timestamp": 1542463200000,
-                                    "value": 278.0879669189453
-                                },
-                                {
-                                    "timestamp": 1542466800000,
-                                    "value": 277.3506317138672
-                                },
-                                {
-                                    "timestamp": 1542470400000,
-                                    "value": 276.5809631347656
-                                },
-                                {
-                                    "timestamp": 1542474000000,
-                                    "value": 275.99607849121094
-                                },
-                                {
-                                    "timestamp": 1542477600000,
-                                    "value": 275.36585998535156
-                                },
-                                {
-                                    "timestamp": 1542481200000,
-                                    "value": 274.8233642578125
-                                },
-                                {
-                                    "timestamp": 1542484800000,
-                                    "value": 274.35382080078125
-                                },
-                                {
-                                    "timestamp": 1542488400000,
-                                    "value": 273.8891143798828
-                                },
-                                {
-                                    "timestamp": 1542492000000,
-                                    "value": 273.6193542480469
-                                },
-                                {
-                                    "timestamp": 1542495600000,
-                                    "value": 273.1964416503906
-                                },
-                                {
-                                    "timestamp": 1542499200000,
-                                    "value": 272.87730407714844
-                                }
-                            ]
-                        },
-                        {
-                            "label": "directHorizontalIrradiance",
-                            "unit": "W/m²",
-                            "timeseries": [
-                                {
-                                    "timestamp": 1542412800000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542416400000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542420000000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542423600000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542427200000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542430800000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542434400000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542438000000,
-                                    "value": 0.01708984375
-                                },
-                                {
-                                    "timestamp": 1542441600000,
-                                    "value": 32.473876953125
-                                },
-                                {
-                                    "timestamp": 1542445200000,
-                                    "value": 106.16259765625
-                                },
-                                {
-                                    "timestamp": 1542448800000,
-                                    "value": 172.1171875
-                                },
-                                {
-                                    "timestamp": 1542452400000,
-                                    "value": 207.6816406250005
-                                },
-                                {
-                                    "timestamp": 1542456000000,
-                                    "value": 203.74609375089045
-                                },
-                                {
-                                    "timestamp": 1542459600000,
-                                    "value": 161.24023440730758
-                                },
-                                {
-                                    "timestamp": 1542463200000,
-                                    "value": 92.67578142064986
-                                },
-                                {
-                                    "timestamp": 1542466800000,
-                                    "value": 21.17968753655803
-                                },
-                                {
-                                    "timestamp": 1542470400000,
-                                    "value": 0.013671875010348028
-                                },
-                                {
-                                    "timestamp": 1542474000000,
-                                    "value": -0.011718749990169372
-                                },
-                                {
-                                    "timestamp": 1542477600000,
-                                    "value": 0.027343750008278423
-                                },
-                                {
-                                    "timestamp": 1542481200000,
-                                    "value": 0.003906250007761022
-                                },
-                                {
-                                    "timestamp": 1542484800000,
-                                    "value": -0.013671874993791184
-                                },
-                                {
-                                    "timestamp": 1542488400000,
-                                    "value": -0.046874999994825986
-                                },
-                                {
-                                    "timestamp": 1542492000000,
-                                    "value": -0.07421874999482599
-                                },
-                                {
-                                    "timestamp": 1542495600000,
-                                    "value": -0.041015624994825986
-                                },
-                                {
-                                    "timestamp": 1542499200000,
-                                    "value": -0.041015624995343385
-                                }
-                            ]
-                        },
-                        {
-                            "label": "diffuseHorizontalIrradiance",
-                            "unit": "W/m²",
-                            "timeseries": [
-                                {
-                                    "timestamp": 1542412800000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542416400000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542420000000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542423600000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542427200000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542430800000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542434400000,
-                                    "value": 0
-                                },
-                                {
-                                    "timestamp": 1542438000000,
-                                    "value": 3.03173828125
-                                },
-                                {
-                                    "timestamp": 1542441600000,
-                                    "value": 51.814697265625
-                                },
-                                {
-                                    "timestamp": 1542445200000,
-                                    "value": 80.36165171861649
-                                },
-                                {
-                                    "timestamp": 1542448800000,
-                                    "value": 95.63700693845749
-                                },
-                                {
-                                    "timestamp": 1542452400000,
-                                    "value": 102.13556969165802
-                                },
-                                {
-                                    "timestamp": 1542456000000,
-                                    "value": 101.35517811775208
-                                },
-                                {
-                                    "timestamp": 1542459600000,
-                                    "value": 93.04704689979553
-                                },
-                                {
-                                    "timestamp": 1542463200000,
-                                    "value": 74.65015459060669
-                                },
-                                {
-                                    "timestamp": 1542466800000,
-                                    "value": 43.18778944015503
-                                },
-                                {
-                                    "timestamp": 1542470400000,
-                                    "value": -0.00856328010559082
-                                },
-                                {
-                                    "timestamp": 1542474000000,
-                                    "value": -0.06733894348144531
-                                },
-                                {
-                                    "timestamp": 1542477600000,
-                                    "value": 0.03996133804321289
-                                },
-                                {
-                                    "timestamp": 1542481200000,
-                                    "value": -0.05777382850646973
-                                },
-                                {
-                                    "timestamp": 1542484800000,
-                                    "value": 0.086669921875
-                                },
-                                {
-                                    "timestamp": 1542488400000,
-                                    "value": 0.07489943504333496
-                                },
-                                {
-                                    "timestamp": 1542492000000,
-                                    "value": -0.03650379180908203
-                                },
-                                {
-                                    "timestamp": 1542495600000,
-                                    "value": 0.022024869918823242
-                                },
-                                {
-                                    "timestamp": 1542499200000,
-                                    "value": 0.025892019271850586
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }
+          },
+          "400": {
+            "$ref": "#/components/responses/SchemaValidationFailed"
+          }
         }
+      }
+    },
+    "/model-instances/{uuid}": {
+      "get": {
+        "tags": ["Model Instances"],
+        "summary": "A specific model instance",
+        "operationId": "getModelInstance",
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/SchemaValidationFailed"
+          },
+          "501": {
+            "$ref": "#/components/responses/NotImplemented"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Model Instances"],
+        "summary": "Delete a specific model instance",
+        "operationId": "deleteModelInstance",
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/SchemaValidationFailed"
+          },
+          "501": {
+            "$ref": "#/components/responses/NotImplemented"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ModelInstanceID"
+        }
+      ]
+    },
+    "/experiments": {
+      "get": {
+        "tags": ["Experiments"],
+        "summary": "A list of all available experiments",
+        "operationId": "getListOfExperiments",
+        "responses": {
+          "501": {
+            "$ref": "#/components/responses/NotImplemented"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Experiments"],
+        "summary": "Trigger the simulation of a model instance by defining an experiment",
+        "operationId": "triggerSimulation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperimentSetup"
+              }
+            }
+          },
+          "description": "The boundary conditions and simulation parameters that define an experiment",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "An acknowledgement that the simulation was successfully triggered",
+            "headers": {
+              "Location": {
+                "description": "The URL of the resource that was just created. It indicates the status of the long-running background job that was just started and should thus be polled in order to obtain knowledge about its completion.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/SchemaValidationFailed"
+          }
+        }
+      }
+    },
+    "/experiments/{uuid}": {
+      "get": {
+        "tags": ["Experiments"],
+        "summary": "A representation of a specific experiment and its status",
+        "operationId": "getExperiment",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Experiment"
+          },
+          "400": {
+            "$ref": "#/components/responses/SchemaValidationFailed"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExperimentID"
+        }
+      ]
+    },
+    "/experiments/{uuid}/result": {
+      "get": {
+        "tags": ["Experiments"],
+        "summary": "The results of performing the experiment/simulation",
+        "operationId": "getExperimentResult",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SimulationResult"
+          },
+          "400": {
+            "$ref": "#/components/responses/SchemaValidationFailed"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ExperimentID"
+        }
+      ]
+    },
+    "/oas": {
+      "get": {
+        "tags": ["API Details"],
+        "summary": "The OpenAPI Specification of this API",
+        "operationId": "getOAS",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OASisFlattened"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The OpenAPI Specification of this API in flattened or non-flattened form",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notfound": {
+      "get": {
+        "tags": ["API Details"],
+        "summary": "A resource that does not exist",
+        "deprecated": true,
+        "responses": {
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
     }
+  },
+  "tags": [
+    {
+      "name": "Model Instances",
+      "description": "A model instance is the executable version of a model with all parameters set, thus describing the behaviour of a specific system for all possible boundary conditions. The parameters of a model instance cannot be changed in order to ensure that identical service interactions always lead to the same result. Consequently, it is possible that different model instances describe the same specific system, which can be a result of different parameter sets or the use of different models."
+    },
+    {
+      "name": "Experiments",
+      "description": "An experiment denotes the execution of a model instance for given boundary conditions and simulation settings; in other words, a specific simulation."
+    },
+    {
+      "name": "API Details",
+      "description": "Paths/operations using this tag document endpoints provided for the developer's convenience that are not part of the functionality provided _as a service_."
+    }
+  ],
+  "components": {
+    "parameters": {
+      "ModelInstanceID": {
+        "name": "uuid",
+        "in": "path",
+        "description": "The UUID of the model instance to be simulated",
+        "required": true,
+        "example": "c02f1f12-966d-4eab-9f21-dcf265ceac71",
+        "schema": {
+          "type": "string",
+          "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
+        }
+      },
+      "ExperimentID": {
+        "name": "uuid",
+        "in": "path",
+        "description": "A unique identifier for a specific experiment",
+        "required": true,
+        "example": "d9a23e72-b01a-4be7-a598-c3f31071da2c",
+        "schema": {
+          "type": "string",
+          "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
+        }
+      },
+      "OASisFlattened": {
+        "name": "flat",
+        "in": "query",
+        "description": "Boolean value indicating whether a flattened version of the OAS is requested or not. Defaults to `true`.",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "The requested resource was not found on this server",
+        "headers": {
+          "Content-Type": {
+            "schema": {
+              "type": "string",
+              "enum": ["application/problem+json"]
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                {
+                  "required": ["title", "status"]
+                }
+              ]
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "title": "Not Found",
+                  "status": 404,
+                  "detail": "The requested resource was not found on this server"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SchemaValidationFailed": {
+        "description": "The response for requests that were dropped because they were syntactically invalid and failed schema validation",
+        "headers": {
+          "Content-Type": {
+            "schema": {
+              "type": "string",
+              "enum": ["application/problem+json"]
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                {
+                  "required": ["title", "status"]
+                }
+              ]
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "title": "Schema Validation Failed",
+                  "status": 400,
+                  "detail": "Request validation failed: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
+                  "path": ["paths", "/model-instances/{uuid}", "parameters", "0"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotImplemented": {
+        "description": "The API's response to requests that cannot be answered yet",
+        "headers": {
+          "Content-Type": {
+            "schema": {
+              "type": "string",
+              "enum": ["application/problem+json"]
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                {
+                  "required": ["title", "status"]
+                }
+              ]
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "title": "Not Implemented",
+                  "status": 501,
+                  "detail": "The request was understood, but the underlying implementation is not available yet."
+                }
+              }
+            }
+          }
+        }
+      },
+      "Experiment": {
+        "description": "A representation of a specific experiment and its current status",
+        "headers": {
+          "Content-Type": {
+            "schema": {
+              "type": "string",
+              "enum": ["application/json"]
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ExperimentSetup"
+                },
+                {
+                  "type": "object",
+                  "required": ["status"],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["NEW", "IN_PROGRESS", "DONE"],
+                      "description": "The status of the background job, for example 'IN_PROGRESS'"
+                    },
+                    "linkToResult": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "The link to the initially requested resource (the simulation result) that is now available. This property only exists if the status has reached 'DONE' and the result is indeed available."
+                    }
+                  },
+                  "example": {
+                    "status": "DONE",
+                    "linkToResult": "http://example.com/experiments/d9a23e72-b01a-4be7-a598-c3f31071da2c/result"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "SimulationResult": {
+        "description": "The simulation result",
+        "headers": {
+          "Content-Type": {
+            "schema": {
+              "type": "string",
+              "enum": ["application/json"]
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["description", "result"],
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
+                  }
+                }
+              }
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "description": "An exemplary simulation result",
+                  "result": [
+                    {
+                      "label": "albedo_ground",
+                      "unit": "1",
+                      "timeseries": [
+                        {
+                          "timestamp": 1526634000000,
+                          "value": 0.15174804687500001
+                        },
+                        {
+                          "timestamp": 1526637600000,
+                          "value": 0.15174804687500001
+                        }
+                      ]
+                    },
+                    {
+                      "label": "temperature_2m_ag",
+                      "unit": "K",
+                      "timeseries": [
+                        {
+                          "timestamp": 1526634000000,
+                          "value": 286.0401916503906
+                        },
+                        {
+                          "timestamp": 1526637600000,
+                          "value": 287.0859680175781
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ErrorInstance": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "description": "A serialization of an instance of the [Node.js-class](https://nodejs.org/dist/latest-v10.x/docs/api/errors.html#errors_errors) `Error`",
+            "required": ["code", "message", "stack"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "A string label for identifying the kind of error"
+              },
+              "message": {
+                "type": "string",
+                "description": "A description of the specific error instance"
+              },
+              "stack": {
+                "type": "string",
+                "description": "The stack trace describing the point in the code at which the error occured"
+              }
+            }
+          }
+        }
+      },
+      "ProblemDetail": {
+        "$ref": "./schema_v0.1.0_oas2.json#/ProblemDetail"
+      },
+      "ModelInstanceID": {
+        "description": "The UUID of the model instance to be simulated",
+        "type": "string",
+        "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
+      },
+      "ModelInstance": {
+        "type": "object",
+        "required": ["model", "parameters"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "format": "uri"
+          },
+          "parameters": {
+            "allOf": [
+              {
+                "description": "The parameter set that defines the model instance"
+              },
+              {
+                "$ref": "./location_schema_v0.1.0_oas2.json#/Location"
+              },
+              {
+                "$ref": "./schema_pv_plant_oas2.json#/PVplant"
+              },
+              {
+                "description": "The parameter set that defines the model instance"
+              }
+            ]
+          }
+        },
+        "example": {
+          "model": "http://example.com/models/d8b032d4-44a0-4bc5-9ded-c73703f3e5fc",
+          "parameters": {
+            "latitude": {
+              "unit": "deg",
+              "value": 49.2553
+            },
+            "longitude": {
+              "unit": "deg",
+              "value": 7.0405
+            },
+            "elevation": {
+              "unit": "m",
+              "value": 273
+            },
+            "panelArea": {
+              "unit": "m2",
+              "value": 2
+            },
+            "panelTilt": {
+              "unit": "deg",
+              "value": 30
+            },
+            "panelAzimuth": {
+              "unit": "deg",
+              "value": 0
+            },
+            "T_cell_ref": {
+              "unit": "K",
+              "value": 298.15
+            }
+          }
+        }
+      },
+      "SimulationParameters": {
+        "type": "object",
+        "required": ["startTime", "stopTime"],
+        "properties": {
+          "startTime": {
+            "description": "The beginning of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 1526637990000
+          },
+          "stopTime": {
+            "description": "The end of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 1526551590000
+          },
+          "outputInterval": {
+            "description": "The desired output interval in seconds (does _not_ affect step size of the integration algorithm)",
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 900
+          }
+        }
+      },
+      "InputTimeseries": {
+        "type": "array",
+        "items": {
+          "anyOf": [
+            {
+              "allOf": [
+                {
+                  "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
+                },
+                {
+                  "required": ["label"]
+                },
+                {
+                  "properties": {
+                    "label": {
+                      "pattern": "^temperature$"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
+                },
+                {
+                  "required": ["label"]
+                },
+                {
+                  "properties": {
+                    "label": {
+                      "pattern": "^directHorizontalIrradiance$"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
+                },
+                {
+                  "required": ["label"]
+                },
+                {
+                  "properties": {
+                    "label": {
+                      "pattern": "^diffuseHorizontalIrradiance$"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
+                },
+                {
+                  "required": ["label"]
+                },
+                {
+                  "properties": {
+                    "label": {
+                      "pattern": "^windSpeed$"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "ExperimentSetup": {
+        "type": "object",
+        "required": ["modelInstanceID", "simulationParameters"],
+        "properties": {
+          "modelInstanceID": {
+            "$ref": "#/components/schemas/ModelInstanceID"
+          },
+          "simulationParameters": {
+            "$ref": "#/components/schemas/SimulationParameters"
+          },
+          "inputTimeseries": {
+            "$ref": "#/components/schemas/InputTimeseries"
+          }
+        },
+        "example": {
+          "modelInstanceID": "c02f1f12-966d-4eab-9f21-dcf265ceac71",
+          "simulationParameters": {
+            "startTime": 1542412800000,
+            "stopTime": 1542499199999,
+            "outputInterval": 3600
+          },
+          "inputTimeseries": [
+            {
+              "label": "temperature",
+              "unit": "K",
+              "timeseries": [
+                {
+                  "timestamp": 1542412800000,
+                  "value": 274.6336669921875
+                },
+                {
+                  "timestamp": 1542416400000,
+                  "value": 274.4828796386719
+                },
+                {
+                  "timestamp": 1542420000000,
+                  "value": 274.01922607421875
+                },
+                {
+                  "timestamp": 1542423600000,
+                  "value": 273.8811340332031
+                },
+                {
+                  "timestamp": 1542427200000,
+                  "value": 273.7162628173828
+                },
+                {
+                  "timestamp": 1542430800000,
+                  "value": 273.4994201660156
+                },
+                {
+                  "timestamp": 1542434400000,
+                  "value": 273.3451385498047
+                },
+                {
+                  "timestamp": 1542438000000,
+                  "value": 273.2210388183594
+                },
+                {
+                  "timestamp": 1542441600000,
+                  "value": 273.4631805419922
+                },
+                {
+                  "timestamp": 1542445200000,
+                  "value": 274.3274230957031
+                },
+                {
+                  "timestamp": 1542448800000,
+                  "value": 275.4784393310547
+                },
+                {
+                  "timestamp": 1542452400000,
+                  "value": 276.50999450683594
+                },
+                {
+                  "timestamp": 1542456000000,
+                  "value": 277.6051940917969
+                },
+                {
+                  "timestamp": 1542459600000,
+                  "value": 278.2355194091797
+                },
+                {
+                  "timestamp": 1542463200000,
+                  "value": 278.0879669189453
+                },
+                {
+                  "timestamp": 1542466800000,
+                  "value": 277.3506317138672
+                },
+                {
+                  "timestamp": 1542470400000,
+                  "value": 276.5809631347656
+                },
+                {
+                  "timestamp": 1542474000000,
+                  "value": 275.99607849121094
+                },
+                {
+                  "timestamp": 1542477600000,
+                  "value": 275.36585998535156
+                },
+                {
+                  "timestamp": 1542481200000,
+                  "value": 274.8233642578125
+                },
+                {
+                  "timestamp": 1542484800000,
+                  "value": 274.35382080078125
+                },
+                {
+                  "timestamp": 1542488400000,
+                  "value": 273.8891143798828
+                },
+                {
+                  "timestamp": 1542492000000,
+                  "value": 273.6193542480469
+                },
+                {
+                  "timestamp": 1542495600000,
+                  "value": 273.1964416503906
+                },
+                {
+                  "timestamp": 1542499200000,
+                  "value": 272.87730407714844
+                }
+              ]
+            },
+            {
+              "label": "directHorizontalIrradiance",
+              "unit": "W/m²",
+              "timeseries": [
+                {
+                  "timestamp": 1542412800000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542416400000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542420000000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542423600000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542427200000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542430800000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542434400000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542438000000,
+                  "value": 0.01708984375
+                },
+                {
+                  "timestamp": 1542441600000,
+                  "value": 32.473876953125
+                },
+                {
+                  "timestamp": 1542445200000,
+                  "value": 106.16259765625
+                },
+                {
+                  "timestamp": 1542448800000,
+                  "value": 172.1171875
+                },
+                {
+                  "timestamp": 1542452400000,
+                  "value": 207.6816406250005
+                },
+                {
+                  "timestamp": 1542456000000,
+                  "value": 203.74609375089045
+                },
+                {
+                  "timestamp": 1542459600000,
+                  "value": 161.24023440730758
+                },
+                {
+                  "timestamp": 1542463200000,
+                  "value": 92.67578142064986
+                },
+                {
+                  "timestamp": 1542466800000,
+                  "value": 21.17968753655803
+                },
+                {
+                  "timestamp": 1542470400000,
+                  "value": 0.013671875010348028
+                },
+                {
+                  "timestamp": 1542474000000,
+                  "value": -0.011718749990169372
+                },
+                {
+                  "timestamp": 1542477600000,
+                  "value": 0.027343750008278423
+                },
+                {
+                  "timestamp": 1542481200000,
+                  "value": 0.003906250007761022
+                },
+                {
+                  "timestamp": 1542484800000,
+                  "value": -0.013671874993791184
+                },
+                {
+                  "timestamp": 1542488400000,
+                  "value": -0.046874999994825986
+                },
+                {
+                  "timestamp": 1542492000000,
+                  "value": -0.07421874999482599
+                },
+                {
+                  "timestamp": 1542495600000,
+                  "value": -0.041015624994825986
+                },
+                {
+                  "timestamp": 1542499200000,
+                  "value": -0.041015624995343385
+                }
+              ]
+            },
+            {
+              "label": "diffuseHorizontalIrradiance",
+              "unit": "W/m²",
+              "timeseries": [
+                {
+                  "timestamp": 1542412800000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542416400000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542420000000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542423600000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542427200000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542430800000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542434400000,
+                  "value": 0
+                },
+                {
+                  "timestamp": 1542438000000,
+                  "value": 3.03173828125
+                },
+                {
+                  "timestamp": 1542441600000,
+                  "value": 51.814697265625
+                },
+                {
+                  "timestamp": 1542445200000,
+                  "value": 80.36165171861649
+                },
+                {
+                  "timestamp": 1542448800000,
+                  "value": 95.63700693845749
+                },
+                {
+                  "timestamp": 1542452400000,
+                  "value": 102.13556969165802
+                },
+                {
+                  "timestamp": 1542456000000,
+                  "value": 101.35517811775208
+                },
+                {
+                  "timestamp": 1542459600000,
+                  "value": 93.04704689979553
+                },
+                {
+                  "timestamp": 1542463200000,
+                  "value": 74.65015459060669
+                },
+                {
+                  "timestamp": 1542466800000,
+                  "value": 43.18778944015503
+                },
+                {
+                  "timestamp": 1542470400000,
+                  "value": -0.00856328010559082
+                },
+                {
+                  "timestamp": 1542474000000,
+                  "value": -0.06733894348144531
+                },
+                {
+                  "timestamp": 1542477600000,
+                  "value": 0.03996133804321289
+                },
+                {
+                  "timestamp": 1542481200000,
+                  "value": -0.05777382850646973
+                },
+                {
+                  "timestamp": 1542484800000,
+                  "value": 0.086669921875
+                },
+                {
+                  "timestamp": 1542488400000,
+                  "value": 0.07489943504333496
+                },
+                {
+                  "timestamp": 1542492000000,
+                  "value": -0.03650379180908203
+                },
+                {
+                  "timestamp": 1542495600000,
+                  "value": 0.022024869918823242
+                },
+                {
+                  "timestamp": 1542499200000,
+                  "value": 0.025892019271850586
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
 }

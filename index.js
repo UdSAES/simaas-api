@@ -46,17 +46,32 @@ const API_SPECIFICATION_FILE_PATH = './oas/simaas_oas3_flat.yaml'
 // Define functions
 async function checkIfConfigIsValid () {
   if (!_.isString(QUEUE_ORIGIN)) {
-    log.fatal({ code: 600020 }, 'QUEUE_ORIGIN is ' + QUEUE_ORIGIN + ' but must be a valid protocol+host-combination (e.g. http://127.0.0.1:12345)')
+    log.fatal(
+      { code: 600020 },
+      'QUEUE_ORIGIN is ' +
+        QUEUE_ORIGIN +
+        ' but must be a valid protocol+host-combination (e.g. http://127.0.0.1:12345)'
+    )
     process.exit(1)
   }
 
   if (!(_.isNumber(LISTEN_PORT) && LISTEN_PORT > 0 && LISTEN_PORT < 65535)) {
-    log.fatal({ code: 600020 }, 'LISTEN_PORT is ' + LISTEN_PORT + ' but must be an integer number larger than 0 and smaller than 65535')
+    log.fatal(
+      { code: 600020 },
+      'LISTEN_PORT is ' +
+        LISTEN_PORT +
+        ' but must be an integer number larger than 0 and smaller than 65535'
+    )
     process.exit(1)
   }
 
   if (!(_.isNumber(ALIVE_EVENT_WAIT_TIME) && ALIVE_EVENT_WAIT_TIME > 0)) {
-    log.fatal({ code: 600020 }, 'ALIVE_EVENT_WAIT_TIME is ' + ALIVE_EVENT_WAIT_TIME + ' but must be positive integer number larger than 0')
+    log.fatal(
+      { code: 600020 },
+      'ALIVE_EVENT_WAIT_TIME is ' +
+        ALIVE_EVENT_WAIT_TIME +
+        ' but must be positive integer number larger than 0'
+    )
     process.exit(1)
   }
 
@@ -189,7 +204,10 @@ async function init () {
 
   // XXX is this even functional?
   app.on('error', function (error) {
-    log.fatal({ code: 600030, err: error }, 'cannot bind to listening port ' + LISTEN_PORT)
+    log.fatal(
+      { code: 600030, err: error },
+      'cannot bind to listening port ' + LISTEN_PORT
+    )
     process.exit(1)
   })
 }
