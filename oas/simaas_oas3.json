@@ -425,7 +425,7 @@
                 "result": {
                   "type": "array",
                   "items": {
-                    "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
+                    "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
                   }
                 }
               }
@@ -498,7 +498,7 @@
         }
       },
       "ProblemDetail": {
-        "$ref": "./schema_v0.1.0_oas2.json#/ProblemDetail"
+        "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/problem-detail/schema_v0.1.0_oas2.json#/ProblemDetail"
       },
       "ModelInstanceID": {
         "description": "The UUID of the model instance to be simulated",
@@ -519,7 +519,7 @@
                 "description": "The parameter set that defines the model instance"
               },
               {
-                "$ref": "./location_schema_v0.1.0_oas2.json#/Location"
+                "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/location/schema_v0.1.0_oas2.json#/Location"
               },
               {
                 "$ref": "./schema_pv_plant_oas2.json#/PVplant"
@@ -598,7 +598,7 @@
             {
               "allOf": [
                 {
-                  "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
+                  "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
                 },
                 {
                   "required": ["label"]
@@ -615,7 +615,7 @@
             {
               "allOf": [
                 {
-                  "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
+                  "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
                 },
                 {
                   "required": ["label"]
@@ -632,7 +632,7 @@
             {
               "allOf": [
                 {
-                  "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
+                  "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
                 },
                 {
                   "required": ["label"]
@@ -649,7 +649,7 @@
             {
               "allOf": [
                 {
-                  "$ref": "./schema_v1.3.0-oas2.json#/Timeseries"
+                  "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
                 },
                 {
                   "required": ["label"]
