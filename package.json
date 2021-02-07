@@ -12,7 +12,7 @@
     "lint": "standard",
     "lint-fix": "standard --fix",
     "format": "prettier-standard --lint '**/*.{js,json}'",
-    "api-lint": "speccy lint --rules ./test/speccy_rules.json $npm_package_config_oas3",
+    "api-lint": "speccy lint $npm_package_config_oas3",
     "api-serve": "speccy serve $npm_package_config_oas3",
     "api-resolve": "speccy resolve $npm_package_config_oas3 > $npm_package_config_oas3_flat",
     "predredd": "npm run api-resolve",
