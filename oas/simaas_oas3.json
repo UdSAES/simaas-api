@@ -11,6 +11,7 @@
                     "Model Instances"
                 ],
                 "summary": "A list of all available model instances",
+                "operationId": "getListOfModelInstances",
                 "responses": {
                     "501": {
                         "$ref": "#/components/responses/NotImplemented"
@@ -22,6 +23,7 @@
                     "Model Instances"
                 ],
                 "summary": "Instantiate a model for a specific system",
+                "operationId": "createModelInstance",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -57,6 +59,7 @@
                     "Model Instances"
                 ],
                 "summary": "A specific model instance",
+                "operationId": "getModelInstance",
                 "responses": {
                     "400": {
                         "$ref": "#/components/responses/SchemaValidationFailed"
@@ -71,6 +74,7 @@
                     "Model Instances"
                 ],
                 "summary": "Delete a specific model instance",
+                "operationId": "deleteModelInstance",
                 "responses": {
                     "400": {
                         "$ref": "#/components/responses/SchemaValidationFailed"
@@ -92,6 +96,7 @@
                     "Experiments"
                 ],
                 "summary": "A list of all available experiments",
+                "operationId": "getListOfExperiments",
                 "responses": {
                     "501": {
                         "$ref": "#/components/responses/NotImplemented"
@@ -103,6 +108,7 @@
                     "Experiments"
                 ],
                 "summary": "Trigger the simulation of a model instance by defining an experiment",
+                "operationId": "triggerSimulation",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -138,6 +144,7 @@
                     "Experiments"
                 ],
                 "summary": "A representation of a specific experiment and its status",
+                "operationId": "getExperiment",
                 "responses": {
                     "200": {
                         "$ref": "#/components/responses/Experiment"
@@ -159,6 +166,7 @@
                     "Experiments"
                 ],
                 "summary": "The results of performing the experiment/simulation",
+                "operationId": "getExperimentResult",
                 "responses": {
                     "200": {
                         "$ref": "#/components/responses/SimulationResult"
@@ -180,6 +188,7 @@
                     "API Details"
                 ],
                 "summary": "The OpenAPI Specification of this API",
+                "operationId": "getOAS",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/OASisFlattened"

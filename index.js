@@ -26,11 +26,9 @@ var bodyParser = require('body-parser')
 require('express-async-errors')
 const cors = require('cors')
 const _ = require('lodash')
-const swaggerTools = require('swagger-tools')
-const fs = require('fs-extra')
 const delay = require('delay')
-const serializeError = require('serialize-error')
 const addRequestId = require('express-request-id')()
+const { OpenAPIBackend } = require('openapi-backend')
 
 const handlers = require('./lib/simaas.js')
 const responseUtils = require('./lib/response_utils.js')
@@ -43,7 +41,7 @@ const LISTEN_PORT = parseInt(process.env.LISTEN_PORT)
 const UI_STATIC_FILES_PATH = String(process.env.UI_STATIC_FILES_PATH) || ''
 const UI_URL_PATH = String(process.env.UI_URL_PATH) || ''
 const ALIVE_EVENT_WAIT_TIME = parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 3600 * 1000
-const API_SPECIFICATION_FILE_PATH_FLAT = './oas/simaas_oas2_flat.json'
+const API_SPECIFICATION_FILE_PATH = './oas/simaas_oas3_flat.yaml'
 
 // Define functions
 async function checkIfConfigIsValid () {
@@ -103,6 +101,25 @@ async function init () {
   app.use(cors())
   app.use(addRequestId)
 
+  // Read API-specification and initialize backend
+  let backend = null
+  try {
+    backend = new OpenAPIBackend({
+      definition: API_SPECIFICATION_FILE_PATH,
+      strict: true,
+      validate: true,
+      ajvOpts: {
+        format: false
+      }
+    })
+    log.info('successfully loaded API description ' + API_SPECIFICATION_FILE_PATH)
+  } catch (error) {
+    log.fatal('error while loading API description ' + API_SPECIFICATION_FILE_PATH)
+    process.exit(1)
+  }
+
+  backend.init()
+
   // Expose UI iff UI_URL_PATH is not empty
   if (UI_URL_PATH !== '') {
     if (UI_STATIC_FILES_PATH !== '') {
@@ -121,128 +138,59 @@ async function init () {
     })
   }
 
-  // Read API-specification and initialize backend
-  let api = null
-  try {
-    api = await fs.readJson(API_SPECIFICATION_FILE_PATH_FLAT, { encoding: 'utf8' })
-    log.info({ code: 300020 }, 'successfully loaded API description ' + API_SPECIFICATION_FILE_PATH_FLAT)
-  } catch (error) {
-    log.fatal({ code: 600010, err: error }, 'error while loading API description ' + API_SPECIFICATION_FILE_PATH_FLAT)
-    process.exit(1)
-  }
-
+  // Create child logger including req_id to be used in handlers
   app.use((req, res, next) => {
     req.log = log.child({ req_id: req.id })
     req.log.info({ req: req }, `received ${req.method}-request on ${req.originalUrl}`) // XXX incompatible with GDPR!!
     next()
   })
 
-  swaggerTools.initializeMiddleware(api, function (middleware) {
-    // Interpret Swagger resources and attach metadata to request
-    // -- must be first in swagger-tools middleware chain
-    app.use(middleware.swaggerMetadata())
+  // Pass requests to middleware
+  app.use((req, res, next) => backend.handleRequest(req, req, res, next))
 
-    // Validate Swagger requests
-    // https://github.com/apigee-127/swagger-tools/blob/master/docs/Middleware.md#swagger-validator
-    app.use(middleware.swaggerValidator({
-      validateResponse: true
-    }))
+  // Define routing
+  backend.register('getListOfModelInstances', responseUtils.respondWithNotImplemented)
+  backend.register('createModelInstance', handlers.createModelInstance)
+  backend.register('getModelInstance', responseUtils.respondWithNotImplemented)
+  backend.register('deleteModelInstance', responseUtils.respondWithNotImplemented)
+  backend.register('getListOfExperiments', responseUtils.respondWithNotImplemented)
+  backend.register('triggerSimulation', handlers.simulateModelInstance)
+  backend.register('getExperiment', handlers.getExperimentStatus)
+  backend.register('getExperimentResult', handlers.getExperimentResult)
+  backend.register('getOAS', responseUtils.serveOAS)
 
-    // Expose OpenAPI-specification as /oas
-    app.get('/oas', responseUtils.serveOAS)
+  // Handle unsuccessful requests
+  backend.register('validationFail', responseUtils.failValidation)
+  backend.register('notImplemented', responseUtils.respondWithNotImplemented)
+  backend.register('notFound', responseUtils.respondWithNotFound)
 
-    // Define routing -- MUST happen after enabling swaggerValidator or validation doesn't work
-    app.get('/model-instances', responseUtils.respondWithNotImplemented)
-    app.post('/model-instances', handlers.createModelInstance)
-    app.get('/model-instances/:modelInstanceID', responseUtils.respondWithNotImplemented)
-    app.delete('/model-instances/:modelInstanceID', responseUtils.respondWithNotImplemented)
-    app.get('/experiments', responseUtils.respondWithNotImplemented)
-    app.post('/experiments', handlers.simulateModelInstance)
-    app.get('/experiments/:experimentID', handlers.getExperimentStatus)
-    app.get('/experiments/:experimentID/result', handlers.getExperimentResult)
+  // Serialize any remaining errors as JSON
+  app.use(function (err, req, res, next) {
+    log.error(
+      'an internal server error occured and was caught at the end of the chain',
+      err
+    )
+    if (res.headersSent) {
+      return next(err)
+    }
 
-    // Handle unsuccessfull requests
-    app.use(function (req, res, next) {
-      res.set('Content-Type', 'application/problem+json')
-      res.status(404).json({
-        'title': 'Not Found',
-        'status': 404,
-        'detail': 'The requested resource was not found on this server'
-      })
-      req.log.info({ res: res }, 'sent `404 Not Found` as response to ' + req.method + '-request on ' + req.path)
-    }) // http://expressjs.com/en/starter/faq.html
-
-    // Ensure that any remaining errors are serialized as JSON
-    app.use(function (err, req, res, next) {
-      if (res.headersSent) {
-        req.log.fatal({ code: 600050, err: err }, 'headers already sent')
-        process.exit(1)
-      }
-
-      switch (err.code) {
-        case 'SCHEMA_VALIDATION_FAILED':
-          req.log.warn({ code: 401099, err: err }, 'schema validation failed -- request dropped')
-          res.set('Content-Type', 'application/problem+json')
-          res.status(400).json({
-            title: 'Schema Validation Failed',
-            status: 400,
-            detail: serializeError(err).message,
-            path: serializeError(err).path
-          })
-          break
-        case 'PATTERN':
-          req.log.warn({ code: 401099, err: err }, 'schema validation failed -- request dropped')
-          res.set('Content-Type', 'application/problem+json')
-          res.status(400).json({
-            title: 'Schema Validation Failed',
-            status: 400,
-            detail: serializeError(err).message,
-            path: serializeError(err).path
-          })
-          break
-        default:
-          next(err)
-
-          // XXX currently, you're busted if response validation fails!!  -- so:
-          // TODO explicitly handle response validation failure -- this doesn't work
-
-          // if (_.startsWith(err.message, 'Response validation failed')) {
-          //   req.log.error({ code: 501099, err: err }, 'a response did not validate agains its schema')
-          //   res.status(500).json({ error: serializeError(err) }) // XXX RFC7807
-          //   break
-          // } else {
-          //   next(err)
-          // }
-      }
+    responseUtils.sendProblemDetail(res, {
+      title: 'Internal Server Error',
+      status: 500
     })
+  })
 
-    app.use(function (err, req, res, next) {
-      req.log.error({ code: 501000, err: err }, 'an internal server error occured and was caught at the end of the chain')
-      if (res.headersSent) {
-        req.log.fatal({ code: 600050, err: err }, 'headers already sent')
-        process.exit(1)
-      }
+  log.info({ code: 300030 }, 'configuration successfull')
 
-      res.set('Content-Type', 'application/problem+json')
-      res.status(500).json({
-        title: 'Internal Server Error',
-        status: 500,
-        detail: 'An internal server error occured, please try again later'
-      })
-      req.log.error({ err: err }, 'sent `500 Internal Server Error` as response to ' + req.method + '-request on ' + req.path)
-    })
+  // Start listening to incoming requests
+  server = app.listen(LISTEN_PORT, function () {
+    log.info({ code: 300040 }, 'now listening on port ' + LISTEN_PORT)
+  })
 
-    log.info({ code: 300030 }, 'configuration successfull')
-
-    server = app.listen(LISTEN_PORT, function () {
-      log.info({ code: 300040 }, 'now listening on port ' + LISTEN_PORT)
-    })
-
-    // XXX is this even functional?
-    app.on('error', function (error) {
-      log.fatal({ code: 600030, err: error }, 'cannot bind to listening port ' + LISTEN_PORT)
-      process.exit(1)
-    })
+  // XXX is this even functional?
+  app.on('error', function (error) {
+    log.fatal({ code: 600030, err: error }, 'cannot bind to listening port ' + LISTEN_PORT)
+    process.exit(1)
   })
 }
 
