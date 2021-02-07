@@ -51,8 +51,9 @@
   },
   "devDependencies": {
     "dredd": "^9.0.5",
+    "prettier-standard": "^16.4.1",
     "speccy": "^0.11.0",
-    "standard": "^12.0.1"
+    "standard": "^16.0.3"
   },
   "standard": {
     "ignore": [
