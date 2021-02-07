@@ -22,12 +22,10 @@ process.on('SIGTERM', shutDownGracefully)
 
 // Load modules
 const express = require('express')
-// const { URL } = require('url')
 var bodyParser = require('body-parser')
 require('express-async-errors')
 const cors = require('cors')
 const _ = require('lodash')
-// const request = require('request-promise-native')
 const swaggerTools = require('swagger-tools')
 const fs = require('fs-extra')
 const delay = require('delay')
