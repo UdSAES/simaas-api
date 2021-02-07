@@ -1,0 +1,116 @@
+{
+    "unitOfParameter": {
+        "type": "object",
+        "required": [
+            "unit"
+        ],
+        "properties": {
+            "unit": {
+                "type": "string",
+                "description": "Unit of the value, formatted as defined in the [Modelica Specification v3.4](https://www.modelica.org/documents/ModelicaSpec34.pdf), Chapter 19",
+            }
+        }
+    },
+    "Location": {
+        "type": "object",
+        "description": "A location on earth expressed as latitude, longitude and elevation",
+        "required": [
+            "latitude",
+            "longitude"
+        ],
+        "properties": {
+            "latitude": {
+                "type": "object",
+                "description": "Latitude in [decimal degrees](https://en.wikipedia.org/wiki/Decimal_degrees)",
+                "required": [
+                    "value"
+                ],
+                "allOf": [
+                    { "$ref": "#/unitOfParameter" },
+                    {
+                        "type": "object",
+                        "required": [ "value" ],
+                        "properties": {
+                            "unit": {
+                                "pattern": "^deg$"
+                            },
+                            "value": {
+                                "type": "number",
+                                "format": "double",
+                                "minimum": -90,
+                                "maximum": 90,
+                                "example": 49.2553
+                            }
+                        }
+                    }
+                ]
+            },
+            "longitude": {
+                "type": "object",
+                "description": "Longitude in [decimal degrees](https://en.wikipedia.org/wiki/Decimal_degrees)",
+                "required": [
+                    "value"
+                ],
+                "allOf": [
+                    { "$ref": "#/unitOfParameter" },
+                    {
+                        "type": "object",
+                        "required": [ "value" ],
+                        "properties": {
+                            "unit": {
+                                "pattern": "^deg$"
+                            },
+                            "value": {
+                                "type": "number",
+                                "format": "double",
+                                "minimum": -180,
+                                "maximum": 180,
+                                "example": 7.0405
+                            }
+                        }
+                    }
+                ]
+            },
+            "elevation": {
+                "type": "object",
+                "description": "Height above sea level (elevation) in metres",
+                "required": [
+                    "value"
+                ],
+                "allOf": [
+                    { "$ref": "#/unitOfParameter" },
+                    {
+                        "type": "object",
+                        "required": [ "value" ],
+                        "properties": {
+                            "unit": {
+                                "pattern": "^m$"
+                            },
+                            "value": {
+                                "type": "number",
+                                "format": "double",
+                                "minimum": -424,
+                                "maximum": 8848,
+                                "example": 273
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "example": {
+            "latitude": {
+                "unit": "deg",
+                "value": 49.2553
+            },
+            "longitude": {
+                "unit": "deg",
+                "value": 7.0405
+            },
+            "elevation": {
+                "unit": "m",
+                "value": 273
+            }
+        }
+    }
+}
