@@ -8,7 +8,8 @@
     "oas3_flat": "./oas/simaas_oas3_flat.yaml"
   },
   "scripts": {
-    "start": "npm run api-resolve --silent && startup.sh",
+    "prestart": "npm run api-resolve",
+    "start": "./startup.sh",
     "lint": "standard",
     "lint-fix": "standard --fix",
     "format": "prettier-standard --lint '**/*.{js,json}'",

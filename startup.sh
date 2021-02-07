@@ -32,8 +32,6 @@ wait_term()
 # Start all sub-services, enclosed by functions that ensure SIGTERM is caught
 prep_term
 
-(( cd /home/node/queue; LISTEN_PORT=$LISTEN_PORT_QUEUE node index.js ) &
- ( cd /home/node/worker; unset HTTP_PROXY; unset HTTPS_PROXY; unset FTP_PROXY; unset NO_PROXY; unset http_proxy; unset https_proxy; unset ftp_proxy; unset no_proxy; node index.js ) &
- ( cd /home/node/api; node index.js )) &
+LISTEN_PORT=$LISTEN_PORT_API node index.js &
 
 wait_term
