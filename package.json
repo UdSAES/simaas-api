@@ -3,16 +3,18 @@
   "version": "0.2.2",
   "description": "Tiny micro service which implements the public API of the Simulation as a Service instance",
   "main": "index.js",
+  "config": {
+    "oas3": "./oas/simaas_oas3.json",
+    "oas3_flat": "./oas/simaas_oas3_flat.yaml"
+  },
   "scripts": {
+    "start": "npm run api-resolve --silent && startup.sh",
     "lint": "standard",
     "lint-fix": "standard --fix",
-    "preapi-serve": "npm run api-resolve",
-    "api-serve": "speccy serve ./oas/simaas_oas2_flat.json",
-    "api-resolve": "node ./scripts/api-resolve.js",
-    "preapi-2oas3": "npm run api-resolve",
-    "api-2oas3": "swagger2openapi -o ./oas/simaas_oas3_flat.json ./oas/simaas_oas2_flat.json",
-    "preapi-lint": "npm run api-2oas3",
-    "api-lint": "speccy lint --rules ./test/speccy_rules.json ./oas/simaas_oas3_flat.json",
+    "format": "prettier-standard --lint '**/*.{js,json}'",
+    "api-lint": "speccy lint --rules ./test/speccy_rules.json $npm_package_config_oas3",
+    "api-serve": "speccy serve $npm_package_config_oas3",
+    "api-resolve": "speccy resolve $npm_package_config_oas3 > $npm_package_config_oas3_flat",
     "predredd": "npm run api-resolve",
     "dredd": "node ./test/dredd.js",
     "test-all": "npm run lint && npm run api-lint && npm run dredd"

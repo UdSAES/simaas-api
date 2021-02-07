@@ -5,7 +5,6 @@ node_modules
 test/dredd_report.html
 
 # Ignore derivative versions of API specification
-oas/simaas_oas3*.json
 oas/simaas_oas3*.yaml
 
 # Ignore files for local development
