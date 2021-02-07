@@ -282,7 +282,7 @@
                     }
                 },
                 "content": {
-                    "*/*": {
+                    "application/problem+json": {
                         "schema": {
                             "allOf": [
                                 {
@@ -295,9 +295,7 @@
                                     ]
                                 }
                             ]
-                        }
-                    },
-                    "application/problem+json": {
+                        },
                         "examples": {
                             "response": {
                                 "value": {
@@ -323,7 +321,7 @@
                     }
                 },
                 "content": {
-                    "*/*": {
+                    "application/problem+json": {
                         "schema": {
                             "allOf": [
                                 {
@@ -336,9 +334,7 @@
                                     ]
                                 }
                             ]
-                        }
-                    },
-                    "application/problem+json": {
+                        },
                         "examples": {
                             "response": {
                                 "value": {
@@ -370,7 +366,7 @@
                     }
                 },
                 "content": {
-                    "*/*": {
+                    "application/problem+json": {
                         "schema": {
                             "allOf": [
                                 {
@@ -383,9 +379,7 @@
                                     ]
                                 }
                             ]
-                        }
-                    },
-                    "application/problem+json": {
+                        },
                         "examples": {
                             "response": {
                                 "value": {
@@ -411,7 +405,7 @@
                     }
                 },
                 "content": {
-                    "*/*": {
+                    "application/json": {
                         "schema": {
                             "allOf": [
                                 {
@@ -461,7 +455,7 @@
                     }
                 },
                 "content": {
-                    "*/*": {
+                    "application/json": {
                         "schema": {
                             "type": "object",
                             "required": [
@@ -479,9 +473,7 @@
                                     }
                                 }
                             }
-                        }
-                    },
-                    "application/json": {
+                        },
                         "examples": {
                             "response": {
                                 "value": {
