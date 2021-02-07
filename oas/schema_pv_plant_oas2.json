@@ -1,205 +1,198 @@
 {
-    "unitOfParameter": {
-        "type": "object",
-        "required": [
-            "unit"
-        ],
-        "properties": {
-            "unit": {
-                "type": "string",
-                "description": "Unit of the value, formatted as defined in the [Modelica Specification v3.4](https://www.modelica.org/documents/ModelicaSpec34.pdf), Chapter 19",
-            }
-        }
-    },
-    "PVplant": {
-        "type": "object",
-        "description": "The parameters of the model instance representing a specific solar power plant",
-        "required": [
-            "panelArea",
-            "panelTilt",
-            "panelAzimuth",
-            "T_cell_ref"
-        ],
-        "properties": {
-            "panelArea": {
-                "type": "object",
-                "description": "Overall surface area of all panels in m2 (combined)",
-                "allOf": [
-                    { "$ref": "#/unitOfParameter" },
-                    {
-                        "type": "object",
-                        "required": ["value"],
-                        "properties": {
-                            "unit": {
-                                "pattern": "^m2$"
-                            },
-                            "value": {
-                                "type": "number",
-                                "format": "double",
-                                "minimum": 0
-                            }
-                        }
-                    }
-                ]
-            },
-            "panelTilt": {
-                "type": "object",
-                "description": "Surface tilt in degree (Horizonal equals 0°, vertical equals 90°)",
-                "allOf": [
-                    { "$ref": "#/unitOfParameter" },
-                    {
-                        "type": "object",
-                        "required": ["value"],
-                        "properties": {
-                            "unit": {
-                                "pattern": "^deg$"
-                            },
-                            "value": {
-                                "type": "number",
-                                "format": "double",
-                                "minimum": 0,
-                                "maximum": 90,
-                                "example": 30
-                            }
-                        }
-                    }
-                ]
-            },
-            "panelAzimuth": {
-                "type": "object",
-                "description": "Surface azimuth in degree (South equals 0°, positive towards east)",
-                "allOf": [
-                    { "$ref": "#/unitOfParameter" },
-                    {
-                        "type": "object",
-                        "required": ["value"],
-                        "properties": {
-                            "unit": {
-                                "pattern": "^deg$"
-                            },
-                            "value": {
-                                "type": "number",
-                                "format": "double",
-                                "minimum": -180,
-                                "maximum": 180,
-                                "example": 0
-                            }
-                        }
-                    }
-                ]
-            },
-            "T_cell_ref": {
-                "type": "object",
-                "description": "PV cell temperature at reference conditions in K (usually STC)",
-                "allOf": [
-                    { "$ref": "#/unitOfParameter" },
-                    {
-                        "type": "object",
-                        "required": ["value"],
-                        "properties": {
-                            "unit": {
-                                "pattern": "^K$"
-                            },
-                            "value": {
-                                "type": "number",
-                                "format": "double",
-                                "minimum": 0,
-                                "example": 298.15
-                            }
-                        }
-                    }
-                ]
-            },
-            "plantEfficiency": {
-                "type": "object",
-                "description": "Overall efficiency",
-                "allOf": [
-                    { "$ref": "#/unitOfParameter" },
-                    {
-                        "type": "object",
-                        "required": ["value"],
-                        "properties": {
-                            "unit": {
-                                "pattern": "^1$"
-                            },
-                            "value": {
-                                "type": "number",
-                                "format": "double",
-                                "minimum": 0,
-                                "maximum": 1,
-                                "example": 0.13
-                            }
-                        }
-                    }
-                ],
-            },
-            "environmentAlbedo": {
-                "type": "object",
-                "description": "Albedo for isotropic estimation of irradiance by reflection",
-                "allOf": [
-                    { "$ref": "#/unitOfParameter" },
-                    {
-                        "type": "object",
-                        "required": ["value"],
-                        "properties": {
-                            "unit": {
-                                "pattern": "^1$"
-                            },
-                            "value": {
-                                "type": "number",
-                                "format": "double",
-                                "minimum": 0,
-                                "maximum": 1,
-                                "example": 0.2
-                            }
-                        }
-                    }
-                ],
-            },
-            "nsModule": {
-                "type": "object",
-                "description": "Number of series connected modules",
-                "allOf": [
-                    { "$ref": "#/unitOfParameter" },
-                    {
-                        "type": "object",
-                        "required": ["value"],
-                        "properties": {
-                            "unit": {
-                                "pattern": "^1$"
-                            },
-                            "value": {
-                                "type": "integer",
-                                "format": "int32",
-                                "minimum": 1,
-                                "example": 1
-                            }
-                        }
-                    }
-                ],
-            },
-            "npModule": {
-                "type": "object",
-                "description": "Number of parallel connected modules",
-                "allOf": [
-                    { "$ref": "#/unitOfParameter" },
-                    {
-                        "type": "object",
-                        "required": ["value"],
-                        "properties": {
-                            "unit": {
-                                "pattern": "^1$"
-                            },
-                            "value": {
-                                "type": "integer",
-                                "format": "int32",
-                                "minimum": 1,
-                                "example": 1
-                            }
-                        }
-                    }
-                ],
-            }
-        }
+  "unitOfParameter": {
+    "type": "object",
+    "required": ["unit"],
+    "properties": {
+      "unit": {
+        "type": "string",
+        "description": "Unit of the value, formatted as defined in the [Modelica Specification v3.4](https://www.modelica.org/documents/ModelicaSpec34.pdf), Chapter 19"
+      }
     }
+  },
+  "PVplant": {
+    "type": "object",
+    "description": "The parameters of the model instance representing a specific solar power plant",
+    "required": ["panelArea", "panelTilt", "panelAzimuth", "T_cell_ref"],
+    "properties": {
+      "panelArea": {
+        "type": "object",
+        "description": "Overall surface area of all panels in m2 (combined)",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^m2$"
+              },
+              "value": {
+                "type": "number",
+                "format": "double",
+                "minimum": 0
+              }
+            }
+          }
+        ]
+      },
+      "panelTilt": {
+        "type": "object",
+        "description": "Surface tilt in degree (Horizonal equals 0°, vertical equals 90°)",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^deg$"
+              },
+              "value": {
+                "type": "number",
+                "format": "double",
+                "minimum": 0,
+                "maximum": 90,
+                "example": 30
+              }
+            }
+          }
+        ]
+      },
+      "panelAzimuth": {
+        "type": "object",
+        "description": "Surface azimuth in degree (South equals 0°, positive towards east)",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^deg$"
+              },
+              "value": {
+                "type": "number",
+                "format": "double",
+                "minimum": -180,
+                "maximum": 180,
+                "example": 0
+              }
+            }
+          }
+        ]
+      },
+      "T_cell_ref": {
+        "type": "object",
+        "description": "PV cell temperature at reference conditions in K (usually STC)",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^K$"
+              },
+              "value": {
+                "type": "number",
+                "format": "double",
+                "minimum": 0,
+                "example": 298.15
+              }
+            }
+          }
+        ]
+      },
+      "plantEfficiency": {
+        "type": "object",
+        "description": "Overall efficiency",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^1$"
+              },
+              "value": {
+                "type": "number",
+                "format": "double",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.13
+              }
+            }
+          }
+        ]
+      },
+      "environmentAlbedo": {
+        "type": "object",
+        "description": "Albedo for isotropic estimation of irradiance by reflection",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^1$"
+              },
+              "value": {
+                "type": "number",
+                "format": "double",
+                "minimum": 0,
+                "maximum": 1,
+                "example": 0.2
+              }
+            }
+          }
+        ]
+      },
+      "nsModule": {
+        "type": "object",
+        "description": "Number of series connected modules",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^1$"
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 1,
+                "example": 1
+              }
+            }
+          }
+        ]
+      },
+      "npModule": {
+        "type": "object",
+        "description": "Number of parallel connected modules",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^1$"
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 1,
+                "example": 1
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
 }
