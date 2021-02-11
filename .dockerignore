@@ -1,5 +1,14 @@
-# Ignore locally installed node modules
-node_modules/
+# Ignore everything
+# https://youknowfordevs.com/2018/12/07/getting-control-of-your-dockerignore-files.html
+*
 
-# Ignore files for local development
-local/
+# Only include specific files/directories
+!lib/
+!oas/
+!test/
+
+!prettierrc.json
+
+!package.json
+!startup.sh
+!index.js
