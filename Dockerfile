@@ -18,9 +18,9 @@ RUN mkdir $WORKDIR
 WORKDIR $WORKDIR
 
 # Configure application according to directory structure created
-ENV LISTEN_PORT=3000
+ENV SIMAAS_LISTEN_PORT=3000
 
-EXPOSE $LISTEN_PORT
+EXPOSE $SIMAAS_LISTEN_PORT
 
 # Install app-level dependencies
 COPY --chown=node:node package.json $WORKDIR

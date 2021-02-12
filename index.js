@@ -41,8 +41,8 @@ let cfg = {}
 // Define functions
 async function checkIfConfigIsValid () {
   const config = {
-    listenPort: parseInt(process.env.LISTEN_PORT),
-    heartbeatFrequency: parseInt(process.env.ALIVE_EVENT_WAIT_TIME) || 3600 * 1000,
+    listenPort: parseInt(process.env.SIMAAS_LISTEN_PORT),
+    heartbeatPeriod: parseInt(process.env.SIMAAS_HEARTBEAT_PERIOD) || 3600 * 1000,
     ui: {
       staticFilesPath: String(process.env.UI_STATIC_FILES_PATH) || '',
       urlPath: String(process.env.UI_URL_PATH) || ''
@@ -60,18 +60,18 @@ async function checkIfConfigIsValid () {
   ) {
     log.fatal(
       { code: 600020 },
-      'LISTEN_PORT is ' +
+      'SIMAAS_LISTEN_PORT is ' +
         config.listenPort +
         ' but must be an integer number larger than 0 and smaller than 65535'
     )
     process.exit(1)
   }
 
-  if (!(_.isNumber(config.heartbeatFrequency) && config.heartbeatFrequency > 0)) {
+  if (!(_.isNumber(config.heartbeatPeriod) && config.heartbeatPeriod > 0)) {
     log.fatal(
       { code: 600020 },
-      'ALIVE_EVENT_WAIT_TIME is ' +
-        config.heartbeatFrequency +
+      'SIMAAS_HEARTBEAT_PERIOD is ' +
+        config.heartbeatPeriod +
         ' but must be positive integer number larger than 0'
     )
     process.exit(1)
@@ -90,7 +90,7 @@ async function checkIfConfigIsValid () {
 
 async function aliveLoop () {
   while (true) {
-    await delay(cfg.heartbeatFrequency)
+    await delay(cfg.heartbeatPeriod)
     log.info({ code: 300100 }, 'service instance still running')
   }
 }
