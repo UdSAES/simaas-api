@@ -9,7 +9,6 @@
   },
   "scripts": {
     "prestart": "npm run api-resolve",
-    "start": "./startup.sh",
     "lint": "standard",
     "lint-fix": "standard --fix",
     "format": "prettier-standard --lint '**/*.{js,json}'",

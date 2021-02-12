@@ -22,7 +22,7 @@ process.on('SIGTERM', shutDownGracefully)
 
 // Load modules
 const express = require('express')
-var bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 require('express-async-errors')
 const cors = require('cors')
 const _ = require('lodash')
