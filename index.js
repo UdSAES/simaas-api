@@ -12,7 +12,7 @@ process.on('unhandledRejection', function (error) {
 
 process.on('uncaughtException', function (error) {
   log.fatal({ err: error, code: 600050 }, 'uncaught exception')
-  process.exit(1)
+  process.exit(2)
 })
 
 // Handle shutdown signals gracefully
@@ -64,7 +64,7 @@ async function checkIfConfigIsValid () {
         config.listenPort +
         ' but must be an integer number larger than 0 and smaller than 65535'
     )
-    process.exit(1)
+    process.exit(3)
   }
 
   if (!(_.isNumber(config.heartbeatPeriod) && config.heartbeatPeriod > 0)) {
@@ -74,7 +74,7 @@ async function checkIfConfigIsValid () {
         config.heartbeatPeriod +
         ' but must be positive integer number larger than 0'
     )
-    process.exit(1)
+    process.exit(4)
   }
 
   // TODO check validity of UI_STATIC_FILES_PATH
@@ -134,7 +134,7 @@ async function init () {
     log.info('successfully loaded API description ' + cfg.oasFilePath)
   } catch (error) {
     log.fatal('error while loading API description ' + cfg.oasFilePath)
-    process.exit(1)
+    process.exit(5)
   }
 
   backend.init()
@@ -148,7 +148,7 @@ async function init () {
     } else {
       // Fall back to default-UI
       log.fatal({ code: 600020 }, 'default-UI not implemented')
-      process.exit(1)
+      process.exit(6)
     }
 
     // Redirect GET-request on origin to UI iff UI is exposed
@@ -209,7 +209,7 @@ async function init () {
       { code: 600030, err: error },
       'cannot bind to listening port ' + cfg.listenPort
     )
-    process.exit(1)
+    process.exit(7)
   })
 }
 
