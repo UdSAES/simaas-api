@@ -51,8 +51,8 @@
           "400": {
             "$ref": "#/components/responses/SchemaValidationFailed"
           },
-          "501": {
-            "$ref": "#/components/responses/NotImplemented"
+          "410": {
+            "$ref": "#/components/responses/Gone"
           }
         }
       },
@@ -107,6 +107,9 @@
           },
           "400": {
             "$ref": "#/components/responses/SchemaValidationFailed"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
           }
         }
       },
@@ -127,6 +130,9 @@
           },
           "400": {
             "$ref": "#/components/responses/SchemaValidationFailed"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
           }
         }
       },
@@ -291,6 +297,40 @@
                   "status": 400,
                   "detail": "Request validation failed: Parameter (uuid) does not match required pattern: ^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$",
                   "path": ["paths", "/model-instances/{uuid}", "parameters", "0"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "Gone": {
+        "description": "The response to requests asking for resources that no longer exist; typically because they expired and were garbage-collected",
+        "headers": {
+          "Content-Type": {
+            "schema": {
+              "type": "string",
+              "enum": ["application/problem+json"]
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                {
+                  "required": ["title", "status"]
+                }
+              ]
+            },
+            "examples": {
+              "response": {
+                "value": {
+                  "title": "Gone",
+                  "status": 410,
+                  "detail": "The requested resource no longer exists on this server"
                 }
               }
             }
