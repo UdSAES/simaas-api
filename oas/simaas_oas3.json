@@ -6,16 +6,6 @@
   },
   "paths": {
     "/model-instances": {
-      "get": {
-        "tags": ["Model Instances"],
-        "summary": "A list of all available model instances",
-        "operationId": "getListOfModelInstances",
-        "responses": {
-          "501": {
-            "$ref": "#/components/responses/NotImplemented"
-          }
-        }
-      },
       "post": {
         "tags": ["Model Instances"],
         "summary": "Instantiate a model for a specific system",
@@ -63,19 +53,6 @@
           }
         }
       },
-      "delete": {
-        "tags": ["Model Instances"],
-        "summary": "Delete a specific model instance",
-        "operationId": "deleteModelInstance",
-        "responses": {
-          "400": {
-            "$ref": "#/components/responses/SchemaValidationFailed"
-          },
-          "501": {
-            "$ref": "#/components/responses/NotImplemented"
-          }
-        }
-      },
       "parameters": [
         {
           "$ref": "#/components/parameters/ModelInstanceID"
@@ -83,16 +60,6 @@
       ]
     },
     "/experiments": {
-      "get": {
-        "tags": ["Experiments"],
-        "summary": "A list of all available experiments",
-        "operationId": "getListOfExperiments",
-        "responses": {
-          "501": {
-            "$ref": "#/components/responses/NotImplemented"
-          }
-        }
-      },
       "post": {
         "tags": ["Experiments"],
         "summary": "Trigger the simulation of a model instance by defining an experiment",

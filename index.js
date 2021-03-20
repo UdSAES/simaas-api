@@ -168,11 +168,8 @@ async function init () {
   app.use((req, res, next) => backend.handleRequest(req, req, res, next))
 
   // Define routing
-  backend.register('getListOfModelInstances', responseUtils.respondWithNotImplemented)
   backend.register('createModelInstance', handlers.createModelInstance)
   backend.register('getModelInstance', responseUtils.respondWithNotImplemented)
-  backend.register('deleteModelInstance', responseUtils.respondWithNotImplemented)
-  backend.register('getListOfExperiments', responseUtils.respondWithNotImplemented)
   backend.register('triggerSimulation', handlers.simulateModelInstance)
   backend.register('getExperiment', handlers.getExperimentStatus)
   backend.register('getExperimentResult', handlers.getExperimentResult)
