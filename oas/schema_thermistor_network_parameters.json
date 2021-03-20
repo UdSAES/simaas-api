@@ -12,9 +12,174 @@
   "ThermistorNetwork": {
     "type": "object",
     "description": "The parameters of the model instance representing a specific thermistor network",
-    "required": ["T1"],
+    "required": ["R1, R2, R3, R4, TH1, TH2, B1, B2"],
     "properties": {
-      "T1": {}
+      "R1": {
+        "type": "object",
+        "description": "Resistance value of R1",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^Ohm$"
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 0
+              }
+            }
+          }
+        ]
+      },
+      "R2": {
+        "type": "object",
+        "description": "Resistance value of R2",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^Ohm$"
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 0
+              }
+            }
+          }
+        ]
+      },
+      "R3": {
+        "type": "object",
+        "description": "Resistance value of R3",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^Ohm$"
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 0
+              }
+            }
+          }
+        ]
+      },
+      "R4": {
+        "type": "object",
+        "description": "Resistance value of R4",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^Ohm$"
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 0
+              }
+            }
+          }
+        ]
+      },
+      "TH1": {
+        "type": "object",
+        "description": "Resistance value of TH1",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^Ohm$"
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 0
+              }
+            }
+          }
+        ]
+      },
+      "TH2": {
+        "type": "object",
+        "description": "Resistance value of TH2",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^Ohm$"
+              },
+              "value": {
+                "type": "integer",
+                "format": "int32",
+                "minimum": 0
+              }
+            }
+          }
+        ]
+      },
+      "B1": {
+        "type": "object",
+        "description": "b-parameter B1",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^1/K$"
+              },
+              "value": {
+                "type": "number",
+                "format": "float"
+              }
+            }
+          }
+        ]
+      },
+      "B2": {
+        "type": "object",
+        "description": "b-parameter B2",
+        "allOf": [
+          { "$ref": "#/unitOfParameter" },
+          {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "unit": {
+                "pattern": "^1/K$"
+              },
+              "value": {
+                "type": "number",
+                "format": "float"
+              }
+            }
+          }
+        ]
+      }
     }
   }
 }

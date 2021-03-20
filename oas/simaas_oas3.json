@@ -629,7 +629,40 @@
         ],
         "example": {
           "model": "http://example.com/models/d8b032d4-44a0-4bc5-9ded-c73703f3e5fc",
-          "parameters": {}
+          "parameters": {
+            "R1": {
+              "value": 130000,
+              "unit": "Ohm"
+            },
+            "R2": {
+              "value": 150000,
+              "unit": "Ohm"
+            },
+            "R3": {
+              "value": 2200,
+              "unit": "Ohm"
+            },
+            "R4": {
+              "value": 300,
+              "unit": "Ohm"
+            },
+            "TH1": {
+              "value": 3300,
+              "unit": "Ohm"
+            },
+            "TH2": {
+              "value": 4700,
+              "unit": "Ohm"
+            },
+            "B1": {
+              "value": 3528,
+              "unit": "1/K"
+            },
+            "B2": {
+              "value": 3680,
+              "unit": "1/K"
+            }
+          }
         }
       },
       "SimulationParameters": {
