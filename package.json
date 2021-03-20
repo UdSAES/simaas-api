@@ -43,6 +43,7 @@
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
+    "node-cache": "^5.1.2",
     "openapi-backend": "^3.9.0",
     "promise-status-async": "^1.1.11",
     "request": "^2.88.2",
