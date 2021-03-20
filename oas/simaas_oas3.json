@@ -535,12 +535,15 @@
       },
       "ModelInstance": {
         "type": "object",
-        "required": ["model", "parameters"],
+        "required": ["modelId", "modelHref", "parameters"],
         "discriminator": {
-          "propertyName": "model"
+          "propertyName": "modelId"
         },
         "properties": {
-          "model": {
+          "modelId": {
+            "$ref": "#/components/schemas/ModelInstanceID"
+          },
+          "modelHref": {
             "type": "string",
             "format": "uri"
           }
@@ -572,7 +575,8 @@
           }
         ],
         "example": {
-          "model": "http://example.com/models/a73e8e8a-9dca-4f74-b45a-5713f5d4564c",
+          "modelId": "a73e8e8a-9dca-4f74-b45a-5713f5d4564c",
+          "modelHref": "http://example.com/models/a73e8e8a-9dca-4f74-b45a-5713f5d4564c/model.fmu",
           "parameters": {
             "latitude": {
               "unit": "deg",
@@ -628,7 +632,8 @@
           }
         ],
         "example": {
-          "model": "http://example.com/models/d8b032d4-44a0-4bc5-9ded-c73703f3e5fc",
+          "modelId": "65d7ce93-2804-4faa-a5dd-2fe0f24d8bae",
+          "modelHref": "http://example.com/models/65d7ce93-2804-4faa-a5dd-2fe0f24d8bae/model.fmu",
           "parameters": {
             "R1": {
               "value": 130000,
