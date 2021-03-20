@@ -45,6 +45,9 @@
         "summary": "A specific model instance",
         "operationId": "getModelInstance",
         "responses": {
+          "200": {
+            "$ref": "#/components/responses/ModelInstance"
+          },
           "400": {
             "$ref": "#/components/responses/SchemaValidationFailed"
           },
@@ -324,6 +327,24 @@
                   "detail": "The request was understood, but the underlying implementation is not available yet."
                 }
               }
+            }
+          }
+        }
+      },
+      "ModelInstance": {
+        "description": "A representation of a specific model instace",
+        "headers": {
+          "Content-Type": {
+            "schema": {
+              "type": "string",
+              "enum": ["application/json"]
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ModelInstance"
             }
           }
         }
