@@ -1,0 +1,20 @@
+{
+  "unitOfParameter": {
+    "type": "object",
+    "required": ["unit"],
+    "properties": {
+      "unit": {
+        "type": "string",
+        "description": "Unit of the value, formatted as defined in the [Modelica Specification v3.4](https://www.modelica.org/documents/ModelicaSpec34.pdf), Chapter 19"
+      }
+    }
+  },
+  "ThermistorNetwork": {
+    "type": "object",
+    "description": "The parameters of the model instance representing a specific thermistor network",
+    "required": ["T1"],
+    "properties": {
+      "T1": {}
+    }
+  }
+}

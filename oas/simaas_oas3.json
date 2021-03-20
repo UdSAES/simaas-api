@@ -536,30 +536,43 @@
       "ModelInstance": {
         "type": "object",
         "required": ["model", "parameters"],
+        "discriminator": {
+          "propertyName": "model"
+        },
         "properties": {
           "model": {
             "type": "string",
             "format": "uri"
-          },
-          "parameters": {
-            "allOf": [
-              {
-                "description": "The parameter set that defines the model instance"
-              },
-              {
-                "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/location/schema_v0.1.0_oas2.json#/Location"
-              },
-              {
-                "$ref": "./schema_pv_plant_oas2.json#/PVplant"
-              },
-              {
-                "description": "The parameter set that defines the model instance"
-              }
-            ]
           }
-        },
+        }
+      },
+      "a73e8e8a-9dca-4f74-b45a-5713f5d4564c": {
+        "description": "The PV plant model that gets parameterized from a .mat-file",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ModelInstance"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "parameters": {
+                "allOf": [
+                  {
+                    "description": "The parameters for instantiating the PV plant model"
+                  },
+                  {
+                    "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/location/schema_v0.1.0_oas2.json#/Location"
+                  },
+                  {
+                    "$ref": "./schema_pv_plant_oas2.json#/PVplant"
+                  }
+                ]
+              }
+            }
+          }
+        ],
         "example": {
-          "model": "http://example.com/models/d8b032d4-44a0-4bc5-9ded-c73703f3e5fc",
+          "model": "http://example.com/models/a73e8e8a-9dca-4f74-b45a-5713f5d4564c",
           "parameters": {
             "latitude": {
               "unit": "deg",
@@ -590,6 +603,33 @@
               "value": 298.15
             }
           }
+        }
+      },
+      "65d7ce93-2804-4faa-a5dd-2fe0f24d8bae": {
+        "description": "The parameters of the thermistor network",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ModelInstance"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "parameters": {
+                "allOf": [
+                  {
+                    "description": "The parameters for instantiating the thermistor network model"
+                  },
+                  {
+                    "$ref": "./schema_thermistor_network_parameters.json#/ThermistorNetwork"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "example": {
+          "model": "http://example.com/models/d8b032d4-44a0-4bc5-9ded-c73703f3e5fc",
+          "parameters": {}
         }
       },
       "SimulationParameters": {
