@@ -417,12 +417,12 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["description", "result"],
+              "required": ["description", "data"],
               "properties": {
                 "description": {
                   "type": "string"
                 },
-                "result": {
+                "data": {
                   "type": "array",
                   "items": {
                     "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
@@ -434,7 +434,7 @@
               "response": {
                 "value": {
                   "description": "An exemplary simulation result",
-                  "result": [
+                  "data": [
                     {
                       "label": "albedo_ground",
                       "unit": "1",
