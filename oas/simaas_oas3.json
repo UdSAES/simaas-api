@@ -58,7 +58,7 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/ModelInstanceID"
+          "$ref": "#/components/parameters/ModelInstanceId"
         }
       ]
     },
@@ -115,7 +115,7 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/ExperimentID"
+          "$ref": "#/components/parameters/ExperimentId"
         }
       ]
     },
@@ -138,7 +138,7 @@
       },
       "parameters": [
         {
-          "$ref": "#/components/parameters/ExperimentID"
+          "$ref": "#/components/parameters/ExperimentId"
         }
       ]
     },
@@ -200,7 +200,7 @@
   ],
   "components": {
     "parameters": {
-      "ModelInstanceID": {
+      "ModelInstanceId": {
         "name": "uuid",
         "in": "path",
         "description": "The UUID of the model instance to be simulated",
@@ -211,7 +211,7 @@
           "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
         }
       },
-      "ExperimentID": {
+      "ExperimentId": {
         "name": "uuid",
         "in": "path",
         "description": "A unique identifier for a specific experiment",
@@ -528,7 +528,7 @@
       "ProblemDetail": {
         "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/problem-detail/schema_v0.1.0_oas2.json#/ProblemDetail"
       },
-      "ModelInstanceID": {
+      "ModelInstanceId": {
         "description": "The UUID of the model instance to be simulated",
         "type": "string",
         "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
@@ -541,7 +541,7 @@
         },
         "properties": {
           "modelId": {
-            "$ref": "#/components/schemas/ModelInstanceID"
+            "$ref": "#/components/schemas/ModelInstanceId"
           },
           "modelHref": {
             "type": "string",
@@ -779,10 +779,10 @@
       },
       "ExperimentSetup": {
         "type": "object",
-        "required": ["modelInstanceID", "simulationParameters"],
+        "required": ["modelInstanceId", "simulationParameters"],
         "properties": {
-          "modelInstanceID": {
-            "$ref": "#/components/schemas/ModelInstanceID"
+          "modelInstanceId": {
+            "$ref": "#/components/schemas/ModelInstanceId"
           },
           "simulationParameters": {
             "$ref": "#/components/schemas/SimulationParameters"
@@ -792,7 +792,7 @@
           }
         },
         "example": {
-          "modelInstanceID": "c02f1f12-966d-4eab-9f21-dcf265ceac71",
+          "modelInstanceId": "c02f1f12-966d-4eab-9f21-dcf265ceac71",
           "simulationParameters": {
             "startTime": 1542412800000,
             "stopTime": 1542499199999,
