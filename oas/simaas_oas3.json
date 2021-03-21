@@ -535,7 +535,7 @@
       },
       "ModelInstance": {
         "type": "object",
-        "required": ["modelId", "modelHref", "inputTimeIsRelative", "parameters"],
+        "required": ["modelId", "modelHref", "parameters"],
         "discriminator": {
           "propertyName": "modelId"
         },
@@ -546,11 +546,6 @@
           "modelHref": {
             "type": "string",
             "format": "uri"
-          },
-          "inputTimeIsRelative": {
-            "description": "Whether or not the earliest timestamp MUST be subtracted as an offset from the input time series. If `true`, the  time series is used _as is_; if `false`, the timestamps are changed so that the input for the simulation starts at 0 seconds.",
-            "type": "boolean",
-            "enum": [false, true]
           }
         }
       },
@@ -582,7 +577,6 @@
         "example": {
           "modelId": "a73e8e8a-9dca-4f74-b45a-5713f5d4564c",
           "modelHref": "http://example.com/models/a73e8e8a-9dca-4f74-b45a-5713f5d4564c/model.fmu",
-          "inputTimeIsRelative": false,
           "parameters": {
             "latitude": {
               "unit": "deg",
@@ -640,7 +634,6 @@
         "example": {
           "modelId": "65d7ce93-2804-4faa-a5dd-2fe0f24d8bae",
           "modelHref": "http://example.com/models/65d7ce93-2804-4faa-a5dd-2fe0f24d8bae/model.fmu",
-          "inputTimeIsRelative": true,
           "parameters": {
             "R1": {
               "value": 130000,
@@ -679,7 +672,7 @@
       },
       "SimulationParameters": {
         "type": "object",
-        "required": ["startTime", "stopTime"],
+        "required": ["startTime", "stopTime", "inputTimeIsRelative"],
         "properties": {
           "startTime": {
             "description": "The beginning of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
@@ -694,6 +687,11 @@
             "format": "int64",
             "minimum": 0,
             "example": 1526551590000
+          },
+          "inputTimeIsRelative": {
+            "description": "Whether or not the earliest timestamp MUST be subtracted as an offset from the input time series. If `true`, the  time series is used _as is_; if `false`, the timestamps are changed so that the input for the simulation starts at 0 seconds.",
+            "type": "boolean",
+            "enum": [false, true]
           },
           "outputInterval": {
             "description": "The desired output interval in seconds (does _not_ affect step size of the integration algorithm)",
@@ -798,6 +796,7 @@
           "simulationParameters": {
             "startTime": 1542412800000,
             "stopTime": 1542499199999,
+            "inputTimeIsRelative": false,
             "outputInterval": 3600
           },
           "inputTimeseries": [
