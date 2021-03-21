@@ -169,7 +169,7 @@ async function init () {
 
   // Define routing
   backend.register('createModelInstance', handlers.createModelInstance)
-  backend.register('getModelInstance', responseUtils.respondWithNotImplemented)
+  backend.register('getModelInstance', handlers.getModelInstance)
   backend.register('triggerSimulation', handlers.simulateModelInstance)
   backend.register('getExperiment', handlers.getExperimentStatus)
   backend.register('getExperimentResult', handlers.getExperimentResult)
