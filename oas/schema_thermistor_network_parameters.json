@@ -12,7 +12,7 @@
   "ThermistorNetwork": {
     "type": "object",
     "description": "The parameters of the model instance representing a specific thermistor network",
-    "required": ["R1, R2, R3, R4, TH1, TH2, B1, B2"],
+    "required": ["R1", "R2", "R3", "R4", "TH1", "TH2", "B1", "B2"],
     "properties": {
       "R1": {
         "type": "object",
