@@ -550,7 +550,7 @@
           "inputTimeIsRelative": {
             "description": "Whether or not the earliest timestamp MUST be subtracted as an offset from the input time series. If `true`, the  time series is used _as is_; if `false`, the timestamps are changed so that the input for the simulation starts at 0 seconds.",
             "type": "boolean",
-            "enum": ["true", "false"]
+            "enum": [false, true]
           }
         }
       },
@@ -582,7 +582,7 @@
         "example": {
           "modelId": "a73e8e8a-9dca-4f74-b45a-5713f5d4564c",
           "modelHref": "http://example.com/models/a73e8e8a-9dca-4f74-b45a-5713f5d4564c/model.fmu",
-          "inputTimeIsRelative": "false",
+          "inputTimeIsRelative": false,
           "parameters": {
             "latitude": {
               "unit": "deg",
@@ -640,7 +640,7 @@
         "example": {
           "modelId": "65d7ce93-2804-4faa-a5dd-2fe0f24d8bae",
           "modelHref": "http://example.com/models/65d7ce93-2804-4faa-a5dd-2fe0f24d8bae/model.fmu",
-          "inputTimeIsRelative": "true",
+          "inputTimeIsRelative": true,
           "parameters": {
             "R1": {
               "value": 130000,
