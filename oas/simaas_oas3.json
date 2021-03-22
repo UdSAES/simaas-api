@@ -187,11 +187,11 @@
   "tags": [
     {
       "name": "Model Instances",
-      "description": "A model instance is the executable version of a model with all parameters set, thus describing the behaviour of a specific system for all possible boundary conditions. The parameters of a model instance cannot be changed in order to ensure that identical service interactions always lead to the same result. Consequently, it is possible that different model instances describe the same specific system, which can be a result of different parameter sets or the use of different models."
+      "description": "A model instance is the executable version of a model with all parameters set, thus describing the behaviour of a specific system for all possible boundary conditions. The parameters of a model instance cannot be changed in order to ensure that identical service interactions always lead to the same result. Consequently, it is possible that different model instances describe the same specific system, which can be a result of different parameter sets or the use of different models. Model instances are ephemeral and will only be available temporarily!"
     },
     {
       "name": "Experiments",
-      "description": "An experiment denotes the execution of a model instance for given boundary conditions and simulation settings; in other words, a specific simulation."
+      "description": "An experiment denotes the execution of a model instance for given boundary conditions and simulation settings; in other words, a specific simulation. Experiment definitions and -results are ephemeral and will only be available temporarily!"
     },
     {
       "name": "API Details",
@@ -390,7 +390,7 @@
         }
       },
       "Experiment": {
-        "description": "A representation of a specific experiment and its current status",
+        "description": "A representation of a specific experiment and its current status. _CAREFUL_, ReDoc renders this incorrectly (response has additional properties `status`*, `linkToResult`) -- read the OAS!",
         "headers": {
           "Content-Type": {
             "schema": {
@@ -549,6 +549,7 @@
             "$ref": "#/components/schemas/ModelId"
           },
           "modelHref": {
+            "description": "The URL at which the model can be downloaded as FMU",
             "type": "string",
             "format": "uri"
           }
