@@ -528,6 +528,11 @@
       "ProblemDetail": {
         "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/problem-detail/schema_v0.1.0_oas2.json#/ProblemDetail"
       },
+      "ModelId": {
+        "description": "The UUID of the model to be used",
+        "type": "string",
+        "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
+      },
       "ModelInstanceId": {
         "description": "The UUID of the model instance to be simulated",
         "type": "string",
@@ -541,7 +546,7 @@
         },
         "properties": {
           "modelId": {
-            "$ref": "#/components/schemas/ModelInstanceId"
+            "$ref": "#/components/schemas/ModelId"
           },
           "modelHref": {
             "type": "string",
