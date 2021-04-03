@@ -1,7 +1,7 @@
 {
   "name": "simaas_api",
-  "version": "0.2.2",
-  "description": "Tiny micro service which implements the public API of the Simulation as a Service instance",
+  "version": "0.4.0",
+  "description": "Microservice which implements the public API of the Simulation as a Service instance",
   "main": "index.js",
   "config": {
     "oas3": "./oas/simaas_oas3.json",
