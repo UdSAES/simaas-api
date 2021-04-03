@@ -51,6 +51,7 @@
     "yaml": "^1.10.0"
   },
   "devDependencies": {
+    "@stoplight/spectral": "^5.9.0",
     "dredd": "^9.0.5",
     "prettier-standard": "^16.4.1",
     "speccy": "^0.11.0",
