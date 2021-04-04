@@ -72,7 +72,7 @@
         }
       ]
     },
-    "/experiments": {
+    "/models/{model-id}/instances/{instance-id}/experiments": {
       "post": {
         "tags": ["Experiments"],
         "summary": "Trigger the simulation of a model instance by defining an experiment",
@@ -104,9 +104,17 @@
             "$ref": "#/components/responses/SchemaValidationFailed"
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ModelId"
+        },
+        {
+          "$ref": "#/components/parameters/ModelInstanceId"
+        }
+      ]
     },
-    "/experiments/{uuid}": {
+    "/models/{model-id}/instances/{instance-id}/experiments/{uuid}": {
       "get": {
         "tags": ["Experiments"],
         "summary": "A representation of a specific experiment and its status",
@@ -125,11 +133,17 @@
       },
       "parameters": [
         {
+          "$ref": "#/components/parameters/ModelId"
+        },
+        {
+          "$ref": "#/components/parameters/ModelInstanceId"
+        },
+        {
           "$ref": "#/components/parameters/ExperimentId"
         }
       ]
     },
-    "/experiments/{uuid}/result": {
+    "/models/{model-id}/instances/{instance-id}/experiments/{experiment-id}/result": {
       "get": {
         "tags": ["Experiments"],
         "summary": "The results of performing the experiment/simulation",
@@ -147,6 +161,12 @@
         }
       },
       "parameters": [
+        {
+          "$ref": "#/components/parameters/ModelId"
+        },
+        {
+          "$ref": "#/components/parameters/ModelInstanceId"
+        },
         {
           "$ref": "#/components/parameters/ExperimentId"
         }
@@ -229,7 +249,7 @@
         }
       },
       "ExperimentId": {
-        "name": "uuid",
+        "name": "experiment-id",
         "in": "path",
         "description": "A unique identifier for a specific experiment",
         "required": true,
@@ -606,16 +626,13 @@
       },
       "ExperimentSetup": {
         "type": "object",
-        "required": ["modelId", "modelInstanceId", "simulationParameters"],
+        "required": ["modelId", "simulationParameters"],
         "discriminator": {
           "propertyName": "modelId"
         },
         "properties": {
           "modelId": {
             "$ref": "#/components/schemas/ModelId"
-          },
-          "modelInstanceId": {
-            "$ref": "#/components/schemas/ModelInstanceId"
           },
           "simulationParameters": {
             "$ref": "#/components/schemas/SimulationParameters"
