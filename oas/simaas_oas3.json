@@ -28,7 +28,9 @@
               "Location": {
                 "description": "The URL of the resource that was just created.",
                 "schema": {
-                  "type": "string"
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://example.com/models/29dc05e6-1e05-4076-bbe5-79d4e0d2770c/instances/c02f1f12-966d-4eab-9f21-dcf265ceac71"
                 }
               }
             }
