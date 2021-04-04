@@ -550,6 +550,11 @@
         "type": "string",
         "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
       },
+      "ModelName": {
+        "description": "The name of the model which is instantiated",
+        "type": "string",
+        "pattern": "^[0-9A-Za-z]+$"
+      },
       "ModelInstanceId": {
         "description": "The UUIDv4 of the model instance",
         "type": "string",
@@ -557,17 +562,17 @@
       },
       "ModelInstance": {
         "type": "object",
-        "required": ["modelId", "parameters"],
+        "required": ["modelName", "parameters"],
         "discriminator": {
-          "propertyName": "modelId"
+          "propertyName": "modelName"
         },
         "properties": {
-          "modelId": {
-            "$ref": "#/components/schemas/ModelId"
+          "modelName": {
+            "$ref": "#/components/schemas/ModelName"
           }
         }
       },
-      "a73e8e8a-9dca-4f74-b45a-5713f5d4564c__parameters": {
+      "PhotoVoltaicPowerPlantFMU": {
         "description": "The PV plant model that gets parameterized from a .mat-file",
         "allOf": [
           {
@@ -593,7 +598,7 @@
           }
         ],
         "example": {
-          "modelId": "a73e8e8a-9dca-4f74-b45a-5713f5d4564c",
+          "modelName": "PhotoVoltaicPowerPlantFMU",
           "parameters": {
             "latitude": {
               "unit": "deg",
@@ -626,7 +631,7 @@
           }
         }
       },
-      "65d7ce93-2804-4faa-a5dd-2fe0f24d8bae__parameters": {
+      "TemperatureCompensationFMU": {
         "description": "The parameters of the thermistor network",
         "allOf": [
           {
@@ -649,7 +654,7 @@
           }
         ],
         "example": {
-          "modelId": "65d7ce93-2804-4faa-a5dd-2fe0f24d8bae",
+          "modelName": "TemperatureCompensationFMU",
           "parameters": {
             "R1": {
               "value": 130000,
