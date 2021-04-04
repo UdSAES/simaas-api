@@ -5,7 +5,7 @@
     "version": "0.4.0"
   },
   "paths": {
-    "/model-instances": {
+    "/models/{model-id}/instances": {
       "post": {
         "tags": ["Model Instances"],
         "summary": "Instantiate a model for a specific system",
@@ -37,9 +37,14 @@
             "$ref": "#/components/responses/SchemaValidationFailed"
           }
         }
-      }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ModelId"
+        }
+      ]
     },
-    "/model-instances/{uuid}": {
+    "/models/{model-id}/instances/{instance-id}": {
       "get": {
         "tags": ["Model Instances"],
         "summary": "A specific model instance",
@@ -57,6 +62,9 @@
         }
       },
       "parameters": [
+        {
+          "$ref": "#/components/parameters/ModelId"
+        },
         {
           "$ref": "#/components/parameters/ModelInstanceId"
         }
@@ -200,15 +208,22 @@
   ],
   "components": {
     "parameters": {
-      "ModelInstanceId": {
-        "name": "uuid",
+      "ModelId": {
+        "name": "model-id",
         "in": "path",
-        "description": "The UUID of the model instance to be simulated",
+        "required": true,
+        "example": "29dc05e6-1e05-4076-bbe5-79d4e0d2770c",
+        "schema": {
+          "$ref": "#/components/schemas/ModelId"
+        }
+      },
+      "ModelInstanceId": {
+        "name": "instance-id",
+        "in": "path",
         "required": true,
         "example": "c02f1f12-966d-4eab-9f21-dcf265ceac71",
         "schema": {
-          "type": "string",
-          "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
+          "$ref": "#/components/schemas/ModelInstanceId"
         }
       },
       "ExperimentId": {
@@ -529,29 +544,24 @@
         "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/problem-detail/schema_v0.1.0_oas2.json#/ProblemDetail"
       },
       "ModelId": {
-        "description": "The UUID of the model to be used",
+        "description": "The UUIDv4 of the model",
         "type": "string",
         "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
       },
       "ModelInstanceId": {
-        "description": "The UUID of the model instance to be simulated",
+        "description": "The UUIDv4 of the model instance",
         "type": "string",
         "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
       },
       "ModelInstance": {
         "type": "object",
-        "required": ["modelId", "modelHref", "parameters"],
+        "required": ["modelId", "parameters"],
         "discriminator": {
           "propertyName": "modelId"
         },
         "properties": {
           "modelId": {
             "$ref": "#/components/schemas/ModelId"
-          },
-          "modelHref": {
-            "description": "The URL at which the model can be downloaded as FMU",
-            "type": "string",
-            "format": "uri"
           }
         }
       },
@@ -582,7 +592,6 @@
         ],
         "example": {
           "modelId": "a73e8e8a-9dca-4f74-b45a-5713f5d4564c",
-          "modelHref": "http://example.com/models/a73e8e8a-9dca-4f74-b45a-5713f5d4564c/model.fmu",
           "parameters": {
             "latitude": {
               "unit": "deg",
@@ -639,7 +648,6 @@
         ],
         "example": {
           "modelId": "65d7ce93-2804-4faa-a5dd-2fe0f24d8bae",
-          "modelHref": "http://example.com/models/65d7ce93-2804-4faa-a5dd-2fe0f24d8bae/model.fmu",
           "parameters": {
             "R1": {
               "value": 130000,
