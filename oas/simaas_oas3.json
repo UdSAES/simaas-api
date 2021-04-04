@@ -572,6 +572,56 @@
           }
         }
       },
+      "SimulationParameters": {
+        "type": "object",
+        "required": ["startTime", "stopTime", "inputTimeIsRelative"],
+        "properties": {
+          "startTime": {
+            "description": "The beginning of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 1526637990000
+          },
+          "stopTime": {
+            "description": "The end of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 1526551590000
+          },
+          "inputTimeIsRelative": {
+            "description": "Whether or not the earliest timestamp MUST be subtracted as an offset from the input time series. If `true`, the  time series is used _as is_; if `false`, the timestamps are changed so that the input for the simulation starts at 0 seconds.",
+            "type": "boolean",
+            "enum": [false, true]
+          },
+          "outputInterval": {
+            "description": "The desired output interval in seconds (does _not_ affect step size of the integration algorithm)",
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0,
+            "example": 900
+          }
+        }
+      },
+      "ExperimentSetup": {
+        "type": "object",
+        "required": ["modelId", "modelInstanceId", "simulationParameters"],
+        "discriminator": {
+          "propertyName": "modelId"
+        },
+        "properties": {
+          "modelId": {
+            "$ref": "#/components/schemas/ModelId"
+          },
+          "modelInstanceId": {
+            "$ref": "#/components/schemas/ModelInstanceId"
+          },
+          "simulationParameters": {
+            "$ref": "#/components/schemas/SimulationParameters"
+          }
+        }
+      },
       "PhotoVoltaicPowerPlantFMU": {
         "description": "The PV plant model that gets parameterized from a .mat-file",
         "allOf": [
@@ -691,57 +741,7 @@
           }
         }
       },
-      "SimulationParameters": {
-        "type": "object",
-        "required": ["startTime", "stopTime", "inputTimeIsRelative"],
-        "properties": {
-          "startTime": {
-            "description": "The beginning of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
-            "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "example": 1526637990000
-          },
-          "stopTime": {
-            "description": "The end of the desired time frame for the simulation in [milliseconds since the UNIX epoch](https://en.wikipedia.org/wiki/Unix_time)",
-            "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "example": 1526551590000
-          },
-          "inputTimeIsRelative": {
-            "description": "Whether or not the earliest timestamp MUST be subtracted as an offset from the input time series. If `true`, the  time series is used _as is_; if `false`, the timestamps are changed so that the input for the simulation starts at 0 seconds.",
-            "type": "boolean",
-            "enum": [false, true]
-          },
-          "outputInterval": {
-            "description": "The desired output interval in seconds (does _not_ affect step size of the integration algorithm)",
-            "type": "integer",
-            "format": "int64",
-            "minimum": 0,
-            "example": 900
-          }
-        }
-      },
-      "ExperimentSetup": {
-        "type": "object",
-        "required": ["modelId", "modelInstanceId", "simulationParameters"],
-        "discriminator": {
-          "propertyName": "modelId"
-        },
-        "properties": {
-          "modelId": {
-            "$ref": "#/components/schemas/ModelId"
-          },
-          "modelInstanceId": {
-            "$ref": "#/components/schemas/ModelInstanceId"
-          },
-          "simulationParameters": {
-            "$ref": "#/components/schemas/SimulationParameters"
-          }
-        }
-      },
-      "a73e8e8a-9dca-4f74-b45a-5713f5d4564c__experiment-setup": {
+      "a73e8e8a-9dca-4f74-b45a-5713f5d4564c": {
         "allOf": [
           {
             "$ref": "#/components/schemas/ExperimentSetup"
@@ -813,7 +813,7 @@
           }
         ]
       },
-      "65d7ce93-2804-4faa-a5dd-2fe0f24d8bae__experiment-setup": {
+      "65d7ce93-2804-4faa-a5dd-2fe0f24d8bae": {
         "allOf": [
           {
             "$ref": "#/components/schemas/ExperimentSetup"
