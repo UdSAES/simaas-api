@@ -1,0 +1,36 @@
+{
+  "type": "array",
+  "items": {
+    "allOf": [
+      {
+        "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/timeseries/schema_v1.3.0-oas2.json#/Timeseries"
+      },
+      {
+        "required": ["label"]
+      },
+      {
+        "anyOf": [
+        {% for item in data %}
+          {
+            "properties": {
+              "description": {
+                "pattern": "{{ item.description }}"
+              },
+              "label": {
+                "pattern": "^{{ item.name }}$"
+              },
+              "unit": {
+                "pattern": "^{{ item.unit }}$"
+              }
+            }
+          }{% if not loop.last %},
+          {% endif%}
+        {% endfor %}
+
+        ]
+      }
+    ]
+  },
+  "minItems": {{ data|length }},
+  "maxItems": {{ data|length }}
+}
