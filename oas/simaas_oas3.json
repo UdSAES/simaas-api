@@ -5,6 +5,62 @@
     "version": "0.4.0"
   },
   "paths": {
+    "/models": {
+      "post": {
+        "tags": ["Models"],
+        "summary": "Add a new model to the API",
+        "operationId": "addModel",
+        "parameters": [{
+          "name": "records",
+          "in": "query",
+          "description": "A list of component names for the records inside an FMU. This list is used to identify the top-level parameters of the FMU because they cannot be identified just from looking at `modelDescription.xml`.",
+          "required": false,
+          "style": "form",
+          "explode": false,
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z\\.]+$"
+            }
+          },
+          "examples": {
+            "twoRecords": {
+              "summary": "An example where the top-level parameters need to be read from two records",
+              "value": "modelName.nameRecord1,modelName.nameRecord2"
+            }
+          }
+        }],
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "An acknowledgement that the model was successfully added to this instance of the API",
+            "headers": {
+              "Location": {
+                "description": "The URL of the resource that was just created.",
+                "schema": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "http://example.com/models/29dc05e6-1e05-4076-bbe5-79d4e0d2770c"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/SchemaValidationFailed"
+          }
+        }
+      }
+    },
     "/models/{model-id}/instances": {
       "post": {
         "tags": ["Model Instances"],
