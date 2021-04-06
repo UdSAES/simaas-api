@@ -22,6 +22,7 @@ process.on('SIGTERM', shutDownGracefully)
 
 // Load modules
 const express = require('express')
+const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
 require('express-async-errors')
 const cors = require('cors')
@@ -116,6 +117,7 @@ async function init () {
   // Instantiate express-application and set up middleware-stack
   const app = express()
   app.use(bodyParser.json())
+  app.use(fileUpload())
   app.use(cors())
   app.use(addRequestId)
 
