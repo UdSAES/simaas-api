@@ -216,6 +216,10 @@
   },
   "tags": [
     {
+      "name": "Models",
+      "description": "Models encode knowledge about a system in a formal language, therefore enabling experiments on the system's behaviour subject to a specific parameter set and boundary conditions by means of a numerical approximation of the underlying set of mathematical equations (the model). In the context of this API, models are functional mockup units (FMUs) for co-simulation (thus, they contain a solver) with the parameters _not_ yet set. Models can be added by `POST`ing the FMU to the API; they are stored persistently and are not removed automatically."
+    },
+    {
       "name": "Model Instances",
       "description": "A model instance is the executable version of a model with all parameters set, thus describing the behaviour of a specific system for all possible boundary conditions. The parameters of a model instance cannot be changed in order to ensure that identical service interactions always lead to the same result. Consequently, it is possible that different model instances describe the same specific system, which can be a result of different parameter sets or the use of different models. Model instances are ephemeral and will only be available temporarily!"
     },
