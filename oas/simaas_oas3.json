@@ -63,6 +63,26 @@
         }
       }
     },
+    "/models/{model-id}": {
+      "get": {
+        "tags": ["Models"],
+        "summary": "Retrieve a model representation from the API",
+        "operationId": "getModel",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/ModelRepresentation"
+          },
+          "400": {
+            "$ref": "#/components/responses/SchemaValidationFailed"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ModelId"
+        }
+      ]
+    },
     "/models/{model-id}/instances": {
       "post": {
         "tags": ["Model Instances"],
@@ -470,16 +490,24 @@
           }
         }
       },
-      "ModelInstance": {
-        "description": "A representation of a specific model instace",
-        "headers": {
-          "Content-Type": {
+      "ModelRepresentation": {
+        "description": "A representation of a model",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Model"
+            }
+          },
+          "application/octet-stream": {
             "schema": {
               "type": "string",
-              "enum": ["application/json"]
+              "format": "binary"
             }
           }
-        },
+        }
+      },
+      "ModelInstance": {
+        "description": "A representation of a specific model instace",
         "content": {
           "application/json": {
             "schema": {
@@ -646,6 +674,26 @@
         "description": "The name of the model which is instantiated",
         "type": "string",
         "pattern": "^[0-9A-Za-z]+$"
+      },
+      "Model": {
+        "type": "object",
+        "properties": {
+          "modelName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "fmiVersion": {
+            "type": "string"
+          },
+          "generationTool": {
+            "type": "string"
+          },
+          "generationDateAndTime": {
+            "type": "string"
+          }
+        }
       },
       "ModelInstanceId": {
         "description": "The UUIDv4 of the model instance",
