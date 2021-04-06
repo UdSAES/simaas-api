@@ -26,7 +26,6 @@ const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
 require('express-async-errors')
 const cors = require('cors')
-const fs = require('fs-extra')
 const _ = require('lodash')
 const delay = require('delay')
 const addRequestId = require('express-request-id')()
@@ -121,21 +120,6 @@ async function init () {
   app.use(fileUpload())
   app.use(cors())
   app.use(addRequestId)
-
-  app.get('/oas/schemas/pv_plant_oas2.json', async function (req, res, next) {
-    const file = './oas/schemas/pv_plant_oas2.json'
-    const content = await fs.readJson(file, { encoding: 'utf8' })
-    res.status(200).json(content)
-  })
-  app.get('/oas/schemas/thermistor_network_parameters.json', async function (
-    req,
-    res,
-    next
-  ) {
-    const file = './oas/schemas/thermistor_network_parameters.json'
-    const content = await fs.readJson(file, { encoding: 'utf8' })
-    res.status(200).json(content)
-  })
 
   // Expose UI iff UI_URL_PATH is not empty
   if (cfg.ui.urlPath !== '') {
