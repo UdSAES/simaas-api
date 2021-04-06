@@ -114,7 +114,7 @@
         }
       ]
     },
-    "/models/{model-id}/instances/{instance-id}/experiments/{uuid}": {
+    "/models/{model-id}/instances/{instance-id}/experiments/{experiment-id}": {
       "get": {
         "tags": ["Experiments"],
         "summary": "A representation of a specific experiment and its status",
@@ -749,11 +749,11 @@
             },
             "B1": {
               "value": 3528,
-              "unit": "1/K"
+              "unit": "K"
             },
             "B2": {
               "value": 3680,
-              "unit": "1/K"
+              "unit": "K"
             }
           }
         }
