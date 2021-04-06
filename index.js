@@ -28,7 +28,6 @@ const cors = require('cors')
 const _ = require('lodash')
 const delay = require('delay')
 const addRequestId = require('express-request-id')()
-const { OpenAPIBackend } = require('openapi-backend')
 
 const handlers = require('./lib/simaas.js')
 const responseUtils = require('./lib/response_utils.js')
@@ -120,25 +119,6 @@ async function init () {
   app.use(cors())
   app.use(addRequestId)
 
-  // Read API-specification and initialize backend
-  let backend = null
-  try {
-    backend = new OpenAPIBackend({
-      definition: cfg.oasFilePath,
-      strict: true,
-      validate: true,
-      ajvOpts: {
-        format: false
-      }
-    })
-    log.info('successfully loaded API description ' + cfg.oasFilePath)
-  } catch (error) {
-    log.fatal('error while loading API description ' + cfg.oasFilePath)
-    process.exit(5)
-  }
-
-  backend.init()
-
   // Expose UI iff UI_URL_PATH is not empty
   if (cfg.ui.urlPath !== '') {
     if (cfg.ui.staticFilesPath !== '') {
@@ -164,21 +144,11 @@ async function init () {
     next()
   })
 
+  // Read API-specification and initialize backend
+  const backend = handlers.initializeBackend(cfg.oasFilePath)
+
   // Pass requests to middleware
   app.use((req, res, next) => backend.handleRequest(req, req, res, next))
-
-  // Define routing
-  backend.register('createModelInstance', handlers.createModelInstance)
-  backend.register('getModelInstance', handlers.getModelInstance)
-  backend.register('triggerSimulation', handlers.simulateModelInstance)
-  backend.register('getExperiment', handlers.getExperimentStatus)
-  backend.register('getExperimentResult', handlers.getExperimentResult)
-  backend.register('getOAS', responseUtils.serveOAS)
-
-  // Handle unsuccessful requests
-  backend.register('validationFail', responseUtils.failValidation)
-  backend.register('notImplemented', responseUtils.respondWithNotImplemented)
-  backend.register('notFound', responseUtils.respondWithNotFound)
 
   // Serialize any remaining errors as JSON
   app.use(function (err, req, res, next) {
