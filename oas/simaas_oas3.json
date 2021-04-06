@@ -10,27 +10,29 @@
         "tags": ["Models"],
         "summary": "Add a new model to the API",
         "operationId": "addModel",
-        "parameters": [{
-          "name": "records",
-          "in": "query",
-          "description": "A list of component names for the records inside an FMU. This list is used to identify the top-level parameters of the FMU because they cannot be identified just from looking at `modelDescription.xml`.",
-          "required": false,
-          "style": "form",
-          "explode": false,
-          "schema": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "pattern": "^[A-Za-z\\.]+$"
-            }
-          },
-          "examples": {
-            "twoRecords": {
-              "summary": "An example where the top-level parameters need to be read from two records",
-              "value": "modelName.nameRecord1,modelName.nameRecord2"
+        "parameters": [
+          {
+            "name": "records",
+            "in": "query",
+            "description": "A list of component names for the records inside an FMU. This list is used to identify the top-level parameters of the FMU because they cannot be identified just from looking at `modelDescription.xml`.",
+            "required": false,
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z\\.]+$"
+              }
+            },
+            "examples": {
+              "twoRecords": {
+                "summary": "An example where the top-level parameters need to be read from two records",
+                "value": "modelName.nameRecord1,modelName.nameRecord2"
+              }
             }
           }
-        }],
+        ],
         "requestBody": {
           "content": {
             "application/octet-stream": {
