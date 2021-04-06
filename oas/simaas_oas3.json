@@ -717,7 +717,7 @@
                     "$ref": "https://raw.githubusercontent.com/UdSAES/designetz_schemata/dev/schemata/location/schema_v0.1.0_oas2.json#/Location"
                   },
                   {
-                    "$ref": "./schema_pv_plant_oas2.json#/PVplant"
+                    "$ref": "./schemas/pv_plant_oas2.json#/PVplant"
                   }
                 ]
               }
@@ -773,7 +773,7 @@
                     "description": "The parameters for instantiating the thermistor network model"
                   },
                   {
-                    "$ref": "./schema_thermistor_network_parameters.json#/ThermistorNetwork"
+                    "$ref": "./schemas/thermistor_network_parameters.json#/ThermistorNetwork"
                   }
                 ]
               }
