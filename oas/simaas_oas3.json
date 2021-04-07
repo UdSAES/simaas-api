@@ -77,6 +77,19 @@
           }
         }
       },
+      "delete": {
+        "tags": ["Models"],
+        "summary": "Delete a model representation from the API",
+        "operationId": "deleteModel",
+        "responses": {
+          "204": {
+            "description": "Confirmation that the resource was successfully deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/SchemaValidationFailed"
+          }
+        }
+      },
       "parameters": [
         {
           "$ref": "#/components/parameters/ModelId"
