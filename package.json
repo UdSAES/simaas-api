@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/UdSAES/simaas_api#readme",
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "^9.0.7",
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.15",
     "celery-ts": "^1.1.0",

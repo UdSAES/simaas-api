@@ -257,7 +257,7 @@
         "operationId": "getOAS",
         "parameters": [
           {
-            "$ref": "#/components/parameters/OASisFlattened"
+            "$ref": "#/components/parameters/Parse$RefInOAS"
           }
         ],
         "responses": {
@@ -341,14 +341,15 @@
           "pattern": "^[0-9A-Za-z]{8}-[0-9A-Za-z]{4}-4[0-9A-Za-z]{3}-[89ABab][0-9A-Za-z]{3}-[0-9A-Za-z]{12}$"
         }
       },
-      "OASisFlattened": {
-        "name": "flat",
+      "Parse$RefInOAS": {
+        "name": "parse$ref",
         "in": "query",
-        "description": "Boolean value indicating whether a flattened version of the OAS is requested or not. Defaults to `true`.",
+        "description": "Allow `$ref`-pointers in OAS (`'false'`); internalize external references (`'bundle'`); or flatten entire OAS into plain JSON without any references (`'flatten'`). Defaults to `'false'`.",
         "required": false,
         "schema": {
-          "type": "boolean",
-          "default": true
+          "type": "string",
+          "enum": ["false", "bundle", "flatten"],
+          "default": "false"
         }
       }
     },
