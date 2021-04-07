@@ -1,45 +1,55 @@
 {
-  "type": "object",
-  "description": "",
-  "required": [
-    {% for item in required %}
-    "{{ item }}"{% if not loop.last %},
-    {% endif%}
-    {% endfor %}
-
-  ],
-  "properties": {
-    {% for item in data %}
-    "{{ item.name }}": {
+  "allOf": [
+    { "$ref": "#/components/schemas/ModelInstance" },
+    {
       "type": "object",
-      "description": "{{ item.description }}",
-      "allOf": [
-        { "$ref": "#/components/schemas/unitOfParameter" },
-        {
+      "properties": {
+        "parameters": {
           "type": "object",
-          "required": ["value"],
+          "description": "",
+          "required": [
+            {% for item in required %}
+            "{{ item }}"{% if not loop.last %},
+            {% endif%}
+            {% endfor %}
+
+          ],
           "properties": {
-            "unit": {
-              "pattern": "^{{ item.unit }}$"
-            },
-            "value": {
-              {% if item.min is defined %}
-              "minimum": {{ item.min }},
-              {% endif %}
-              {% if item.max is defined %}
-              "maximum": {{ item.max }},
-              {% endif %}
-              {% if item.nominal is defined %}
-              "example": {{ item.nominal }},
-              {% endif %}
-              "type": "{{ item.type }}"
-            }
+            {% for item in data %}
+            "{{ item.name }}": {
+              "type": "object",
+              "description": "{{ item.description }}",
+              "allOf": [
+                { "$ref": "#/components/schemas/unitOfParameter" },
+                {
+                  "type": "object",
+                  "required": ["value"],
+                  "properties": {
+                    "unit": {
+                      "pattern": "^{{ item.unit }}$"
+                    },
+                    "value": {
+                      {% if item.min is defined %}
+                      "minimum": {{ item.min }},
+                      {% endif %}
+                      {% if item.max is defined %}
+                      "maximum": {{ item.max }},
+                      {% endif %}
+                      {% if item.nominal is defined %}
+                      "example": {{ item.nominal }},
+                      {% endif %}
+                      "type": "{{ item.type }}"
+                    }
+                  }
+                }
+              ]
+            }{% if not loop.last %},
+            {% endif%}
+          {% endfor %}
+
           }
         }
-      ]
-    }{% if not loop.last %},
-    {% endif%}
-  {% endfor %}
-
-  }
+      }
+    }
+  ]
 }
