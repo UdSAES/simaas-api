@@ -27,6 +27,7 @@ const bodyParser = require('body-parser')
 require('express-async-errors')
 const cors = require('cors')
 const _ = require('lodash')
+const fs = require('fs-extra')
 const delay = require('delay')
 const addRequestId = require('express-request-id')()
 
@@ -47,9 +48,13 @@ async function checkIfConfigIsValid () {
       staticFilesPath: String(process.env.UI_STATIC_FILES_PATH) || '',
       urlPath: String(process.env.UI_URL_PATH) || ''
     },
-    oasFilePath: './oas/simaas_oas3.json',
-    oasFilePathFlat: './oas/simaas_oas3_flat.yaml'
+    oas: {
+      filePathStatic: './oas/simaas_oas3.json'
+    },
+    fs: process.env.SIMAAS_FS_PATH
   }
+
+  config.oas.filePathDynamic = `${config.fs}/OAS.json`
 
   if (
     !(
@@ -146,8 +151,28 @@ async function init () {
     next()
   })
 
+  // Rebuild dynamic OAS to ensure that upgrades are propagated but models are kept
+  await fs.remove(cfg.oas.filePathDynamic)
+  await handlers.updateOpenAPISpecification(null, null, 'read') // ensure existence
+  const objOfModels = await handlers.updateInternalListOfModels(null, null, 'read')
+  const modelIds = _.keys(objOfModels)
+
+  for (const modelId of modelIds) {
+    const modelRepresentation = objOfModels[modelId]
+    await handlers.updateOpenAPISpecification(
+      modelRepresentation.modelName,
+      modelRepresentation.schemata.parameter,
+      'set'
+    )
+    await handlers.updateOpenAPISpecification(
+      modelRepresentation.guid,
+      modelRepresentation.schemata.input,
+      'set'
+    )
+  }
+
   // Read API-specification and initialize backend
-  const backend = handlers.initializeBackend(cfg.oasFilePath)
+  const backend = handlers.initializeBackend(cfg.oas.filePathDynamic)
 
   // Pass requests to middleware
   app.use((req, res, next) => backend.handleRequest(req, req, res, next))
