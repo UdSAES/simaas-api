@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "SIMaaS Using Queue, Workers and fmpy",
-    "version": "0.4.0"
+    "version": "0.5.0"
   },
   "paths": {
     "/models": {
