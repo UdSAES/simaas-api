@@ -1,0 +1,6 @@
+= Simulation as a Service Using a Task Queue, Workers and FMPy
+image:https://img.shields.io/badge/code_style-standard-brightgreen.svg[alt=JavaScript Style Guide, link=https://standardjs.com]
+
+This repository contains an implementation of SIMaaS that uses dedicated worker-processes to execute simulation jobs stored in a tasks queue. For simulation, the worker-processes use https://github.com/CATIA-Systems/FMPy[FMPy] instead of https://github.com/modelon/PyFMI[PyFMI] to execute FMUs due to the much less complicated dependencies of the former.
+
+See link:./docs/requirements.md[`./docs/requirements.md`] for the full list of requirements that this microservice attempts to implement and link:./docs/versions.md[`./docs/versions.md`] for details on the version history, including release notes.
