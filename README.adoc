@@ -4,3 +4,57 @@ image:https://img.shields.io/badge/code_style-standard-brightgreen.svg[alt=JavaS
 This repository contains an implementation of SIMaaS that uses dedicated worker-processes to execute simulation jobs stored in a tasks queue. For simulation, the worker-processes use https://github.com/CATIA-Systems/FMPy[FMPy] instead of https://github.com/modelon/PyFMI[PyFMI] to execute FMUs due to the much less complicated dependencies of the former.
 
 See link:./docs/requirements.md[`./docs/requirements.md`] for the full list of requirements that this microservice attempts to implement and link:./docs/versions.md[`./docs/versions.md`] for details on the version history, including release notes.
+
+== Installation
+...
+
+=== Configuration
+All environment variables without a default value MUST be set before starting the program. Otherwise, a fatal error will be raised and the program will terminate with a non-zero exit code.
+
+[#tbl-envvars,options="header",cols="2,5,1"]
+|===
+| Environment Variable
+| Description
+| Default Value
+
+| SIMAAS_SCRATCH_BUFFER_SIZE
+| The size of the `SCRATCH`-buffer in `amqplib` in bytes -- MUST be larger than the largest `modelDescription.xml` of the FMUs you use!footnote:[see `scripts/set_buffer_size_amqplib.js`]
+| 65536
+
+| SIMAAS_TMPFS_PATH
+| The path at which to store temporary files. Should be a `tmpfs`-mount for better speed but can be a normal directory, too.
+| --
+
+| SIMAAS_FS_PATH
+| The path of the directory in which to store FMUs and other persistent data such as the internal list of model representations or the up-to-date OpenAPI-Specification. Should be on a volume if running containerized so the state survives container restarts.
+| --
+
+| SIMAAS_RABBITMQ_HOSTNAME
+| The hostname of the RabbitMQ-instance
+| --
+
+| SIMAAS_RABBITMQ_USERNAME
+| The username for the RabbitMQ-instance
+| --
+
+| SIMAAS_RABBITMQ_PASSWORD
+| The password for the RabbitMQ-instance
+| --
+
+| SIMAAS_REDIS_HOSTNAME
+| The hostname of the Redis-instance
+| --
+
+| SIMAAS_LISTEN_PORT
+| The port on which to listen to incoming requests
+| --
+
+| SIMAAS_HEARTBEAT_PERIOD
+| The period in milliseconds at which to log heartbeat-messages
+| 3600000
+
+| LOG_LEVEL
+| The minimal included https://github.com/trentm/node-bunyan#levels[log level] that shall be printed to `stdout`
+| `"INFO"`
+
+|===
