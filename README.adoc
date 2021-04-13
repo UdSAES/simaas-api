@@ -17,43 +17,43 @@ All environment variables without a default value MUST be set before starting th
 | Description
 | Default Value
 
-| SIMAAS_SCRATCH_BUFFER_SIZE
+| `SIMAAS_SCRATCH_BUFFER_SIZE`
 | The size of the `SCRATCH`-buffer in `amqplib` in bytes -- MUST be larger than the largest `modelDescription.xml` of the FMUs you use!footnote:[see `scripts/set_buffer_size_amqplib.js`]
-| 65536
+| `65536`
 
-| SIMAAS_TMPFS_PATH
+| `SIMAAS_TMPFS_PATH`
 | The path at which to store temporary files. Should be a `tmpfs`-mount for better speed but can be a normal directory, too.
 | --
 
-| SIMAAS_FS_PATH
+| `SIMAAS_FS_PATH`
 | The path of the directory in which to store FMUs and other persistent data such as the internal list of model representations or the up-to-date OpenAPI-Specification. Should be on a volume if running containerized so the state survives container restarts.
 | --
 
-| SIMAAS_RABBITMQ_HOSTNAME
+| `SIMAAS_RABBITMQ_HOSTNAME`
 | The hostname of the RabbitMQ-instance
 | --
 
-| SIMAAS_RABBITMQ_USERNAME
+| `SIMAAS_RABBITMQ_USERNAME`
 | The username for the RabbitMQ-instance
 | --
 
-| SIMAAS_RABBITMQ_PASSWORD
+| `SIMAAS_RABBITMQ_PASSWORD`
 | The password for the RabbitMQ-instance
 | --
 
-| SIMAAS_REDIS_HOSTNAME
+| `SIMAAS_REDIS_HOSTNAME`
 | The hostname of the Redis-instance
 | --
 
-| SIMAAS_LISTEN_PORT
+| `SIMAAS_LISTEN_PORT`
 | The port on which to listen to incoming requests
 | --
 
-| SIMAAS_HEARTBEAT_PERIOD
+| `SIMAAS_HEARTBEAT_PERIOD`
 | The period in milliseconds at which to log heartbeat-messages
-| 3600000
+| `3600000`
 
-| LOG_LEVEL
+| `LOG_LEVEL`
 | The minimal included https://github.com/trentm/node-bunyan#levels[log level] that shall be printed to `stdout`
 | `"INFO"`
 
