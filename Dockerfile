@@ -26,6 +26,11 @@ EXPOSE $SIMAAS_LISTEN_PORT
 COPY --chown=node:node package.json $WORKDIR
 RUN npm install --production
 
+# Patch `amqplib` to ensure that model descriptions can be enqueued
+COPY --chown=node:node scripts/set_buffer_size_amqplib.js $WORKDIR
+ENV SIMAAS_SCRATCH_BUFFER_SIZE=262144
+RUN node set_buffer_size_amqplib.js
+
 # Install application code by copy-pasting the source to the image
 # (subject to .dockerignore)
 COPY --chown=node:node index.js $WORKDIR

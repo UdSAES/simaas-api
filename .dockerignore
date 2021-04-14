@@ -6,6 +6,7 @@
 !lib/
 !oas/
 !test/
+!scripts/set_buffer_size_amqplib.js
 
 !prettierrc.json
 
