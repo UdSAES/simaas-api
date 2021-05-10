@@ -7,6 +7,11 @@ This repository contains an implementation of SIMaaS that uses dedicated worker-
 
 // See link:./docs/requirements.md[`./docs/requirements.md`] for the full list of requirements that this microservice attempts to implement and link:./docs/versions.md[`./docs/versions.md`] for details on the version history, including release notes.
 
+== Status
+*Work in Progress!*
+
+The README needs an update, as does the `index.js`. The code works, but should be cleaned up a bit before the next release. We're on it.
+
 == Installation
 ...
 
