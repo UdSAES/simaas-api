@@ -7,6 +7,9 @@
 // * Compare https://github.com/squaremo/amqp.node/issues/366
 // * Workaround: change buffer size in `./node_modules/amqplib/lib/defs.js`, line 3080
 
+// SPDX-FileCopyrightText: 2021 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+// SPDX-License-Identifier: MIT
+
 'use strict'
 
 const _ = require('lodash')
