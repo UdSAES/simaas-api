@@ -75,7 +75,7 @@ All environment variables without a default value MUST be set before starting th
 
 === Running Containerized
 * Ensure that a container engine such as https://www.docker.com/[Docker] or https://podman.io/[podman] are installed and running.
-* Start instances of https://hub.docker.com/_/redis[redis] and https://hub.docker.com/_/rabbitmq[RabbitMQ] (both available on dockerhub)
+* Start instances of https://hub.docker.com/\_/redis[redis] and https://hub.docker.com/\_/rabbitmq[RabbitMQ] (both available on dockerhub)
 * Build the container image, e.g. using `podman build -t simaas-api:latest .`
 * Start at least one instance of the https://github.com/UdSAES/simaas-worker[simaas-worker]
 * Set the required ENVVARs, for example by putting `export SIMAAS_*=...`-statements in a file named `.env` and then loading the contents of this file via `source .env`
