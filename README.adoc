@@ -3,11 +3,11 @@
 image:https://img.shields.io/badge/code_style-standard-brightgreen.svg[alt=JavaScript Style Guide, link=https://standardjs.com]
 
 [.lead]
-This repository contains the API component of an implementation of the _Simulation as a Service (SIMaaS)_-concept based on the Functional Mock-up Interface (FMI) that uses dedicated worker-processes to execute simulation jobs distributed using a task queue. Find the worker implementation at https://github.com/UdSAES/simaas-worker[https://github.com/UdSAES/simaas-worker] and an example that demonstrates the abilities of both at https://github.com/UdSAES/simaas-demo[https://github.com/UdSAES/simaas-demo].
+This repository contains the API component of an implementation of the _Simulation as a Service (SIMaaS)_-concept based on the https://fmi-standard.org[Functional Mock-up Interface (FMI)] that uses dedicated worker-processes to execute simulation jobs distributed using a task queue. Find the worker implementation at https://github.com/UdSAES/simaas-worker[https://github.com/UdSAES/simaas-worker] and an example that demonstrates the abilities of both at https://github.com/UdSAES/simaas-demo[https://github.com/UdSAES/simaas-demo].
 
 Design concepts, software architecture and applications are discussed here:
 
-Stüber, Moritz and Georg Frey (2021-09). "A Cloud-native Implementation of the Simulation as a Service-Concept Based on FMI". In: Proceedings of the 14th International Modelica Conference, Linköping, Sweden, September 20-24, 2021. Linköping University Electronic Press, pp. 393--402. DOI: https://doi.org/[10.3384/ecp21181393]
+Stüber, Moritz and Georg Frey (2021-09). "A Cloud-native Implementation of the Simulation as a Service-Concept Based on FMI". In: Proceedings of the 14th International Modelica Conference, Linköping, Sweden, September 20-24, 2021. Linköping University Electronic Press, pp. 393--402. DOI: https://doi.org/10.3384/ecp21181393[10.3384/ecp21181393]
 
 == Installation
 ...
@@ -63,7 +63,7 @@ All environment variables without a default value MUST be set before starting th
 
 |===
 == Usage
-Once all required components are running, you can access the API documentation at `/ui`. It is rendered from the ./oas/simaas_oas3.json[OpenAPI-Specification (OAS)] using https://github.com/Redocly/redoc[ReDoc].
+Once all required components are running, you can access the API documentation at `/ui`. It is rendered from the link:oas/simaas_oas3.json[OpenAPI-Specification (OAS)] using https://github.com/Redocly/redoc[ReDoc].
 
 Initially, the service instance does not know about any models. Therefore, you have to push a model to the service instance first. The model needs to be an FMU 2.0 for co-simulation that includes binaries for GNU/Linux. Optionally, the name(s) of one or more recordsfootnote:[This assumes that the FMU is created based on a Modelica model; the name of any component that groups the desired parameters should work.] used for storing parameters can be supplied. These will then be used to filter the full list of parameters read from `modelDescription.xml` in order to only expose those parameters that should actually be accessible through the API.
 
