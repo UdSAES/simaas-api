@@ -1,16 +1,13 @@
-= Simulation as a Service Using a Task Queue, Workers and FMPy
+= A _Simulation as a Service_-Implementation: API
 
 image:https://img.shields.io/badge/code_style-standard-brightgreen.svg[alt=JavaScript Style Guide, link=https://standardjs.com]
 
-This repository contains an implementation of SIMaaS that uses dedicated worker-processes to execute simulation jobs distributed using a tasks queue.
-// For simulation, the worker-processes use https://github.com/CATIA-Systems/FMPy[FMPy] instead of https://github.com/modelon/PyFMI[PyFMI] to execute FMUs due to the much less complicated dependencies of the former.
+[.lead]
+This repository contains the API component of an implementation of the _Simulation as a Service (SIMaaS)_-concept based on the Functional Mock-up Interface (FMI) that uses dedicated worker-processes to execute simulation jobs distributed using a task queue. Find the worker implementation at https://github.com/UdSAES/simaas-worker[https://github.com/UdSAES/simaas-worker] and an example that demonstrates the abilities of both at https://github.com/UdSAES/simaas-demo[https://github.com/UdSAES/simaas-demo].
 
-// See link:./docs/requirements.md[`./docs/requirements.md`] for the full list of requirements that this microservice attempts to implement and link:./docs/versions.md[`./docs/versions.md`] for details on the version history, including release notes.
+Design concepts, software architecture and applications are discussed here:
 
-== Status
-*Work in Progress!*
-
-The README needs an update, as does the `index.js`. The code works, but should be cleaned up a bit before the next release. We're on it.
+Stüber, Moritz and Georg Frey (2021-09). "A Cloud-native Implementation of the Simulation as a Service-Concept Based on FMI". In: Proceedings of the 14th International Modelica Conference, Linköping, Sweden, September 20-24, 2021. Linköping University Electronic Press, pp. 393--402. DOI: https://doi.org/[10.3384/ecp21181393]
 
 == Installation
 ...
@@ -65,3 +62,14 @@ All environment variables without a default value MUST be set before starting th
 | `"INFO"`
 
 |===
+== Usage
+Once all required components are running, you can access the API documentation at `/ui`. It is rendered from the ./oas/simaas_oas3.json[OpenAPI-Specification (OAS)] using https://github.com/Redocly/redoc[ReDoc].
+
+Initially, the service instance does not know about any models. Therefore, you have to push a model to the service instance first. The model needs to be an FMU 2.0 for co-simulation that includes binaries for GNU/Linux. Optionally, the name(s) of one or more recordsfootnote:[This assumes that the FMU is created based on a Modelica model; the name of any component that groups the desired parameters should work.] used for storing parameters can be supplied. These will then be used to filter the full list of parameters read from `modelDescription.xml` in order to only expose those parameters that should actually be accessible through the API.
+
+Once a model was successfully added, the OAS is updated and details on how to add model instances and simulate them become available.
+
+_If you run into a problem or have a question, please open an issue! Thank you very much._
+
+== Acknowledgements
+From January 2017 to March 2021, this work was supported by the SINTEG-project https://designetz.de["`Designetz`"] funded by the German Federal Ministry of Economic Affairs and Energy (BMWi) under grant 03SIN224.
