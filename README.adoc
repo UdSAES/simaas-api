@@ -10,7 +10,7 @@ Design concepts, software architecture and applications are discussed here:
 Stüber, Moritz and Georg Frey (2021-09). "A Cloud-native Implementation of the Simulation as a Service-Concept Based on FMI". In: Proceedings of the 14th International Modelica Conference, Linköping, Sweden, September 20-24, 2021. Linköping University Electronic Press, pp. 393--402. DOI: https://doi.org/10.3384/ecp21181393[10.3384/ecp21181393]
 
 == Installation
-...
+The code can be executed directly on GNU/Linux host machines or containerized using Podman or Docker. In both cases, some environment variables (ENVVARs) must be set according to the table below.
 
 === Configuration
 All environment variables without a default value MUST be set before starting the program. Otherwise, a fatal error will be raised and the program will terminate with a non-zero exit code.
@@ -62,6 +62,26 @@ All environment variables without a default value MUST be set before starting th
 | `"INFO"`
 
 |===
+
+=== Running from Code
+* Ensure that https://nodejs.org/en/[Node.js] is installed
+* Install the dependencies by running `npm install`
+* Apply a patch for an insufficient buffer size  by running `node scripts/set_buffer_size_amqplib.js`
+* Start a https://redis.io/[redis] server and a https://www.rabbitmq.com/[RabbitMQ] server
+* Start at least one instance of the https://github.com/UdSAES/simaas-worker[simaas-worker]
+* Set the required ENVVARs, for example by putting `export SIMAAS_*=...`-statements in a file named `.env` and then loading the contents of this file via `source .env`
+* Start the API by running `node index.js`
+* Logs are serialized as JSON, so readability in a terminal increases greatly if the output is piped to https://stedolan.github.io/jq/[jq]
+
+=== Running Containerized
+* Ensure that a container engine such as https://www.docker.com/[Docker] or https://podman.io/[podman] are installed and running.
+* Start instances of https://hub.docker.com/_/redis[redis] and https://hub.docker.com/_/rabbitmq[RabbitMQ] (both available on dockerhub)
+* Build the container image, e.g. using `podman build -t simaas-api:latest .`
+* Start at least one instance of the https://github.com/UdSAES/simaas-worker[simaas-worker]
+* Set the required ENVVARs, for example by putting `export SIMAAS_*=...`-statements in a file named `.env` and then loading the contents of this file via `source .env`
+* Run the API as a container, e.g.: `podman run -n simaas-api --rm -d simaas-api:latest`
+* Logs are serialized as JSON, so readability in a terminal increases greatly if the output is piped to https://stedolan.github.io/jq/[jq]
+
 == Usage
 Once all required components are running, you can access the API documentation at `/ui`. It is rendered from the link:oas/simaas_oas3.json[OpenAPI-Specification (OAS)] using https://github.com/Redocly/redoc[ReDoc].
 
