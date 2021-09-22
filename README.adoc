@@ -96,7 +96,7 @@ podman run \
   --env SIMAAS_RABBITMQ_HOSTNAME=... \
   --env SIMAAS_RABBITMQ_USERNAME=guest \
   --env SIMAAS_RABBITMQ_PASSWORD=guest \
-  --env SIMAAS_REDISHOSTNAME=... \
+  --env SIMAAS_REDIS_HOSTNAME=... \
   -p 3000:3000 \ # <1>
   --rm -d \
   simaas-api:latest
