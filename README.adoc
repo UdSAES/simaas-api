@@ -114,6 +114,19 @@ Once a model was successfully added, the OAS is updated and details on how to ad
 
 _If you run into a problem or have a question, please open an issue! Thank you very much._
 
+== Roadmap
+We will work on the follwoing issues in the near future:
+
+* [ ] bring back API and unit tests (already exist but need updating)
+
+Additionally, we will add new features/functionality, including:name: value
+
+* [ ] add graph-based representation format in addition to JSON (Turtle, N3, JSON-LD)
+* [ ] derive triples about FMUs upon uploading
+* [ ] add metadata, context and controls to resource representations
+
+Adding this functionality will not break the REST-based HTTP-API described in the paper -- after all, this is what content negotiation is for :wink:.
+
 == Acknowledgements
 From January 2017 to March 2021, this work was supported by the SINTEG-project https://designetz.de["`Designetz`"] funded by the German Federal Ministry of Economic Affairs and Energy (BMWi) under grant 03SIN224.
 
