@@ -61,6 +61,14 @@ All environment variables without a default value MUST be set before starting th
 | The minimal included https://github.com/trentm/node-bunyan#levels[log level] that shall be printed to `stdout`
 | `"INFO"`
 
+| `UI_STATIC_FILES_PATH`
+| The path to any static HTML file to be exposed; intended for rendered version of OAS
+| `./lib/redoc.html`
+
+| `UI_URL_PATH`
+| The URL path at which to expose the static HTML file
+| `/ui`
+
 |===
 
 === Running from Code
