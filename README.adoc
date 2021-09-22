@@ -100,7 +100,7 @@ podman run \
 == Usage
 Once all required components are running, you can access the API documentation at `/ui`. It is rendered from the link:oas/simaas_oas3.json[OpenAPI-Specification (OAS)] using https://github.com/Redocly/redoc[ReDoc].
 
-Initially, the service instance does not know about any models. Therefore, you have to push a model to the service instance first. The model needs to be an FMU 2.0 for co-simulation that includes binaries for GNU/Linux. Optionally, the name(s) of one or more recordsfootnote:[This assumes that the FMU is created based on a Modelica model; the name of any component that groups the desired parameters should work.] used for storing parameters can be supplied. These will then be used to filter the full list of parameters read from `modelDescription.xml` in order to only expose those parameters that should actually be accessible through the API.
+Initially, the service instance does not know about any models. Therefore, you have to push a model to the service instance first. The model needs to be an FMU 2.0 for co-simulation that includes binaries for GNU/Linux. Two supported FMUs can be found in the https://github.com/UdSAES/simaas-demo[simaas-demo]-repository. Optionally, the name(s) of one or more recordsfootnote:[This assumes that the FMU is created based on a Modelica model; the name of any component that groups the desired parameters should work.] used for storing parameters can be supplied. These will then be used to filter the full list of parameters read from `modelDescription.xml` in order to only expose those parameters that should actually be accessible through the API.
 
 Once a model was successfully added, the OAS is updated and details on how to add model instances and simulate them become available.
 
