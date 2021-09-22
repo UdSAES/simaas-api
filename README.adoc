@@ -119,7 +119,7 @@ We will work on the follwoing issues in the near future:
 
 * [ ] bring back API and unit tests (already exist but need updating)
 
-Additionally, we will add new features/functionality, including:name: value
+Additionally, we will add new features/functionality, including:
 
 * [ ] add graph-based representation format in addition to JSON (Turtle, N3, JSON-LD)
 * [ ] derive triples about FMUs upon uploading
