@@ -79,7 +79,22 @@ All environment variables without a default value MUST be set before starting th
 * Build the container image, e.g. using `podman build -t simaas-api:latest .`
 * Start at least one instance of the https://github.com/UdSAES/simaas-worker[simaas-worker]
 * Set the required ENVVARs, for example by putting `export SIMAAS_*=...`-statements in a file named `.env` and then loading the contents of this file via `source .env`
-* Run the API as a container, e.g.: `podman run -n simaas-api --rm -d simaas-api:latest`
+* Run the API as a container, e.g.:
++
+[source,sh]
+----
+podman run \
+  --name simaas-api \
+  --env SIMAAS_RABBITMQ_HOSTNAME=... \
+  --env SIMAAS_RABBITMQ_USERNAME=guest \
+  --env SIMAAS_RABBITMQ_PASSWORD=guest \
+  --env SIMAAS_REDISHOSTNAME=... \
+  -p 3000:3000 \ # <1>
+  --rm -d \
+  simaas-api:latest
+----
+<1> Within the container image, `SIMAAS_LISTEN_PORT` is set to 3000 and exposed, so port 3000 needs to be mapped to a port on the host.
+* Access the service instance in a browser using the URL `http://localhost:3000`
 * Logs are serialized as JSON, so readability in a terminal increases greatly if the output is piped to https://stedolan.github.io/jq/[jq]
 
 == Usage
