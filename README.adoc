@@ -118,6 +118,9 @@ _If you run into a problem or have a question, please open an issue! Thank you v
 We will work on the follwoing issues in the near future:
 
 * [ ] bring back API and unit tests (already exist but need updating)
+* [ ] clarify additional restrictions posed on FMUs
+* [ ] remove as many of these restrictions as possible
+* [ ] investigate relation to and possible use of (parts of) the https://ssp-standard.org/[SSP-standard]
 
 Additionally, we will add new features/functionality, including:
 
