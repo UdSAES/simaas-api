@@ -178,6 +178,9 @@ async function init () {
   const backend = handlers.initializeBackend(cfg.oas.filePathDynamic)
 
   // Pass requests to middleware
+  app.get('/models/:id/types', handlers.getModelTypes)
+  app.get('/models/:id/units', handlers.getModelUnits)
+  app.get('/models/:id/variables', handlers.getModelVariables)
   app.use((req, res, next) => backend.handleRequest(req, req, res, next))
 
   // Serialize any remaining errors as JSON
