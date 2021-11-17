@@ -445,7 +445,10 @@ async function addModel (c, req, res) {
       res
         .status(201)
         .location(modelURI)
-        .render('responses/add_model.trig.jinja', { model: modelURI })
+        .render('responses/add_model.trig.jinja', {
+          model: modelURI,
+          sms_url: knownPrefixes.sms
+        })
     },
 
     'application/json': function () {
