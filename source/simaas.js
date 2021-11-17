@@ -290,6 +290,24 @@ function initializeBackend (oasFilePath) {
   return backend
 }
 
+async function getApiRoot (req, res ) {
+  const host = _.get(req, ['headers', 'host'])
+  const protocol = _.get(req, ['protocol'])
+  const origin = protocol + '://' + host
+  const thisURL = `${origin}${req.path}`
+
+  res.format({
+    'application/trig': function () {
+      res.status(200).render('resources/home.trig.jinja', {
+        base_url: thisURL,
+        base_separator: '', // `thisURL` already includes the `/` here
+        api_url: `${origin}/vocabulary#`,
+        path_ui: cfg.oas.path.ui
+      })
+    }
+  })
+}
+
 async function addModel (c, req, res) {
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
@@ -740,6 +758,7 @@ async function serveOAS (c, req, res) {
 exports.updateInternalListOfModels = updateInternalListOfModels
 exports.updateOpenAPISpecification = updateOpenAPISpecification
 exports.initializeBackend = initializeBackend
+exports.getApiRoot = getApiRoot
 exports.addModel = addModel
 exports.getModel = getModel
 exports.getModelTypes = getModelTypes
