@@ -205,7 +205,37 @@ async function createModelRepresentationRDF (input, modelDirectory, modelURI) {
       ns.foaf.primaryTopic,
       namedNode(modelURI),
       namedNode(`#context`)
-    )
+    ),
+    quad(
+      namedNode(`#context`),
+      ns.api.home,
+      namedNode(_.join(_.slice(_.split(modelURI, '/'), 0, 3), '/')),
+      namedNode(`#context`)
+    ),
+    quad(
+      namedNode('#context'),
+      ns.api.allInstances,
+      namedNode('#controls-get-instances'),
+      namedNode(`#context`)
+    ),
+    quad(
+      namedNode('#controls-get-instances'),
+      ns.rdf.type,
+      ns.http.Request,
+      namedNode('#controls')
+    ),
+    quad(
+      namedNode('#controls-get-instances'),
+      ns.http.methodName,
+      literal('GET'),
+      namedNode('#controls')
+    ),
+    quad(
+      namedNode('#controls-get-instances'),
+      ns.http.requestURI,
+      namedNode(`${modelURI}/instances`),
+      namedNode('#controls')
+    ),
   ])
 
   // Add relevant data and write results to files
