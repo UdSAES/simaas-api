@@ -33,6 +33,7 @@ const _ = require('lodash')
 const fs = require('fs-extra')
 const delay = require('delay')
 const addRequestId = require('express-request-id')()
+const nunjucks = require('nunjucks')
 
 const handlers = require('./lib/simaas.js')
 const responseUtils = require('./lib/response_utils.js')
@@ -128,6 +129,7 @@ async function init () {
   app.use(fileUpload())
   app.use(cors())
   app.use(addRequestId)
+  nunjucks.configure('templates', { autoescape: true, express: app })
 
   // Expose UI iff UI_URL_PATH is not empty
   if (cfg.ui.urlPath !== '') {
