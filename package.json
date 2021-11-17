@@ -4,8 +4,8 @@
   "description": "Microservice which implements the public API of the Simulation as a Service instance",
   "main": "index.js",
   "config": {
-    "oas3": "./oas/simaas_oas3.json",
-    "oas3_flat": "./oas/simaas_oas3_flat.yaml"
+    "oas3": "./templates/simaas_oas3.json",
+    "oas3_flat": "./templates/simaas_oas3_flat.yaml"
   },
   "scripts": {
     "prestart": "npm run api-resolve",
