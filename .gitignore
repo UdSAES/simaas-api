@@ -10,3 +10,5 @@ oas/simaas_oas3*.yaml
 # Ignore files for local development
 .env
 local/
+.vscode/
+*.code-workspace
