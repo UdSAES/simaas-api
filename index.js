@@ -142,11 +142,6 @@ async function init () {
       log.fatal({ code: 600020 }, 'default-UI not implemented')
       process.exit(6)
     }
-
-    // Redirect GET-request on origin to UI iff UI is exposed
-    app.get('', async (req, res) => {
-      res.redirect(cfg.ui.urlPath)
-    })
   }
 
   // Create child logger including req_id to be used in handlers
