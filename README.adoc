@@ -130,4 +130,4 @@ Adding this functionality will not break the REST-based HTTP-API described in th
 == Acknowledgements
 From January 2017 to March 2021, this work was supported by the SINTEG-project https://designetz.de["`Designetz`"] funded by the German Federal Ministry of Economic Affairs and Energy (BMWi) under grant 03SIN224.
 
-image::./docs/logos_uds_aes_designetz_bmwi.png[]
+image::./documentation/logos_uds_aes_designetz_bmwi.png[]
