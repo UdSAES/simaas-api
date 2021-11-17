@@ -33,6 +33,10 @@ const cfg = {
     templates: {
       parameter: './templates/oas/parameters.json.jinja',
       io: './templates/oas/inputs_outputs.json.jinja'
+    },
+    path: {
+      oas: _.replace('/oas', '/', ''),
+      ui: _.replace(process.env.UI_URL_PATH, '/', '')
     }
   },
   tmpfs: process.env.SIMAAS_TMPFS_PATH,
@@ -325,6 +329,29 @@ async function getApiVocabulary (req, res) {
 }
 
 async function getModelCollection (req, res) {
+  const host = _.get(req, ['headers', 'host'])
+  const protocol = _.get(req, ['protocol'])
+  const origin = protocol + '://' + host
+  const thisURL = `${origin}${req.path}`
+
+  const listOfModels = await updateInternalListOfModels(null, null, 'read')
+
+  res.format({
+    'application/trig': function () {
+      res.status(200).render('resources/models_collection.trig.jinja', {
+        fmi_url: knownPrefixes.fmi,
+        sms_url: knownPrefixes.sms,
+        api_url: `${origin}/vocabulary#`,
+        base_url: thisURL,
+        base_separator: '/',
+        modelURIs: _.map(_.keys(listOfModels), function (v) {
+          return `${thisURL}/${v}`
+        })
+      })
+    }
+  })
+}
+
 async function addModel (c, req, res) {
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
@@ -777,6 +804,7 @@ exports.updateOpenAPISpecification = updateOpenAPISpecification
 exports.initializeBackend = initializeBackend
 exports.getApiRoot = getApiRoot
 exports.getApiVocabulary = getApiVocabulary
+exports.getModelCollection = getModelCollection
 exports.addModel = addModel
 exports.getModel = getModel
 exports.getModelTypes = getModelTypes

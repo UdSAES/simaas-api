@@ -182,6 +182,7 @@ async function init () {
   // Pass requests to middleware
   app.get('/', handlers.getApiRoot)
   app.get('/vocabulary', handlers.getApiVocabulary)
+  app.get('/models', handlers.getModelCollection)
   app.get('/models/:id/types', handlers.getModelTypes)
   app.get('/models/:id/units', handlers.getModelUnits)
   app.get('/models/:id/variables', handlers.getModelVariables)
