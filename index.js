@@ -4,7 +4,7 @@
 'use strict'
 
 // Instantiate logger
-const log = require('./lib/logger.js')
+const log = require('./source/logger.js')
 log.info({ code: 300000 }, 'service instance started')
 
 // Exit immediately on uncaught errors or unhandled promise rejections
@@ -35,8 +35,8 @@ const delay = require('delay')
 const addRequestId = require('express-request-id')()
 const nunjucks = require('nunjucks')
 
-const handlers = require('./lib/simaas.js')
-const responseUtils = require('./lib/response_utils.js')
+const handlers = require('./source/simaas.js')
+const responseUtils = require('./source/response_utils.js')
 
 log.info({ code: 300010 }, 'successfully loaded modules')
 
@@ -49,7 +49,7 @@ async function checkIfConfigIsValid () {
     listenPort: parseInt(process.env.SIMAAS_LISTEN_PORT),
     heartbeatPeriod: parseInt(process.env.SIMAAS_HEARTBEAT_PERIOD) || 3600 * 1000,
     ui: {
-      staticFilesPath: String(process.env.UI_STATIC_FILES_PATH) || './lib/redoc.html',
+      staticFilesPath: String(process.env.UI_STATIC_FILES_PATH) || './source/redoc.html',
       urlPath: String(process.env.UI_URL_PATH) || '/ui'
     },
     oas: {

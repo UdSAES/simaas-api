@@ -63,7 +63,7 @@ All environment variables without a default value MUST be set before starting th
 
 | `UI_STATIC_FILES_PATH`
 | The path to any static HTML file to be exposed; intended for rendered version of OAS
-| `./lib/redoc.html`
+| `./source/redoc.html`
 
 | `UI_URL_PATH`
 | The URL path at which to expose the static HTML file

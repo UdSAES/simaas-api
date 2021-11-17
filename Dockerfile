@@ -27,7 +27,7 @@ WORKDIR $WORKDIR
 # Configure application according to directory structure created
 ENV SIMAAS_TMPFS_PATH=/tmp
 ENV SIMAAS_FS_PATH=$FS_PATH
-ENV UI_STATIC_FILES_PATH=./lib/redoc.html
+ENV UI_STATIC_FILES_PATH=./source/redoc.html
 ENV UI_URL_PATH=/ui
 
 ENV SIMAAS_LISTEN_PORT=3000
@@ -45,7 +45,7 @@ RUN node set_buffer_size_amqplib.js
 # Install application code by copy-pasting the source to the image
 # (subject to .dockerignore)
 COPY --chown=node:node index.js $WORKDIR
-COPY --chown=node:node lib $WORKDIR/lib/
+COPY --chown=node:node lib $WORKDIR/source/
 COPY --chown=node:node oas $WORKDIR/oas/
 
 # Store reference to commit in version control system in image

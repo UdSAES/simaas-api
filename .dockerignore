@@ -3,7 +3,7 @@
 *
 
 # Only include specific files/directories
-!lib/
+!source/
 !oas/
 !test/
 !scripts/set_buffer_size_amqplib.js
