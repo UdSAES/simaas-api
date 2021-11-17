@@ -46,7 +46,7 @@ RUN node set_buffer_size_amqplib.js
 # (subject to .dockerignore)
 COPY --chown=node:node index.js $WORKDIR
 COPY --chown=node:node lib $WORKDIR/source/
-COPY --chown=node:node oas $WORKDIR/oas/
+COPY --chown=node:node templates $WORKDIR/templates/
 
 # Store reference to commit in version control system in image
 ARG VCS_REF
