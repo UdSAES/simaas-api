@@ -308,6 +308,23 @@ async function getApiRoot (req, res ) {
   })
 }
 
+async function getApiVocabulary (req, res) {
+  const host = _.get(req, ['headers', 'host'])
+  const protocol = _.get(req, ['protocol'])
+  const origin = protocol + '://' + host
+  const thisURL = `${origin}${req.path}`
+
+  res.format({
+    'application/trig': function () {
+      res.status(200).render('resources/vocabulary.trig.jinja', {
+        base_url: thisURL,
+        base_separator: '#'
+      })
+    }
+  })
+}
+
+async function getModelCollection (req, res) {
 async function addModel (c, req, res) {
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
@@ -759,6 +776,7 @@ exports.updateInternalListOfModels = updateInternalListOfModels
 exports.updateOpenAPISpecification = updateOpenAPISpecification
 exports.initializeBackend = initializeBackend
 exports.getApiRoot = getApiRoot
+exports.getApiVocabulary = getApiVocabulary
 exports.addModel = addModel
 exports.getModel = getModel
 exports.getModelTypes = getModelTypes

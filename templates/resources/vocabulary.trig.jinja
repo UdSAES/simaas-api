@@ -1,0 +1,38 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+@prefix : <{{ base_url }}{{ base_separator }}> .
+@base <{{ base_url }}> .
+
+:home a owl:ObjectProperty ;
+    rdfs:comment "The link to the root of the API instance." .
+
+:allModels a owl:ObjectProperty ;
+    rdfs:comment "All models registered with the API instance." .
+
+:aModel a owl:ObjectProperty ;
+    rdfs:comment "A specific model registered with the API instance" .
+
+:allInstances a owl:ObjectProperty ;
+    rdfs:comment "All instances of a specific model." .
+
+:anInstance a owl:ObjectProperty ;
+    rdfs:comment "A specific model instance." .
+
+:allSimulations a owl:ObjectProperty ;
+    rdfs:comment "All simulations of a specific model instance." .
+
+:aSimulation a owl:ObjectProperty ;
+    rdfs:comment "A specific simulation." .
+
+:theSimulationResult a owl:ObjectProperty ;
+    rdfs:comment "The result of a specific simulation." .
+
+:oas a owl:ObjectProperty ;
+    rdfs:comment "The link to the API's OpenAPI Specification." .
+
+:oasUI a owl:ObjectProperty ;
+    rdfs:comment "The link to the ReDoc-rendered UI of the OAS." .
