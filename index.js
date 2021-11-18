@@ -125,7 +125,8 @@ async function init () {
 
   // Instantiate express-application and set up middleware-stack
   const app = express()
-  app.use(bodyParser.json())
+  app.use(bodyParser.json({ type: ['application/json', 'application/*+json'] }))
+  app.use(bodyParser.text({ type: ['application/trig', 'text/turtle', 'text/n3'] }))
   app.use(fileUpload())
   app.use(cors())
   app.use(addRequestId)

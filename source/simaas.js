@@ -111,6 +111,16 @@ async function updatePartOfJsonFile (file, path, key, value, action) {
   return fileContent
 }
 
+// https://2ality.com/2019/11/nodejs-streams-async-iteration.html
+// #collecting-the-contents-of-a-readable-stream-in-a-string
+async function readableToString (readable) {
+  let result = ''
+  for await (const chunk of readable) {
+    result += chunk
+  }
+  return result
+}
+
 // Use .json-file on disk as persistent storage for model representations
 async function updateInternalListOfModels (key, value, action) {
   const modelRepresentationsFilePath = `${cfg.fs}/modelRepresentations.json`
@@ -285,6 +295,31 @@ async function createModelRepresentationRDF (input, modelDirectory, modelURI) {
   })
 
   return filePaths
+}
+
+async function instanceRepresentationFromRDF (content, mimetype) {
+  let inputStream = null
+  let streamParser = null
+  const streamWriter = new JsonLdSerializer({ space: '  ', context: knownPrefixes })
+
+  if (mimetype == 'application/ld+json') {
+    inputStream = Readable.from(JSON.stringify(content))
+    streamParser = new JsonLdParser()
+  } else {
+    inputStream = Readable.from(content.toString())
+    streamParser = new N3.StreamParser({ format: mimetype })
+  }
+
+  inputStream.pipe(streamParser)
+  const store = await storeStream(streamParser)
+
+  store.match(null, null, null).pipe(streamWriter)
+  let instanceRepresentationJSONLD = await readableToString(streamWriter)
+
+  // Ensure that a properly formatted JSON object is returned
+  instanceRepresentationJSONLD = JSON.parse(instanceRepresentationJSONLD)
+
+  return instanceRepresentationJSONLD
 }
 
 // Define handlers
@@ -640,31 +675,62 @@ async function getModelInstanceCollection (req, res) {
 }
 
 async function createModelInstance (c, req, res) {
-  const requestBody = _.get(req, ['body'])
-
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
   const origin = protocol + '://' + host
 
+  const requestBody = req.body
+  const mimetype = _.get(req, ['headers', 'content-type'])
+
   const modelId = _.nth(_.split(req.path, '/'), 2)
   const modelInstanceId = uuid.v4()
+  const modelURL = `${origin}/models/${modelId}`
 
-  // Create internal representation of new model instance
-  modelInstanceCache.set(modelInstanceId, {
+  // Parse request body
+  let instanceRepresentation = {}
+  switch (mimetype) {
+    case 'application/trig':
+    case 'application/ld+json':
+      instanceRepresentation = await instanceRepresentationFromRDF(
+        requestBody,
+        mimetype
+      )
+      break
+    default:
+      instanceRepresentation = {
     model: {
-      href: `${origin}/models/${modelId}`,
+          href: modelURL,
       id: modelId
     },
-    parameterSet: requestBody.parameters // XXX assumes JSON-body
-  })
+        parameterSet: requestBody.parameters
+      }
+  }
+
+  // Save internal representation of new model instance to cache
+  modelInstanceCache.set(modelInstanceId, instanceRepresentation)
   knownModelInstances.push(modelInstanceId)
 
   // Immediately return `201 Created` with corresponding `Location`-header
-  res.set('Content-Type', 'application/json')
+  const instanceURL = `${origin}/models/${modelId}/instances/${modelInstanceId}`
+  res.format({
+    'application/trig': function () {
   res
     .status(201)
-    .location(`${origin}/models/${modelId}/instances/${modelInstanceId}`)
+        .location(instanceURL)
+        .send(
+          `@prefix sms: <${knownPrefixes.sms}> .
+         <${instanceURL}> a sms:ModelInstance ;
+             sms:instanceOf ${modelURL} .`
+        )
+    },
+
+    'application/json': function () {
+      res
+        .status(201)
+        .location(instanceURL)
     .json()
+    }
+  })
 }
 
 async function getModelInstance (c, req, res) {
