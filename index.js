@@ -181,6 +181,7 @@ async function init () {
   app.get('/models/:id/types', handlers.getModelTypes)
   app.get('/models/:id/units', handlers.getModelUnits)
   app.get('/models/:id/variables', handlers.getModelVariables)
+  app.get('/models/:id/instances', handlers.getModelInstanceCollection)
   app.use((req, res, next) => backend.handleRequest(req, req, res, next))
 
   // Serialize any remaining errors as JSON

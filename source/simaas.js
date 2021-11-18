@@ -614,6 +614,31 @@ async function deleteModel (c, req, res) {
   res.status(204).send()
 }
 
+async function getModelInstanceCollection (req, res) {
+  const host = _.get(req, ['headers', 'host'])
+  const protocol = _.get(req, ['protocol'])
+  const origin = protocol + '://' + host
+  const thisURL = `${origin}${req.path}`
+  const modelId = _.nth(_.split(req.path, '/'), 2)
+
+  res.format({
+    'application/trig': function () {
+      // TODO the following depends on the model! to be revised
+      res.status(200).render('resources/model_instances_collection.trig.jinja', {
+        fmi_url: knownPrefixes.fmi,
+        sms_url: knownPrefixes.sms,
+        api_url: `${origin}/vocabulary#`,
+        base_url: thisURL,
+        base_separator: '/',
+        instanceURIs: _.map(knownModelInstances, function (v) {
+          return `${thisURL}/${v}`
+        }),
+        modelURI: _.join(_.slice(_.split(thisURL, '/'), 0, -1), '/')
+      })
+    }
+  })
+}
+
 async function createModelInstance (c, req, res) {
   const requestBody = _.get(req, ['body'])
 
@@ -844,6 +869,7 @@ exports.getModelTypes = getModelTypes
 exports.getModelUnits = getModelUnits
 exports.getModelVariables = getModelVariables
 exports.deleteModel = deleteModel
+exports.getModelInstanceCollection = getModelInstanceCollection
 exports.createModelInstance = createModelInstance
 exports.getModelInstance = getModelInstance
 exports.simulateModelInstance = simulateModelInstance
