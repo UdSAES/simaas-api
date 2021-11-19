@@ -70,6 +70,7 @@ const experimentCache = new NodeCache({
   checkperiod: 600,
   deleteOnExpire: true
 })
+const knownExperiments = []
 const jobQueue = {}
 
 const knownPrefixes = {
@@ -776,6 +777,30 @@ async function getModelInstance (c, req, res) {
   }
 }
 
+async function getExperimentCollection (req, res) {
+  const host = _.get(req, ['headers', 'host'])
+  const protocol = _.get(req, ['protocol'])
+  const origin = protocol + '://' + host
+  const thisURL = `${origin}${req.path}`
+
+  res.format({
+    'application/trig': function () {
+      // TODO the following depends on the model! to be revised
+      res.status(200).render('resources/simulations_collection.trig.jinja', {
+        fmi_url: knownPrefixes.fmi,
+        sms_url: knownPrefixes.sms,
+        api_url: `${origin}/vocabulary#`,
+        base_url: thisURL,
+        base_separator: '/',
+        simulations: _.map(knownExperiments, function (v) {
+          return `${thisURL}/${v}`
+        }),
+        instance_uri: _.join(_.slice(_.split(thisURL, '/'), 0, -1), '/')
+      })
+    }
+  })
+}
+
 async function simulateModelInstance (c, req, res) {
   const requestBody = _.get(req, ['body'])
 
@@ -805,6 +830,7 @@ async function simulateModelInstance (c, req, res) {
   // Store experiment setup identified by UUID
   const experimentId = job.taskId
   jobQueue[experimentId] = job
+  knownExperiments.push(experimentId)
   experimentCache.set(experimentId, {
     setup: requestBody, // XXX assumes JSON-body
     simulationResult: null
@@ -958,6 +984,7 @@ exports.deleteModel = deleteModel
 exports.getModelInstanceCollection = getModelInstanceCollection
 exports.createModelInstance = createModelInstance
 exports.getModelInstance = getModelInstance
+exports.getExperimentCollection = getExperimentCollection
 exports.simulateModelInstance = simulateModelInstance
 exports.getExperimentStatus = getExperimentStatus
 exports.getExperimentResult = getExperimentResult
