@@ -1,0 +1,49 @@
+{
+  "modelName": "PVatTestSite",
+  "parameters": {
+    "latitude": {
+      "value": 49.31659,
+      "unit": "deg"
+    },
+    "longitude": {
+      "value": 6.749953,
+      "unit": "deg"
+    },
+    "elevation": {
+      "value": 181,
+      "unit": "m"
+    },
+    "panelArea": {
+      "value": 227.78496,
+      "unit": "m2"
+    },
+    "plantEfficiency": {
+      "value": 0.17,
+      "unit": "1"
+    },
+    "T_cell_ref": {
+      "value": 25,
+      "unit": "degC"
+    },
+    "panelTilt": {
+      "value": 28,
+      "unit": "deg"
+    },
+    "panelAzimuth": {
+      "value": 47,
+      "unit": "deg"
+    },
+    "environmentAlbedo": {
+      "value": 0.2,
+      "unit": "1"
+    },
+    "nsModule": {
+      "value": 6,
+      "unit": "1"
+    },
+    "npModule": {
+      "value": 26,
+      "unit": "1"
+    }
+  }
+}

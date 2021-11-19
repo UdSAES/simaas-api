@@ -28,6 +28,18 @@ describe('Verify behaviour of API-instance', function () {
         statusCode: 200,
         'content-type': 'application/trig'
       }
+    },
+    {
+      method: 'POST',
+      path: 'models/6157f34f-f629-484b-b873-f31be22269e1/instances',
+      accept: 'application/json',
+      body: fs.readJSONSync(
+        'test/data/6157f34f-f629-484b-b873-f31be22269e1/instantiation.json'
+      ),
+      expected: {
+        statusCode: 201,
+        'content-type': 'application/json'
+      }
     }
   ]
 
