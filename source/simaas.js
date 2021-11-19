@@ -323,6 +323,14 @@ async function instanceRepresentationFromRDF (content, mimetype) {
   return instanceRepresentationJSONLD
 }
 
+async function simulationRepresentationFromRDF (content, mimetype) {
+  const simulationRepresentation = await fs.readJSON(
+    'test/data/6157f34f-f629-484b-b873-f31be22269e1/simulation.json'
+  )
+
+  return simulationRepresentation
+}
+
 // Define handlers
 function initializeBackend (oasFilePath) {
   let backend = null
@@ -802,19 +810,32 @@ async function getExperimentCollection (req, res) {
 }
 
 async function simulateModelInstance (c, req, res) {
-  const requestBody = _.get(req, ['body'])
-
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
   const origin = protocol + '://' + host
+  const thisURL = `${origin}${req.path}`
+
+  const requestBody = req.body
+  const mimetype = _.get(req, ['headers', 'content-type'])
+
+  // Parse request body to internal representation
+  let simulation
+  switch (mimetype) {
+    case 'application/ld+json':
+    case 'application/trig':
+      simulation = await simulationRepresentationFromRDF(requestBody, mimetype)
+      break
+    default:
+      simulation = requestBody
+  }
 
   // Amend request body with additional required information to build task signature
   const modelInstanceId = _.nth(_.split(req.path, '/'), 4)
   const modelInstance = modelInstanceCache.get(modelInstanceId)
   const taskRepresentation = {
     modelInstanceId: modelInstanceId,
-    simulationParameters: requestBody.simulationParameters,
-    inputTimeseries: requestBody.inputTimeseries,
+    simulationParameters: simulation.simulationParameters,
+    inputTimeseries: simulation.inputTimeseries,
     parameterSet: modelInstance.parameterSet,
     modelHref: modelInstance.model.href,
     requestId: req.id
@@ -837,13 +858,27 @@ async function simulateModelInstance (c, req, res) {
   })
 
   // Immediately return `201 Created` with corresponding `Location`-header
-  res.set('Content-Type', 'application/json')
+  const instanceURL = _.join(_.slice(_.split(thisURL, '/'), 0, -1), '/')
+  const experimentURL = `${thisURL}/${experimentId}`
+  res.format({
+    'application/trig': function () {
   res
     .status(201)
-    .location(
-      `${origin}/models/${requestBody.modelId}/instances/${modelInstanceId}/experiments/${experimentId}`
+        .location(experimentURL)
+        .send(
+          `@prefix sms: <${knownPrefixes.sms}> .
+         <${experimentURL}> a sms:Simulation ;
+             sms:simulates <${instanceURL}> .`
     )
+    },
+
+    'application/json': function () {
+      res
+        .status(201)
+        .location(experimentURL)
     .json()
+    }
+  })
 }
 
 async function getExperimentStatus (c, req, res) {
