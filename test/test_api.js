@@ -40,6 +40,19 @@ describe('Verify behaviour of API-instance', function () {
         statusCode: 201,
         'content-type': 'application/json'
       }
+    },
+    {
+      method: 'POST',
+      path: 'models/6157f34f-f629-484b-b873-f31be22269e1/instances',
+      accept: 'application/trig',
+      body: fs.readFileSync(
+        'test/data/6157f34f-f629-484b-b873-f31be22269e1/instantiation.trig',
+        { encoding: 'utf-8' }
+      ),
+      expected: {
+        statusCode: 201,
+        'content-type': 'application/trig'
+      }
     }
   ]
 
@@ -66,6 +79,7 @@ describe('Verify behaviour of API-instance', function () {
       before(async function () {
         try {
           response = await axios(options)
+          console.log(`\n-> Location: ${response.headers['location']}\n`)
         } catch (error) {
           console.error(error)
         }

@@ -1,0 +1,20 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+
+@prefix fmi: <https://ontologies.msaas.me/fmi-ontology.ttl#> .
+@prefix ex: <http://example.org/> .
+
+
+ex:record rdf:type ex:ParameterSet ;
+    ex:modelName "asdf" ;
+    ex:elevation [
+        rdf:type fmi:ParameterValue ;
+        qudt:numericValue 456.11 ;
+        qudt:unit unit:M
+    ]
+.
