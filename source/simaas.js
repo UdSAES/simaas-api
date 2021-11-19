@@ -734,8 +734,19 @@ async function createModelInstance (c, req, res) {
 }
 
 async function getModelInstance (c, req, res) {
+  const host = _.get(req, ['headers', 'host'])
+  const protocol = _.get(req, ['protocol'])
+  const origin = protocol + '://' + host
+  const thisURL = `${origin}${req.path}`
+
   const modelInstanceId = _.last(_.split(req.url, '/'))
   const modelInstance = modelInstanceCache.get(modelInstanceId)
+
+  const instanceRepresentationJSON = {
+    modelId: modelInstance.model.id,
+    modelHref: modelInstance.model.href,
+    parameters: modelInstance.parameterSet
+  }
 
   if (modelInstance === undefined) {
     if (_.includes(knownModelInstances, modelInstanceId)) {
@@ -744,10 +755,19 @@ async function getModelInstance (c, req, res) {
       await responseUtils.respondWithNotFound(c, req, res)
     }
   } else {
-    res.status(200).json({
-      modelId: modelInstance.model.id,
-      modelHref: modelInstance.model.href,
-      parameters: modelInstance.parameterSet
+    res.format({
+      'application/trig': function () {
+        res.status(200).render('resources/model_instance.trig.jinja', {
+          fmi_url: knownPrefixes.fmi,
+          sms_url: knownPrefixes.sms,
+          api_url: `${origin}/vocabulary#`,
+          base_url: thisURL,
+          base_separator: '/'
+        })
+      },
+      'application/json': function () {
+        res.status(200).json(instanceRepresentationJSON)
+      }
     })
     req.log.info(
       { res: res },
