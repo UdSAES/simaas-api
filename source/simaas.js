@@ -245,7 +245,7 @@ async function createModelRepresentationRDF (input, modelDirectory, modelURI) {
       ns.http.requestURI,
       namedNode(`${modelURI}/instances`),
       namedNode('#controls')
-    ),
+    )
   ])
 
   // Add relevant data and write results to files
@@ -359,7 +359,7 @@ function initializeBackend (oasFilePath) {
   return backend
 }
 
-async function getApiRoot (req, res ) {
+async function getApiRoot (req, res) {
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
   const origin = protocol + '://' + host

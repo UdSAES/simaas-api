@@ -49,7 +49,8 @@ async function checkIfConfigIsValid () {
     listenPort: parseInt(process.env.SIMAAS_LISTEN_PORT),
     heartbeatPeriod: parseInt(process.env.SIMAAS_HEARTBEAT_PERIOD) || 3600 * 1000,
     ui: {
-      staticFilesPath: String(process.env.UI_STATIC_FILES_PATH) || './source/redoc.html',
+      staticFilesPath:
+        String(process.env.UI_STATIC_FILES_PATH) || './source/redoc.html',
       urlPath: String(process.env.UI_URL_PATH) || '/ui'
     },
     oas: {
