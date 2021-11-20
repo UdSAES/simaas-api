@@ -956,12 +956,12 @@ async function getExperimentStatus (c, req, res) {
 }
 
 async function getExperimentResult (c, req, res) {
-  const experimentId = _.nth(_.split(req.url, '/'), -2)
-
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
   const origin = protocol + '://' + host
+  const thisURL = `${origin}${req.path}`
 
+  const experimentId = _.nth(_.split(req.url, '/'), -2)
   const experimentRepresentationInternal = experimentCache.get(experimentId)
 
   if (experimentRepresentationInternal === undefined) {
@@ -992,7 +992,23 @@ async function getExperimentResult (c, req, res) {
       data: experimentRepresentationInternal.simulationResult
     }
 
+    res.format({
+      'application/trig': function () {
+        res.status(200).render('resources/simulation_result.trig.jinja', {
+          api_url: `${origin}/vocabulary#`,
+          base_url: thisURL,
+          sms_url: knownPrefixes.sms,
+          simulation_url: _.replace(thisURL, '/result', ''),
+          observations: '/behaviour/quantity/observations',
+          feature_of_interest: '/behaviour',
+          property: '/behaviour/quantity'
+        })
+      },
+
+      'application/json': function () {
     res.status(200).json(resultBody)
+      }
+    })
     req.log.info(
       { res: res },
       `successfully handled ${req.method}-request on ${req.path}`
