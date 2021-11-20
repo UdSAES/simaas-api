@@ -10,47 +10,23 @@ const axios = require('axios')
 const chai = require('chai')
 const assert = chai.assert
 const it = require('mocha').it
+const before = require('mocha').before
 const describe = require('mocha').describe
-const { fstat } = require('fs')
 
-const API_ORIGIN = process.env['API_ORIGIN']
+const API_ORIGIN = process.env.API_ORIGIN
 
-describe('Verify behaviour of API-instance', function () {
+describe('Verify non-functional behaviour of API-instance', function () {
   const instanceURL = new url.URL(API_ORIGIN)
 
   const tests = [
     {
+      functionality: 'getRoot',
       method: 'GET',
       path: '',
       accept: 'application/trig',
       body: null,
       expected: {
         statusCode: 200,
-        'content-type': 'application/trig'
-      }
-    },
-    {
-      method: 'POST',
-      path: 'models/6157f34f-f629-484b-b873-f31be22269e1/instances',
-      accept: 'application/json',
-      body: fs.readJSONSync(
-        'test/data/6157f34f-f629-484b-b873-f31be22269e1/instantiation.json'
-      ),
-      expected: {
-        statusCode: 201,
-        'content-type': 'application/json'
-      }
-    },
-    {
-      method: 'POST',
-      path: 'models/6157f34f-f629-484b-b873-f31be22269e1/instances',
-      accept: 'application/trig',
-      body: fs.readFileSync(
-        'test/data/6157f34f-f629-484b-b873-f31be22269e1/instantiation.trig',
-        { encoding: 'utf-8' }
-      ),
-      expected: {
-        statusCode: 201,
         'content-type': 'application/trig'
       }
     }
@@ -79,7 +55,6 @@ describe('Verify behaviour of API-instance', function () {
       before(async function () {
         try {
           response = await axios(options)
-          console.log(`\n-> Location: ${response.headers['location']}\n`)
         } catch (error) {
           console.error(error)
         }
