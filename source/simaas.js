@@ -79,8 +79,10 @@ const knownPrefixes = {
   dct: 'http://purl.org/dc/terms/',
   foaf: 'http://xmlns.com/foaf/spec/#',
   hydra: 'http://www.w3.org/ns/hydra/core#',
+  http: 'http://www.w3.org/2011/http#',
   fmi: 'https://ontologies.msaas.me/fmi-ontology.ttl#',
-  sms: 'https://ontologies.msaas.me/sms-ontology.ttl#'
+  sms: 'https://ontologies.msaas.me/sms-ontology.ttl#',
+  api: 'http://localhost:4000/vocabulary#' // TODO do not hardcode origin!
 }
 
 const ns = _.mapValues(knownPrefixes, function (o) {
@@ -729,7 +731,7 @@ async function createModelInstance (c, req, res) {
         .send(
           `@prefix sms: <${knownPrefixes.sms}> .
          <${instanceURL}> a sms:ModelInstance ;
-             sms:instanceOf ${modelURL} .`
+             sms:instanceOf <${modelURL}> .`
         )
     },
 
