@@ -15,6 +15,11 @@ const describe = require('mocha').describe
 
 const API_ORIGIN = process.env.API_ORIGIN
 
+function sleep (ms) {
+  console.log(`Sleeping for ${ms} ms...`)
+  return new Promise((resolve) => setTimeout(resolve, ms || 1000))
+}
+
 describe('Verify non-functional behaviour of API-instance', function () {
   const instanceURL = new url.URL(API_ORIGIN)
 
@@ -63,6 +68,108 @@ describe('Verify non-functional behaviour of API-instance', function () {
       it(expectation, function () {
         assert.equal(response.status, test.expected.statusCode)
         assert.include(response.headers['content-type'], test.expected['content-type'])
+      })
+    })
+  })
+})
+
+describe('Test API functionality wrt expected status codes', function () {
+  const instanceURL = new url.URL(API_ORIGIN)
+
+  const serializations = {
+    'application/json': {
+      ext: 'json',
+      reader: fs.readJSONSync
+    }
+  }
+
+  _.forEach(serializations, function (v, k) {
+    const testAddendum = `using \`${k}\` as input`
+
+    describe(`Instantiate model; ${testAddendum}...`, function () {
+      const modelId = '6157f34f-f629-484b-b873-f31be22269e1'
+
+      let instantiationResponse
+      let instantiationStatus
+      let instanceLocation
+
+      let simulationResponse
+      let simulationStatus
+      let simulationLocation
+
+      let resultResponse
+      let resultStatus
+      let resultLocation
+
+      before(async function () {
+        // Add model instance
+        instantiationResponse = await axios({
+          baseURL: instanceURL.origin,
+          url: `models/${modelId}/instances`,
+          method: 'POST',
+          headers: {
+            accept: k,
+            'content-type': k
+          },
+          data: v.reader(`test/data/${modelId}/instantiation.${v.ext}`, {
+            encoding: 'utf-8'
+          })
+        })
+
+        instantiationStatus = instantiationResponse.status
+        instanceLocation = instantiationResponse.headers.location
+
+        console.log(`\nAdding model instance...
+          -> Status: ${instantiationStatus}
+          -> Location: ${instanceLocation}
+        `)
+
+        // Trigger simulation
+        simulationResponse = await axios({
+          url: `${instanceLocation}/experiments`,
+          method: 'POST',
+          headers: {
+            accept: k,
+            'content-type': k
+          },
+          data: v.reader(`test/data/${modelId}/simulation.${v.ext}`, {
+            encoding: 'utf-8'
+          })
+        })
+
+        simulationStatus = simulationResponse.status
+        simulationLocation = simulationResponse.headers.location
+
+        console.log(`\nTriggering simulation...
+          -> Status: ${simulationStatus}
+          -> Location: ${simulationLocation}
+        `)
+
+        // Get simulation result
+        await sleep(1000) // crude workaround to avoid polling
+
+        resultLocation = `${simulationLocation}/result`
+        resultResponse = await axios({
+          url: resultLocation,
+          method: 'GET',
+          headers: {
+            accept: k,
+            'content-type': k
+          }
+        })
+
+        resultStatus = resultResponse.status
+
+        console.log(`\nRetrieving simulation result...
+          -> Status: ${resultStatus},
+          -> URL: ${resultLocation}
+        `)
+      })
+
+      it('should return the expected status codes', function () {
+        assert.equal(instantiationStatus, 201)
+        assert.equal(simulationStatus, 201)
+        assert.equal(resultStatus, 200)
       })
     })
   })
