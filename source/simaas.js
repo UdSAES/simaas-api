@@ -882,12 +882,12 @@ async function simulateModelInstance (c, req, res) {
 }
 
 async function getExperimentStatus (c, req, res) {
-  const experimentId = _.last(_.split(req.url, '/'))
-
   const host = _.get(req, ['headers', 'host'])
   const protocol = _.get(req, ['protocol'])
   const origin = protocol + '://' + host
+  const thisURL = `${origin}${req.path}`
 
+  const experimentId = _.last(_.split(req.url, '/'))
   const experimentRepresentationInternal = experimentCache.get(experimentId)
 
   if (experimentRepresentationInternal === undefined) {
@@ -931,7 +931,21 @@ async function getExperimentStatus (c, req, res) {
       })
     }
 
+    res.format({
+      'application/trig': function () {
+        res.status(200).render('resources/simulation.trig.jinja', {
+          fmi_url: knownPrefixes.fmi,
+          sms_url: knownPrefixes.sms,
+          api_url: `${origin}/vocabulary#`,
+          base_url: thisURL,
+          base_separator: '/'
+        })
+      },
+
+      'application/json': function () {
     res.status(200).json(setup)
+      }
+    })
     req.log.info(
       { res: res },
       `successfully handled ${req.method}-request on ${req.path}`
