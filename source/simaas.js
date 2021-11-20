@@ -709,10 +709,10 @@ async function createModelInstance (c, req, res) {
       break
     default:
       instanceRepresentation = {
-    model: {
+        model: {
           href: modelURL,
-      id: modelId
-    },
+          id: modelId
+        },
         parameterSet: requestBody.parameters
       }
   }
@@ -725,8 +725,8 @@ async function createModelInstance (c, req, res) {
   const instanceURL = `${origin}/models/${modelId}/instances/${modelInstanceId}`
   res.format({
     'application/trig': function () {
-  res
-    .status(201)
+      res
+        .status(201)
         .location(instanceURL)
         .send(
           `@prefix sms: <${knownPrefixes.sms}> .
@@ -739,7 +739,7 @@ async function createModelInstance (c, req, res) {
       res
         .status(201)
         .location(instanceURL)
-    .json()
+        .json()
     }
   })
 }
@@ -864,21 +864,21 @@ async function simulateModelInstance (c, req, res) {
   const experimentURL = `${thisURL}/${experimentId}`
   res.format({
     'application/trig': function () {
-  res
-    .status(201)
+      res
+        .status(201)
         .location(experimentURL)
         .send(
           `@prefix sms: <${knownPrefixes.sms}> .
          <${experimentURL}> a sms:Simulation ;
              sms:simulates <${instanceURL}> .`
-    )
+        )
     },
 
     'application/json': function () {
       res
         .status(201)
         .location(experimentURL)
-    .json()
+        .json()
     }
   })
 }
@@ -945,7 +945,7 @@ async function getExperimentStatus (c, req, res) {
       },
 
       'application/json': function () {
-    res.status(200).json(setup)
+        res.status(200).json(setup)
       }
     })
     req.log.info(
@@ -1006,7 +1006,7 @@ async function getExperimentResult (c, req, res) {
       },
 
       'application/json': function () {
-    res.status(200).json(resultBody)
+        res.status(200).json(resultBody)
       }
     })
     req.log.info(
