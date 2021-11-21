@@ -166,7 +166,7 @@ async function instanceRepresentationFromRDF (content, mimetype) {
   let streamParser = null
   const streamWriter = new JsonLdSerializer({ space: '  ', context: knownPrefixes })
 
-  if (mimetype == 'application/ld+json') {
+  if (mimetype === 'application/ld+json') {
     inputStream = Readable.from(JSON.stringify(content))
     streamParser = new JsonLdParser()
   } else {
@@ -451,7 +451,6 @@ async function getModelInstanceCollection (req, res) {
   const protocol = _.get(req, ['protocol'])
   const origin = protocol + '://' + host
   const thisURL = `${origin}${req.path}`
-  const modelId = _.nth(_.split(req.path, '/'), 2)
 
   res.format({
     'application/trig': function () {
