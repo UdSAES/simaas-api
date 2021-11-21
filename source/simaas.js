@@ -9,31 +9,24 @@ const fs = require('fs-extra')
 const path = require('path')
 const uuid = require('uuid')
 const celery = require('celery-ts')
-const extract = require('extract-zip')
 const NodeCache = require('node-cache')
 const { promiseStatus } = require('promise-status-async')
 const { OpenAPIBackend } = require('openapi-backend')
 const $RefParser = require('@apidevtools/json-schema-ref-parser')
 const N3 = require('n3')
-const namespace = require('@rdfjs/namespace')
 const { Readable } = require('stream')
-const { pipeline } = require('stream/promises')
 const storeStream = require('rdf-store-stream').storeStream
 const JsonLdParser = require('jsonld-streaming-parser').JsonLdParser
 const JsonLdSerializer = require('jsonld-streaming-serializer').JsonLdSerializer
-const { namedNode, literal, defaultGraph, quad } = N3.DataFactory
 
 const log = require('./logger.js')
 const responseUtils = require('./response_utils.js')
+const { knownPrefixes, Model } = require('./resources.js')
 
 // Use global objects as datastore
 const cfg = {
   oas: {
     filePathStatic: './templates/simaas_oas3.json',
-    templates: {
-      parameter: './templates/oas/parameters.json.jinja',
-      io: './templates/oas/inputs_outputs.json.jinja'
-    },
     path: {
       oas: _.replace('/oas', '/', ''),
       ui: _.replace(process.env.UI_URL_PATH, '/', '')
@@ -72,22 +65,6 @@ const experimentCache = new NodeCache({
 })
 const knownExperiments = []
 const jobQueue = {}
-
-const knownPrefixes = {
-  rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-  xsd: 'http://www.w3.org/2001/XMLSchema#',
-  dct: 'http://purl.org/dc/terms/',
-  foaf: 'http://xmlns.com/foaf/spec/#',
-  hydra: 'http://www.w3.org/ns/hydra/core#',
-  http: 'http://www.w3.org/2011/http#',
-  fmi: 'https://ontologies.msaas.me/fmi-ontology.ttl#',
-  sms: 'https://ontologies.msaas.me/sms-ontology.ttl#',
-  api: 'http://localhost:4000/vocabulary#' // TODO do not hardcode origin!
-}
-
-const ns = _.mapValues(knownPrefixes, function (o) {
-  return namespace(o)
-})
 
 // Helper function to read/add/delete key/value-pair in JSON-file
 async function updatePartOfJsonFile (file, path, key, value, action) {
@@ -184,122 +161,6 @@ const celeryClient = new celery.Client({
 })
 
 // Implement functionality
-async function createModelRepresentationRDF (input, modelDirectory, modelURI) {
-  // Read quads to RDFJS-compatible internal representation; pipe to store
-  const inputStream = Readable.from(JSON.stringify(input))
-  const streamParser = new JsonLdParser()
-  inputStream.pipe(streamParser)
-  const store = await storeStream(streamParser)
-
-  // Prepare separation of input graph into constituents
-  const parts = {
-    model: {
-      type: ns.fmi.FMU,
-      store: new N3.Store()
-    },
-    types: {
-      type: ns.fmi.SimpleType,
-      store: new N3.Store()
-    },
-    variables: {
-      type: ns.fmi.ScalarVariable,
-      store: new N3.Store()
-    },
-    units: {
-      type: ns.fmi.Unit,
-      store: new N3.Store()
-    }
-  }
-
-  // WIP Add metadata/context/controls before adding actual data
-  parts.model.store.addQuads([
-    quad(
-      namedNode(`#context`),
-      ns.foaf.primaryTopic,
-      namedNode(modelURI),
-      namedNode(`#context`)
-    ),
-    quad(
-      namedNode(`#context`),
-      ns.api.home,
-      namedNode(_.join(_.slice(_.split(modelURI, '/'), 0, 3), '/')),
-      namedNode(`#context`)
-    ),
-    quad(
-      namedNode('#context'),
-      ns.api.allInstances,
-      namedNode('#controls-get-instances'),
-      namedNode(`#context`)
-    ),
-    quad(
-      namedNode('#controls-get-instances'),
-      ns.rdf.type,
-      ns.http.Request,
-      namedNode('#controls')
-    ),
-    quad(
-      namedNode('#controls-get-instances'),
-      ns.http.methodName,
-      literal('GET'),
-      namedNode('#controls')
-    ),
-    quad(
-      namedNode('#controls-get-instances'),
-      ns.http.requestURI,
-      namedNode(`${modelURI}/instances`),
-      namedNode('#controls')
-    )
-  ])
-
-  // Add relevant data and write results to files
-  const filePaths = _.mapValues(parts, function (o) {
-    return {}
-  })
-  _.forEach(parts, async function (config, resource) {
-    const subStore = config.store
-    const subjects = store.getQuads(null, ns.rdf.type, config.type)
-
-    _.forEach(subjects, function (subjectQuad) {
-      const quadsAboutSubject = store.getQuads(subjectQuad.subject, null, null)
-
-      subStore.addQuad(subjectQuad)
-      subStore.addQuads(quadsAboutSubject)
-    })
-
-    // Define serializations
-    const serializations = {
-      'application/trig': {
-        streamWriter: new N3.StreamWriter({
-          prefixes: knownPrefixes,
-          format: 'application/trig'
-        }),
-        extension: 'trig'
-      },
-      'application/ld+json': {
-        streamWriter: new JsonLdSerializer({ space: '  ', context: knownPrefixes }),
-        extension: 'json'
-      }
-    }
-
-    // Store serializations as files on disk
-    _.forEach(serializations, async function (config, mimetype) {
-      const filePath = `${modelDirectory}/${resource}.${config.extension}`
-      filePaths[resource][mimetype] = filePath
-
-      const outputStream = fs.createWriteStream(filePath)
-
-      // https://stackoverflow.com/a/65938887
-      await pipeline(
-        subStore.match(null, null, null),
-        config.streamWriter,
-        outputStream
-      )
-    })
-  })
-
-  return filePaths
-}
-
 async function instanceRepresentationFromRDF (content, mimetype) {
   let inputStream = null
   let streamParser = null
@@ -429,88 +290,25 @@ async function getModelCollection (req, res) {
 }
 
 async function addModel (c, req, res) {
-  const host = _.get(req, ['headers', 'host'])
-  const protocol = _.get(req, ['protocol'])
-  const origin = protocol + '://' + host
-  const allModelsURL = `${origin}/models`
-
-  // Receive file content
+  // Receive file content, store in temporary file
   const tmpDir = `${cfg.tmpfs}/${uuid.v4()}`
-  const tmpFile = `${tmpDir}/${req.files.fmu.name}`
+  const tmpFile = `${tmpDir}/${req.files.fmu.name}` // <- field name `fmu` only assumed!
   await fs.ensureDir(tmpDir)
-  await fs.writeFile(tmpFile, req.files.fmu.data)
+  await fs.writeFile(tmpFile, req.files.fmu.data) // <- field name `fmu` only assumed!
 
-  // Extract modelDescription.xml from archive
-  await extract(tmpFile, { dir: tmpDir })
-
-  // Have worker build internal representation of model
-  const modelDescription = await fs.readFile(`${tmpDir}/modelDescription.xml`)
-  const templateParameters = await fs.readFile(cfg.oas.templates.parameter)
-  const templateIO = await fs.readFile(cfg.oas.templates.io)
-
-  // FIXME buffer too small iff task representation > 2**15 bytes!
-  const stringEncoding = 'utf8'
-  const taskRepresentation = {
-    modelDescription: modelDescription.toString(stringEncoding),
-    templates: {
-      parameter: templateParameters.toString(stringEncoding),
-      io: templateIO.toString(stringEncoding)
-    },
-    records: _.split(req.query.records, ','),
-    iri_prefix: allModelsURL
-  }
-
-  const task = celeryClient.createTask('worker.tasks.get_modelinfo')
-  const job = task.applyAsync({
-    args: [taskRepresentation],
-    compression: celery.Compressor.Zlib,
-    kwargs: {}
-  })
-
-  const modelInfo = await job.get()
-
-  // Include model in internal list of models
-  const modelRepresentation = JSON.parse(modelInfo)
-  const modelId = modelRepresentation.guid
-  const modelURI = `${allModelsURL}/${modelId}`
-
-  // Store file persistently iff it doesn't exist already
-  const modelDirectory = `${cfg.fs}/models/${modelId}`
-  const modelFilePath = _.replace(tmpFile, tmpDir, modelDirectory)
-  const modelFilePathExists = await fs.pathExists(modelFilePath)
-
-  if (!modelFilePathExists) {
-    await fs.ensureDir(modelDirectory)
-    await fs.move(tmpFile, modelFilePath)
-  }
-
-  // Create RDF resource representations for model and its types, units and variables
-  const filePaths = await createModelRepresentationRDF(
-    modelRepresentation.graph,
-    modelDirectory,
-    modelURI
-  )
+  // Create internal representation by instantiating class `Model`
+  const model = await Model.init(req, tmpFile, cfg.fs, celeryClient)
 
   // Persist changes to internal list of models
-  modelRepresentation.parts = filePaths
-  modelRepresentation.parts.model['application/octet-stream'] = modelFilePath
-  await updateInternalListOfModels(modelId, modelRepresentation, 'set')
+  await updateInternalListOfModels(model.id, model, 'set')
 
   // Clean up temporary files/directories
   // -- obviously doesn't work if the API crashes before reaching this...
   await fs.remove(tmpDir)
 
   // Add schemata for parameters/inputs/outputs to OAS
-  await updateOpenAPISpecification(
-    modelRepresentation.modelName,
-    modelRepresentation.schemata.parameter,
-    'set'
-  )
-  await updateOpenAPISpecification(
-    modelRepresentation.guid,
-    modelRepresentation.schemata.input,
-    'set'
-  )
+  await updateOpenAPISpecification(model.name, model.schemata.parameter, 'set')
+  await updateOpenAPISpecification(model.id, model.schemata.input, 'set')
 
   // Restart backend
   c.api = initializeBackend(cfg.oas.filePathDynamic) // hope this works... it does!
@@ -520,9 +318,9 @@ async function addModel (c, req, res) {
     'application/trig': function () {
       res
         .status(201)
-        .location(modelURI)
+        .location(model.iri)
         .render('responses/add_model.trig.jinja', {
-          model: modelURI,
+          model: model.iri,
           sms_url: knownPrefixes.sms
         })
     },
@@ -530,48 +328,36 @@ async function addModel (c, req, res) {
     'application/json': function () {
       res
         .status(201)
-        .location(modelURI)
+        .location(model.iri)
         .json()
     }
   })
 }
 
 async function getModel (c, req, res) {
+  const origin = `${req.protocol}://${req.headers.host}`
   const modelId = _.nth(_.split(req.path, '/'), 2)
   const listOfModels = await updateInternalListOfModels(null, null, 'read')
-
-  const modelRepresentation = listOfModels[modelId]
-  const fmuFilePath = modelRepresentation.parts.model['application/octet-stream']
-  const modelRepresentationJson = _.pick(modelRepresentation, [
-    'modelName',
-    'description',
-    'fmiVersion',
-    'generationTool',
-    'generationDateAndTime'
-  ])
-  const modelRepresentationTriG = await fs.readFile(
-    modelRepresentation.parts.model['application/trig'],
-    { encoding: 'utf-8' }
-  )
-  const modelRepresentationJsonLd = await fs.readJSON(
-    modelRepresentation.parts.model['application/ld+json'],
-    { encoding: 'utf-8' }
-  )
+  const model = await Model.fromJSON(origin, listOfModels[modelId])
 
   res.format({
-    'application/trig': function () {
-      res.status(200).send(modelRepresentationTriG)
+    'application/trig': async function () {
+      const representation = await model.asRDF('application/trig')
+      res.status(200).send(representation)
     },
 
-    'application/ld+json': function () {
-      res.status(200).json(modelRepresentationJsonLd)
+    'application/ld+json': async function () {
+      const representation = await model.asRDF('application/ld+json')
+      res.status(200).json(representation)
     },
 
-    'application/json': function () {
-      res.status(200).json(modelRepresentationJson)
+    'application/json': async function () {
+      const representation = await model.asJSON()
+      res.status(200).json(representation)
     },
 
     'application/octet-stream': async function () {
+      const fmuFilePath = model.model['application/octet-stream']
       const fileContent = await fs.readFile(fmuFilePath)
       res.status(200).send(fileContent)
     },
@@ -583,18 +369,18 @@ async function getModel (c, req, res) {
 async function getModelTypes (req, res) {
   const modelId = _.nth(_.split(req.path, '/'), 2)
   const listOfModels = await updateInternalListOfModels(null, null, 'read')
-  const modelTypes = listOfModels[modelId].parts.types
-  const modelTypesTriG = await fs.readFile(modelTypes['application/trig'], {
-    encoding: 'utf-8'
-  })
-  const modelTypesJsonLd = await fs.readJSON(modelTypes['application/ld+json'])
+  const modelTypes = listOfModels[modelId].types
 
   res.format({
-    'application/trig': function () {
-      res.status(200).send(modelTypesTriG)
+    'application/trig': async function () {
+      const representation = await fs.readFile(modelTypes['application/trig'], {
+        encoding: 'utf-8'
+      })
+      res.status(200).send(representation)
     },
-    'application/ld+json': function () {
-      res.status(200).json(modelTypesJsonLd)
+    'application/ld+json': async function () {
+      const representation = await fs.readJSON(modelTypes['application/ld+json'])
+      res.status(200).json(representation)
     }
   })
 }
@@ -602,18 +388,18 @@ async function getModelTypes (req, res) {
 async function getModelUnits (req, res) {
   const modelId = _.nth(_.split(req.path, '/'), 2)
   const listOfModels = await updateInternalListOfModels(null, null, 'read')
-  const modelUnits = listOfModels[modelId].parts.units
-  const modelUnitsTriG = await fs.readFile(modelUnits['application/trig'], {
-    encoding: 'utf-8'
-  })
-  const modelUnitsJsonLd = await fs.readJSON(modelUnits['application/ld+json'])
+  const modelUnits = listOfModels[modelId].units
 
   res.format({
-    'application/trig': function () {
-      res.status(200).send(modelUnitsTriG)
+    'application/trig': async function () {
+      const representation = await fs.readFile(modelUnits['application/trig'], {
+        encoding: 'utf-8'
+      })
+      res.status(200).send(representation)
     },
-    'application/ld+json': function () {
-      res.status(200).json(modelUnitsJsonLd)
+    'application/ld+json': async function () {
+      const representation = await fs.readJSON(modelUnits['application/ld+json'])
+      res.status(200).json(representation)
     }
   })
 }
@@ -621,18 +407,18 @@ async function getModelUnits (req, res) {
 async function getModelVariables (req, res) {
   const modelId = _.nth(_.split(req.path, '/'), 2)
   const listOfModels = await updateInternalListOfModels(null, null, 'read')
-  const modelVariables = listOfModels[modelId].parts.variables
-  const modelVariablesTriG = await fs.readFile(modelVariables['application/trig'], {
-    encoding: 'utf-8'
-  })
-  const modelVariablesJsonLd = await fs.readJSON(modelVariables['application/ld+json'])
+  const modelVariables = listOfModels[modelId].variables
 
   res.format({
-    'application/trig': function () {
-      res.status(200).send(modelVariablesTriG)
+    'application/trig': async function () {
+      const representation = await fs.readFile(modelVariables['application/trig'], {
+        encoding: 'utf-8'
+      })
+      res.status(200).send(representation)
     },
-    'application/ld+json': function () {
-      res.status(200).json(modelVariablesJsonLd)
+    'application/ld+json': async function () {
+      const representation = await fs.readJSON(modelVariables['application/ld+json'])
+      res.status(200).json(representation)
     }
   })
 }
@@ -641,9 +427,9 @@ async function deleteModel (c, req, res) {
   const modelId = _.nth(_.split(req.path, '/'), 2)
   const listOfModels = await updateInternalListOfModels(null, null, 'read')
 
-  const fmuFilePath = listOfModels[modelId].parts.model['application/octet-stream']
+  const fmuFilePath = listOfModels[modelId].model['application/octet-stream']
   const modelDirectory = path.dirname(fmuFilePath)
-  const modelName = listOfModels[modelId].modelName
+  const modelName = listOfModels[modelId].name
 
   // Update OAS and re-initialize backend
   await updateOpenAPISpecification(modelName, null, 'delete')
