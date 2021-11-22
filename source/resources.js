@@ -64,9 +64,10 @@ class Model extends Resource {
     super()
 
     this.id = modelView.guid
-    this.name = modelView.name
     this.iri = `${origin}${Model.iriPathAllModels}/${this.id}`
+    this.origin = origin
 
+    this.name = modelView.modelName
     this.graph = modelView.graph
     this.json = _.pick(modelView, [
       'modelName',
@@ -122,12 +123,7 @@ class Model extends Resource {
         namedNode(modelURI),
         namedNode(`#context`)
       ),
-      quad(
-        namedNode(`#context`),
-        ns.api.home,
-        namedNode(_.join(_.slice(_.split(modelURI, '/'), 0, 3), '/')),
-        namedNode(`#context`)
-      ),
+      quad(namedNode(`#context`), ns.api.home, namedNode('/'), namedNode(`#context`)),
       quad(
         namedNode('#context'),
         ns.api.allInstances,
@@ -203,6 +199,7 @@ class Model extends Resource {
     return filePaths
   }
 
+  // https://dev.to/somedood/the-proper-way-to-write-async-constructors-in-javascript-1o8c
   static async init (request, tmpFile, targetDir, celeryClient) {
     const origin = `${request.protocol}://${request.headers.host}`
 
