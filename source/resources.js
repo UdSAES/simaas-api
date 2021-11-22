@@ -17,8 +17,10 @@ const storeStream = require('rdf-store-stream').storeStream
 const JsonLdParser = require('jsonld-streaming-parser').JsonLdParser
 const JsonLdSerializer = require('jsonld-streaming-serializer').JsonLdSerializer
 const { namedNode, literal, quad } = N3.DataFactory
+const uuid = require('uuid')
+const nunjucks = require('nunjucks')
 
-// Helper classes
+// Helper classes/-functions
 const knownPrefixes = {
   rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
   xsd: 'http://www.w3.org/2001/XMLSchema#',
@@ -287,5 +289,83 @@ class Model extends Resource {
   }
 }
 
+class ModelInstance extends Resource {
+  constructor (modelIRI, instanceView) {
+    super()
+
+    this.id = uuid.v4()
+    this.iri = `${modelIRI}/instances/${this.id}`
+    this.origin = new URL(modelIRI).origin
+
+    this.json = instanceView.json
+    this.data = instanceView.store
+    this.metadata = null
+    this.context = null
+    this.controls = null
+  }
+
+  static async init (modelIRI, content, mimetype) {
+    const instanceView = {}
+
+    if (mimetype === 'application/json') {
+      instanceView.json = {
+        model: {
+          href: modelIRI,
+          id: _.last(_.split(modelIRI, '/'))
+        },
+        parameterSet: content.parameters
+      }
+
+      instanceView.store = null // TODO should theoretically also be populated!
+    } else {
+      // Parse request body
+      let inputStream = null
+      let streamParser = null
+
+      if (mimetype === 'application/ld+json') {
+        inputStream = Readable.from(JSON.stringify(content))
+        streamParser = new JsonLdParser()
+      } else {
+        // Hope that we deal with a serialization that N3 can handle...
+        inputStream = Readable.from(content.toString())
+        streamParser = new N3.StreamParser({ format: mimetype })
+      }
+
+      inputStream.pipe(streamParser)
+      const store = await storeStream(streamParser)
+
+      instanceView.store = store
+      instanceView.json = {} // TODO should be populated from the store eventually
+    }
+
+    return new ModelInstance(modelIRI, instanceView)
+  }
+
+  async asJSON () {
+    return {
+      modelId: this.json.model.id,
+      modelHref: this.json.model.href,
+      parameters: this.json.parameterSet
+    }
+  }
+
+  async asRDF (mimetype) {
+    if (mimetype === 'application/trig') {
+      const representation = nunjucks.render('resources/model_instance.trig.jinja', {
+        fmi_url: knownPrefixes.fmi,
+        sms_url: knownPrefixes.sms,
+        api_url: `${this.origin}/vocabulary#`,
+        base_url: this.iri,
+        base_separator: '/'
+      })
+
+      return representation
+    } else {
+      throw new Error(`Mimetype '${mimetype}' not yet implemented!`)
+    }
+  }
+}
+
 exports.knownPrefixes = knownPrefixes
 exports.Model = Model
+exports.ModelInstance = ModelInstance

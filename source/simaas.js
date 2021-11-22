@@ -13,15 +13,10 @@ const NodeCache = require('node-cache')
 const { promiseStatus } = require('promise-status-async')
 const { OpenAPIBackend } = require('openapi-backend')
 const $RefParser = require('@apidevtools/json-schema-ref-parser')
-const N3 = require('n3')
-const { Readable } = require('stream')
-const storeStream = require('rdf-store-stream').storeStream
-const JsonLdParser = require('jsonld-streaming-parser').JsonLdParser
-const JsonLdSerializer = require('jsonld-streaming-serializer').JsonLdSerializer
 
 const log = require('./logger.js')
 const responseUtils = require('./response_utils.js')
-const { knownPrefixes, Model } = require('./resources.js')
+const { knownPrefixes, Model, ModelInstance } = require('./resources.js')
 
 // Use global objects as datastore
 const cfg = {
@@ -91,16 +86,6 @@ async function updatePartOfJsonFile (file, path, key, value, action) {
   return fileContent
 }
 
-// https://2ality.com/2019/11/nodejs-streams-async-iteration.html
-// #collecting-the-contents-of-a-readable-stream-in-a-string
-async function readableToString (readable) {
-  let result = ''
-  for await (const chunk of readable) {
-    result += chunk
-  }
-  return result
-}
-
 // Use .json-file on disk as persistent storage for model representations
 async function updateInternalListOfModels (key, value, action) {
   const modelRepresentationsFilePath = `${cfg.fs}/modelRepresentations.json`
@@ -161,31 +146,6 @@ const celeryClient = new celery.Client({
 })
 
 // Implement functionality
-async function instanceRepresentationFromRDF (content, mimetype) {
-  let inputStream = null
-  let streamParser = null
-  const streamWriter = new JsonLdSerializer({ space: '  ', context: knownPrefixes })
-
-  if (mimetype === 'application/ld+json') {
-    inputStream = Readable.from(JSON.stringify(content))
-    streamParser = new JsonLdParser()
-  } else {
-    inputStream = Readable.from(content.toString())
-    streamParser = new N3.StreamParser({ format: mimetype })
-  }
-
-  inputStream.pipe(streamParser)
-  const store = await storeStream(streamParser)
-
-  store.match(null, null, null).pipe(streamWriter)
-  let instanceRepresentationJSONLD = await readableToString(streamWriter)
-
-  // Ensure that a properly formatted JSON object is returned
-  instanceRepresentationJSONLD = JSON.parse(instanceRepresentationJSONLD)
-
-  return instanceRepresentationJSONLD
-}
-
 async function simulationRepresentationFromRDF (content, mimetype) {
   const simulationRepresentation = await fs.readJSON(
     'test/data/6157f34f-f629-484b-b873-f31be22269e1/simulation.json'
@@ -471,78 +431,45 @@ async function getModelInstanceCollection (req, res) {
 }
 
 async function createModelInstance (c, req, res) {
-  const host = _.get(req, ['headers', 'host'])
-  const protocol = _.get(req, ['protocol'])
-  const origin = protocol + '://' + host
-
   const requestBody = req.body
   const mimetype = _.get(req, ['headers', 'content-type'])
 
+  const listOfModels = await updateInternalListOfModels(null, null, 'read')
   const modelId = _.nth(_.split(req.path, '/'), 2)
-  const modelInstanceId = uuid.v4()
-  const modelURL = `${origin}/models/${modelId}`
+  const modelIRI = listOfModels[modelId].iri
 
   // Parse request body
-  let instanceRepresentation = {}
-  switch (mimetype) {
-    case 'application/trig':
-    case 'application/ld+json':
-      instanceRepresentation = await instanceRepresentationFromRDF(
-        requestBody,
-        mimetype
-      )
-      break
-    default:
-      instanceRepresentation = {
-        model: {
-          href: modelURL,
-          id: modelId
-        },
-        parameterSet: requestBody.parameters
-      }
-  }
+  const instance = await ModelInstance.init(modelIRI, requestBody, mimetype)
 
   // Save internal representation of new model instance to cache
-  modelInstanceCache.set(modelInstanceId, instanceRepresentation)
-  knownModelInstances.push(modelInstanceId)
+  modelInstanceCache.set(instance.id, instance)
+  knownModelInstances.push(instance.id)
 
   // Immediately return `201 Created` with corresponding `Location`-header
-  const instanceURL = `${origin}/models/${modelId}/instances/${modelInstanceId}`
   res.format({
     'application/trig': function () {
       res
         .status(201)
-        .location(instanceURL)
+        .location(instance.iri)
         .send(
           `@prefix sms: <${knownPrefixes.sms}> .
-         <${instanceURL}> a sms:ModelInstance ;
-             sms:instanceOf <${modelURL}> .`
+         <${instance.iri}> a sms:ModelInstance ;
+             sms:instanceOf <${modelIRI}> .`
         )
     },
 
     'application/json': function () {
       res
         .status(201)
-        .location(instanceURL)
+        .location(instance.iri)
         .json()
     }
   })
 }
 
 async function getModelInstance (c, req, res) {
-  const host = _.get(req, ['headers', 'host'])
-  const protocol = _.get(req, ['protocol'])
-  const origin = protocol + '://' + host
-  const thisURL = `${origin}${req.path}`
-
   const modelInstanceId = _.last(_.split(req.url, '/'))
   const modelInstance = modelInstanceCache.get(modelInstanceId)
-
-  const instanceRepresentationJSON = {
-    modelId: modelInstance.model.id,
-    modelHref: modelInstance.model.href,
-    parameters: modelInstance.parameterSet
-  }
 
   if (modelInstance === undefined) {
     if (_.includes(knownModelInstances, modelInstanceId)) {
@@ -552,17 +479,17 @@ async function getModelInstance (c, req, res) {
     }
   } else {
     res.format({
-      'application/trig': function () {
-        res.status(200).render('resources/model_instance.trig.jinja', {
-          fmi_url: knownPrefixes.fmi,
-          sms_url: knownPrefixes.sms,
-          api_url: `${origin}/vocabulary#`,
-          base_url: thisURL,
-          base_separator: '/'
-        })
+      'application/trig': async function () {
+        const representation = await modelInstance.asRDF('application/trig')
+        res.status(200).send(representation)
       },
-      'application/json': function () {
-        res.status(200).json(instanceRepresentationJSON)
+      'application/ld+json': async function () {
+        const representation = await modelInstance.asRDF('application/ld+json')
+        res.status(200).json(representation)
+      },
+      'application/json': async function () {
+        const representation = await modelInstance.asJSON()
+        res.status(200).json(representation)
       }
     })
     req.log.info(
