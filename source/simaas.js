@@ -16,7 +16,7 @@ const $RefParser = require('@apidevtools/json-schema-ref-parser')
 
 const log = require('./logger.js')
 const responseUtils = require('./response_utils.js')
-const { knownPrefixes, Model, ModelInstance } = require('./resources.js')
+const { knownPrefixes, Model, ModelInstance, Simulation } = require('./resources.js')
 
 // Use global objects as datastore
 const cfg = {
@@ -144,15 +144,6 @@ const celeryClient = new celery.Client({
   backend,
   brokers
 })
-
-// Implement functionality
-async function simulationRepresentationFromRDF (content, mimetype) {
-  const simulationRepresentation = await fs.readJSON(
-    'test/data/6157f34f-f629-484b-b873-f31be22269e1/simulation.json'
-  )
-
-  return simulationRepresentation
-}
 
 // Define handlers
 function initializeBackend (oasFilePath) {
@@ -525,36 +516,17 @@ async function getExperimentCollection (req, res) {
 }
 
 async function simulateModelInstance (c, req, res) {
-  const host = _.get(req, ['headers', 'host'])
-  const protocol = _.get(req, ['protocol'])
-  const origin = protocol + '://' + host
-  const thisURL = `${origin}${req.path}`
-
   const requestBody = req.body
   const mimetype = _.get(req, ['headers', 'content-type'])
 
   // Parse request body to internal representation
-  let simulation
-  switch (mimetype) {
-    case 'application/ld+json':
-    case 'application/trig':
-      simulation = await simulationRepresentationFromRDF(requestBody, mimetype)
-      break
-    default:
-      simulation = requestBody
-  }
-
-  // Amend request body with additional required information to build task signature
   const modelInstanceId = _.nth(_.split(req.path, '/'), 4)
   const modelInstance = modelInstanceCache.get(modelInstanceId)
-  const taskRepresentation = {
-    modelInstanceId: modelInstanceId,
-    simulationParameters: simulation.simulationParameters,
-    inputTimeseries: simulation.inputTimeseries,
-    parameterSet: modelInstance.parameterSet,
-    modelHref: modelInstance.model.href,
-    requestId: req.id
-  }
+  const simulation = await Simulation.init(modelInstance, requestBody, mimetype)
+
+  // Amend request body with additional required information to build task signature
+  const taskRepresentation = await simulation.asTask()
+  taskRepresentation.requestId = req.id
 
   // Enqueue request
   const task = celeryClient.createTask('worker.tasks.simulate')
@@ -564,55 +536,49 @@ async function simulateModelInstance (c, req, res) {
   })
 
   // Store experiment setup identified by UUID
-  const experimentId = job.taskId
+  const experimentId = simulation.id
   jobQueue[experimentId] = job
   knownExperiments.push(experimentId)
   experimentCache.set(experimentId, {
-    setup: requestBody, // XXX assumes JSON-body
+    simulation: simulation,
     simulationResult: null
   })
 
   // Immediately return `201 Created` with corresponding `Location`-header
-  const instanceURL = _.join(_.slice(_.split(thisURL, '/'), 0, -1), '/')
-  const experimentURL = `${thisURL}/${experimentId}`
   res.format({
     'application/trig': function () {
       res
         .status(201)
-        .location(experimentURL)
+        .location(simulation.iri)
         .send(
           `@prefix sms: <${knownPrefixes.sms}> .
-         <${experimentURL}> a sms:Simulation ;
-             sms:simulates <${instanceURL}> .`
+         <${simulation.iri}> a sms:Simulation ;
+             sms:simulates <${simulation.instance.iri}> .`
         )
     },
 
     'application/json': function () {
       res
         .status(201)
-        .location(experimentURL)
+        .location(simulation.iri)
         .json()
     }
   })
 }
 
 async function getExperimentStatus (c, req, res) {
-  const host = _.get(req, ['headers', 'host'])
-  const protocol = _.get(req, ['protocol'])
-  const origin = protocol + '://' + host
-  const thisURL = `${origin}${req.path}`
+  const origin = `${req.protocol}://${req.headers.host}`
 
   const experimentId = _.last(_.split(req.url, '/'))
-  const experimentRepresentationInternal = experimentCache.get(experimentId)
+  const simulation = experimentCache.get(experimentId).simulation
 
-  if (experimentRepresentationInternal === undefined) {
+  if (simulation === undefined) {
     if (_.has(jobQueue, experimentId)) {
       await responseUtils.respondWithGone(c, req, res)
     } else {
       await responseUtils.respondWithNotFound(c, req, res)
     }
   } else {
-    const setup = { ...experimentRepresentationInternal.setup }
     const job = jobQueue[experimentId]
     let jobStatus
     let simulationResult
@@ -636,29 +602,28 @@ async function getExperimentStatus (c, req, res) {
     }
     const status = statusMapping[jobStatus]
 
-    setup.status = status
+    simulation.json.status = status
 
     if (status === 'DONE') {
-      setup.linkToResult = `${origin}/${req.url}/result`
+      simulation.json.linkToResult = `${origin}/${req.url}/result`
       experimentCache.set(experimentId, {
-        setup: setup,
+        simulation: simulation,
         simulationResult: simulationResult
       })
     }
 
     res.format({
-      'application/trig': function () {
-        res.status(200).render('resources/simulation.trig.jinja', {
-          fmi_url: knownPrefixes.fmi,
-          sms_url: knownPrefixes.sms,
-          api_url: `${origin}/vocabulary#`,
-          base_url: thisURL,
-          base_separator: '/'
-        })
+      'application/trig': async function () {
+        const representation = await simulation.asRDF('application/trig')
+        res.status(200).send(representation)
       },
-
-      'application/json': function () {
-        res.status(200).json(setup)
+      'application/ld+json': async function () {
+        const representation = await simulation.asRDF('application/ld+json')
+        res.status(200).json(representation)
+      },
+      'application/json': async function () {
+        const representation = await simulation.asJSON()
+        res.status(200).json(representation)
       }
     })
     req.log.info(

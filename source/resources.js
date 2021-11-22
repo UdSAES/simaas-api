@@ -294,6 +294,7 @@ class ModelInstance extends Resource {
     this.id = uuid.v4()
     this.iri = `${model.iri}/instances/${this.id}`
     this.origin = model.origin
+    this.model = model
 
     this.json = instanceView.json
     this.data = instanceView.store
@@ -364,6 +365,64 @@ class ModelInstance extends Resource {
   }
 }
 
+class Simulation extends Resource {
+  constructor (instance, simulationView) {
+    super()
+
+    this.id = uuid.v4()
+    this.iri = `${instance.iri}/experiments/${this.id}`
+    this.origin = instance.origin
+    this.instance = instance
+
+    this.json = simulationView.json
+  }
+
+  static async init (instance, content, mimetype) {
+    const simulationView = {}
+
+    if (mimetype === 'application/json') {
+      simulationView.json = content
+    } else {
+      simulationView.json = await fs.readJSON(
+        'test/data/6157f34f-f629-484b-b873-f31be22269e1/simulation.json'
+      )
+    }
+
+    return new Simulation(instance, simulationView)
+  }
+
+  async asTask () {
+    return {
+      modelInstanceId: this.instance.id,
+      simulationParameters: this.json.simulationParameters,
+      inputTimeseries: this.json.inputTimeseries,
+      parameterSet: this.instance.json.parameterSet,
+      modelHref: this.instance.model.iri
+    }
+  }
+
+  async asJSON () {
+    return this.json
+  }
+
+  async asRDF (mimetype) {
+    if (mimetype === 'application/trig') {
+      const representation = nunjucks.render('resources/simulation.trig.jinja', {
+        fmi_url: knownPrefixes.fmi,
+        sms_url: knownPrefixes.sms,
+        api_url: `${this.origin}/vocabulary#`,
+        base_url: this.iri,
+        base_separator: '/'
+      })
+
+      return representation
+    } else {
+      throw new Error(`Mimetype '${mimetype}' not yet implemented!`)
+    }
+  }
+}
+
 exports.knownPrefixes = knownPrefixes
 exports.Model = Model
 exports.ModelInstance = ModelInstance
+exports.Simulation = Simulation
