@@ -258,7 +258,8 @@ class Model extends Resource {
   }
 
   static async fromJSON (origin, object) {
-    const modelView = _.pick(object, ['id', 'name', 'iri', 'graph', 'schemata'])
+    const modelView = _.pick(object, ['iri', 'origin',  'name',  'graph', 'schemata'])
+    modelView.guid = object.id
     const filePaths = _.pick(object, ['model', 'types', 'variables', 'units'])
 
     // Call actual synchronous `constructor` and return resulting object
@@ -287,12 +288,12 @@ class Model extends Resource {
 }
 
 class ModelInstance extends Resource {
-  constructor (modelIRI, instanceView) {
+  constructor (model, instanceView) {
     super()
 
     this.id = uuid.v4()
-    this.iri = `${modelIRI}/instances/${this.id}`
-    this.origin = new URL(modelIRI).origin
+    this.iri = `${model.iri}/instances/${this.id}`
+    this.origin = model.origin
 
     this.json = instanceView.json
     this.data = instanceView.store
@@ -301,14 +302,14 @@ class ModelInstance extends Resource {
     this.controls = null
   }
 
-  static async init (modelIRI, content, mimetype) {
+  static async init (model, content, mimetype) {
     const instanceView = {}
 
     if (mimetype === 'application/json') {
       instanceView.json = {
         model: {
-          href: modelIRI,
-          id: _.last(_.split(modelIRI, '/'))
+          href: model.iri,
+          id: model.id
         },
         parameterSet: content.parameters
       }
@@ -335,7 +336,7 @@ class ModelInstance extends Resource {
       instanceView.json = {} // TODO should be populated from the store eventually
     }
 
-    return new ModelInstance(modelIRI, instanceView)
+    return new ModelInstance(model, instanceView)
   }
 
   async asJSON () {

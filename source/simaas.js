@@ -431,15 +431,16 @@ async function getModelInstanceCollection (req, res) {
 }
 
 async function createModelInstance (c, req, res) {
+  const origin = `${req.protocol}://${req.headers.host}`
   const requestBody = req.body
   const mimetype = _.get(req, ['headers', 'content-type'])
 
   const listOfModels = await updateInternalListOfModels(null, null, 'read')
   const modelId = _.nth(_.split(req.path, '/'), 2)
-  const modelIRI = listOfModels[modelId].iri
+  const model = await Model.fromJSON(origin, listOfModels[modelId])
 
   // Parse request body
-  const instance = await ModelInstance.init(modelIRI, requestBody, mimetype)
+  const instance = await ModelInstance.init(model, requestBody, mimetype)
 
   // Save internal representation of new model instance to cache
   modelInstanceCache.set(instance.id, instance)
@@ -454,7 +455,7 @@ async function createModelInstance (c, req, res) {
         .send(
           `@prefix sms: <${knownPrefixes.sms}> .
          <${instance.iri}> a sms:ModelInstance ;
-             sms:instanceOf <${modelIRI}> .`
+             sms:instanceOf <${model.iri}> .`
         )
     },
 
