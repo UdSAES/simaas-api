@@ -16,7 +16,6 @@ const describe = require('mocha').describe
 const API_ORIGIN = process.env.API_ORIGIN
 
 function sleep (ms) {
-  console.log(`Sleeping for ${ms} ms...`)
   return new Promise((resolve) => setTimeout(resolve, ms || 1000))
 }
 
@@ -97,6 +96,8 @@ describe('Test API functionality wrt expected status codes', function () {
       let simulationStatus
       let simulationLocation
 
+      let simulationState
+
       let resultResponse
       let resultStatus
       let resultLocation
@@ -145,10 +146,42 @@ describe('Test API functionality wrt expected status codes', function () {
           -> Location: ${simulationLocation}
         `)
 
-        // Get simulation result
-        await sleep(1000) // crude workaround to avoid polling
+        // Get simulation status
+        const sleepForXms = 500
+        const maxIterations = 10
+        for (let i = 0; i < maxIterations; i++) {
+          simulationState = await axios({
+            url: simulationLocation,
+            method: 'GET',
+            headers: {
+              accept: k,
+              'content-type': k
+            }
+          })
 
-        resultLocation = `${simulationLocation}/result`
+          if (k === 'application/json') {
+            if (_.has(simulationState.data, 'linkToResult')) {
+              console.log(`\nQuerying simulation state...
+            -> Status: ${simulationState.status}
+            -> Location: ${simulationState.data.linkToResult}`)
+
+              resultLocation = simulationState.data.linkToResult
+              break
+            } else {
+              console.log(`\nQuerying simulation state...
+            -> Status: ${simulationState.status}
+            => Sleeping for ${sleepForXms} ms...`)
+              await sleep(sleepForXms)
+            }
+          } else {
+            console.warn(`Can't yet parse non-JSON response!
+          => Waiting for 1 s; assuming that the result exists afterwards...`)
+            await sleepForXms(1000)
+            resultLocation = `${simulationLocation}/result`
+          }
+        }
+
+        // Get simulation result
         resultResponse = await axios({
           url: resultLocation,
           method: 'GET',
@@ -169,6 +202,7 @@ describe('Test API functionality wrt expected status codes', function () {
       it('should return the expected status codes', function () {
         assert.equal(instantiationStatus, 201)
         assert.equal(simulationStatus, 201)
+        assert.equal(simulationState.status, 200)
         assert.equal(resultStatus, 200)
       })
     })
