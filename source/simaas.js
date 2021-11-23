@@ -16,7 +16,13 @@ const $RefParser = require('@apidevtools/json-schema-ref-parser')
 
 const log = require('./logger.js')
 const responseUtils = require('./response_utils.js')
-const { knownPrefixes, Model, ModelInstance, Simulation } = require('./resources.js')
+const {
+  knownPrefixes,
+  Model,
+  ModelInstance,
+  Simulation,
+  SimulationResult
+} = require('./resources.js')
 
 // Use global objects as datastore
 const cfg = {
@@ -582,10 +588,12 @@ async function getExperimentStatus (c, req, res) {
     const job = jobQueue[experimentId]
     let jobStatus
     let simulationResult
+    let simulationResultRaw
     const promise = job.result
     if ((await promiseStatus(promise)) === 'resolved') {
       jobStatus = 'SUCCESS'
-      simulationResult = await job.get()
+      simulationResultRaw = await job.get()
+      simulationResult = await SimulationResult.init(simulation, simulationResultRaw)
       delete jobQueue.experimentId
     } else if ((await promiseStatus(promise)) === 'rejected') {
       jobStatus = 'FAILURE'
@@ -634,57 +642,28 @@ async function getExperimentStatus (c, req, res) {
 }
 
 async function getExperimentResult (c, req, res) {
-  const host = _.get(req, ['headers', 'host'])
-  const protocol = _.get(req, ['protocol'])
-  const origin = protocol + '://' + host
-  const thisURL = `${origin}${req.path}`
-
   const experimentId = _.nth(_.split(req.url, '/'), -2)
-  const experimentRepresentationInternal = experimentCache.get(experimentId)
+  const simulationResult = experimentCache.get(experimentId).simulationResult
 
-  if (experimentRepresentationInternal === undefined) {
+  if (simulationResult === undefined) {
     if (_.has(jobQueue, experimentId)) {
       await responseUtils.respondWithGone(c, req, res)
     } else {
       await responseUtils.respondWithNotFound(c, req, res)
     }
   } else {
-    const modelInstanceId = _.get(experimentRepresentationInternal, [
-      'setup',
-      'modelInstanceId'
-    ])
-    const startTime = _.get(experimentRepresentationInternal, [
-      'setup',
-      'simulationParameters',
-      'startTime'
-    ])
-    const stopTime = _.get(experimentRepresentationInternal, [
-      'setup',
-      'simulationParameters',
-      'stopTime'
-    ])
-
-    // Transform body to specified format
-    const resultBody = {
-      description: `The results of simulating model instance ${origin}/model-instances/${modelInstanceId} from ${startTime} to ${stopTime} as specified in ${origin}/experiments/${experimentId}`,
-      data: experimentRepresentationInternal.simulationResult
-    }
-
     res.format({
-      'application/trig': function () {
-        res.status(200).render('resources/simulation_result.trig.jinja', {
-          api_url: `${origin}/vocabulary#`,
-          base_url: thisURL,
-          sms_url: knownPrefixes.sms,
-          simulation_url: _.replace(thisURL, '/result', ''),
-          observations: '/behaviour/quantity/observations',
-          feature_of_interest: '/behaviour',
-          property: '/behaviour/quantity'
-        })
+      'application/trig': async function () {
+        const representation = await simulationResult.asRDF('application/trig')
+        res.status(200).send(representation)
       },
-
-      'application/json': function () {
-        res.status(200).json(resultBody)
+      'application/ld+json': async function () {
+        const representation = await simulationResult.asRDF('application/ld+json')
+        res.status(200).json(representation)
+      },
+      'application/json': async function () {
+        const representation = await simulationResult.asJSON()
+        res.status(200).json(representation)
       }
     })
     req.log.info(

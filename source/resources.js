@@ -422,7 +422,61 @@ class Simulation extends Resource {
   }
 }
 
+class SimulationResult extends Resource {
+  constructor (simulation, resultView) {
+    super()
+
+    this.iri = `${simulation.iri}/result`
+    this.origin = simulation.origin
+
+    this.simulation = simulation
+
+    this.json = resultView
+  }
+
+  static async init (simulation, result) {
+    const resultView = result
+
+    return new SimulationResult(simulation, resultView)
+  }
+
+  async asJSON () {
+    const simulationAsJSON = await this.simulation.asJSON()
+    const startTime = _.get(simulationAsJSON, ['simulationParameters', 'startTime'])
+    const stopTime = _.get(simulationAsJSON, ['simulationParameters', 'stopTime'])
+
+    // Transform body to specified format
+    const resultBody = {
+      description: `The results of simulating model instance 
+      ${this.simulation.instance.iri} from ${startTime} to ${stopTime} as specified in 
+      ${this.simulation.iri}`,
+      data: this.json
+    }
+
+    return resultBody
+  }
+
+  async asRDF (mimetype) {
+    if (mimetype === 'application/trig') {
+      const representation = nunjucks.render('resources/simulation_result.trig.jinja', {
+        api_url: `${this.origin}/vocabulary#`,
+        base_url: this.iri,
+        sms_url: knownPrefixes.sms,
+        simulation_url: this.simulation.iri,
+        observations: '/behaviour/quantity/observations',
+        feature_of_interest: '/behaviour',
+        property: '/behaviour/quantity'
+      })
+
+      return representation
+    } else {
+      throw new Error(`Mimetype '${mimetype}' not yet implemented!`)
+    }
+  }
+}
+
 exports.knownPrefixes = knownPrefixes
 exports.Model = Model
 exports.ModelInstance = ModelInstance
 exports.Simulation = Simulation
+exports.SimulationResult = SimulationResult
