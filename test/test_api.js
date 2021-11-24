@@ -24,9 +24,20 @@ describe('Verify non-functional behaviour of API-instance', function () {
 
   const tests = [
     {
+      functionality: 'getRESTdesc',
+      method: 'OPTIONS',
+      path: '',
+      accept: '*/*',
+      body: null,
+      expected: {
+        statusCode: 200,
+        'content-type': 'text/n3'
+      }
+    },
+    {
       functionality: 'getRoot',
       method: 'GET',
-      path: '',
+      path: '/',
       accept: 'application/trig',
       body: null,
       expected: {
