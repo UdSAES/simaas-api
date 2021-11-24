@@ -100,17 +100,9 @@ describe('Test API functionality wrt expected status codes', function () {
       const modelId = '6157f34f-f629-484b-b873-f31be22269e1'
 
       let instantiationResponse
-      let instantiationStatus
-      let instanceLocation
-
       let simulationResponse
-      let simulationStatus
-      let simulationLocation
-
       let simulationState
-
       let resultResponse
-      let resultStatus
       let resultLocation
 
       before(async function () {
@@ -128,17 +120,14 @@ describe('Test API functionality wrt expected status codes', function () {
           })
         })
 
-        instantiationStatus = instantiationResponse.status
-        instanceLocation = instantiationResponse.headers.location
-
         console.log(`\nAdding model instance...
-          -> Status: ${instantiationStatus}
-          -> Location: ${instanceLocation}
+          -> Status: ${instantiationResponse.status}
+          -> Location: ${instantiationResponse.headers.location}
         `)
 
         // Trigger simulation
         simulationResponse = await axios({
-          url: `${instanceLocation}/experiments`,
+          url: `${instantiationResponse.headers.location}/experiments`,
           method: 'POST',
           headers: {
             accept: k,
@@ -149,12 +138,9 @@ describe('Test API functionality wrt expected status codes', function () {
           })
         })
 
-        simulationStatus = simulationResponse.status
-        simulationLocation = simulationResponse.headers.location
-
         console.log(`\nTriggering simulation...
-          -> Status: ${simulationStatus}
-          -> Location: ${simulationLocation}
+          -> Status: ${simulationResponse.status}
+          -> Location: ${simulationResponse.headers.location}
         `)
 
         // Get simulation status
@@ -162,7 +148,7 @@ describe('Test API functionality wrt expected status codes', function () {
         const maxIterations = 10
         for (let i = 0; i < maxIterations; i++) {
           simulationState = await axios({
-            url: simulationLocation,
+            url: simulationResponse.headers.location,
             method: 'GET',
             headers: {
               accept: k,
@@ -187,8 +173,9 @@ describe('Test API functionality wrt expected status codes', function () {
           } else {
             console.warn(`Can't yet parse non-JSON response!
           => Waiting for 1 s; assuming that the result exists afterwards...`)
-            await sleepForXms(1000)
+            await sleep(1000)
             resultLocation = `${simulationLocation}/result`
+            break
           }
         }
 
@@ -202,19 +189,17 @@ describe('Test API functionality wrt expected status codes', function () {
           }
         })
 
-        resultStatus = resultResponse.status
-
         console.log(`\nRetrieving simulation result...
-          -> Status: ${resultStatus},
+          -> Status: ${resultResponse.status},
           -> URL: ${resultLocation}
         `)
       })
 
       it('should return the expected status codes', function () {
-        assert.equal(instantiationStatus, 201)
-        assert.equal(simulationStatus, 201)
+        assert.equal(instantiationResponse.status, 201)
+        assert.equal(simulationResponse.status, 201)
         assert.equal(simulationState.status, 200)
-        assert.equal(resultStatus, 200)
+        assert.equal(resultResponse.status, 200)
       })
     })
   })
