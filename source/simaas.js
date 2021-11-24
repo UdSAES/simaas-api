@@ -613,7 +613,7 @@ async function getExperimentStatus (c, req, res) {
     simulation.json.status = status
 
     if (status === 'DONE') {
-      simulation.json.linkToResult = `${origin}/${req.url}/result`
+      simulation.json.linkToResult = `${origin}${req.url}/result`
       experimentCache.set(experimentId, {
         simulation: simulation,
         simulationResult: simulationResult

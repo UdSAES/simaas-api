@@ -274,8 +274,9 @@ class Model extends Resource {
   }
 
   static async fromJSON (origin, object) {
-    const modelView = _.pick(object, ['iri', 'origin',  'name',  'graph', 'schemata'])
+    const modelView = _.pick(object, ['iri', 'origin', 'graph', 'schemata'])
     modelView.guid = object.id
+    modelView.modelName = object.name
     const filePaths = _.pick(object, ['model', 'types', 'variables', 'units'])
 
     // Call actual synchronous `constructor` and return resulting object
