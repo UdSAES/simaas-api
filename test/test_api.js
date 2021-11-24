@@ -90,6 +90,10 @@ describe('Test API functionality wrt expected status codes', function () {
     'application/json': {
       ext: 'json',
       reader: fs.readJSONSync
+    },
+    'application/trig': {
+      ext: 'trig',
+      reader: fs.readFileSync
     }
   }
 
@@ -174,7 +178,7 @@ describe('Test API functionality wrt expected status codes', function () {
             console.warn(`Can't yet parse non-JSON response!
           => Waiting for 1 s; assuming that the result exists afterwards...`)
             await sleep(1000)
-            resultLocation = `${simulationLocation}/result`
+            resultLocation = `${simulationResponse.headers.location}/result`
             break
           }
         }
