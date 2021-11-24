@@ -400,10 +400,44 @@ class ModelInstance extends Resource {
   }
 
   async asJSON () {
+    let parametersAsJSON = {}
+
+    if (this.graph === undefined) {
+      parametersAsJSON = this.json
+    } else {
+      const unitMap = {
+        m: `${knownPrefixes.unit}M`,
+        m2: `${knownPrefixes.unit}M2`,
+        deg: `${knownPrefixes.unit}DEG`
+      }
+
+      _.forEach(
+        this.graph.getSubjects(ns.sms.isParameterValueFor, null, defaultGraph()),
+        (subject) => {
+          const obj = { value: null, unit: '1' }
+          _.forEach(
+            this.graph.getQuads(subject.value, null, null, defaultGraph()),
+            (quad) => {
+              if (quad.predicate.value === `${knownPrefixes.qudt}numericValue`) {
+                obj.value = parseFloat(quad.object.value) // TODO account for datatype?
+              }
+              if (quad.predicate.value === `${knownPrefixes.qudt}unit`) {
+                obj.unit = _.findKey(unitMap, function (o) {
+                  return o === quad.object.value
+                })
+              }
+              const key = _.last(_.split(quad.subject.value, '#'))
+              parametersAsJSON[key] = obj
+            }
+          )
+        }
+      )
+    }
+
     return {
-      modelId: this.json.model.id,
-      modelHref: this.json.model.href,
-      parameters: this.json.parameterSet
+      modelId: this.model.id,
+      modelHref: this.model.iri,
+      parameters: {modelName: this.model.name, ...parametersAsJSON}
     }
   }
 
@@ -468,7 +502,7 @@ class Simulation extends Resource {
       modelInstanceId: this.instance.id,
       simulationParameters: this.json.simulationParameters,
       inputTimeseries: this.json.inputTimeseries,
-      parameterSet: this.instance.json.parameterSet,
+      parameterSet: await this.instance.asJSON().parameters,
       modelHref: this.instance.model.iri
     }
   }
