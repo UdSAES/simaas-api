@@ -1,0 +1,127 @@
+@prefix http: <http://www.w3.org/2011/http#> .
+@prefix fmi: <https://ontologies.msaas.me/fmi-ontology.ttl#> .
+@prefix sms: <https://ontologies.msaas.me/sms-ontology.ttl#> .
+@prefix api: <http://localhost:4000/vocabulary#> .
+
+# Add a model to the service instance ##################################################
+
+{
+    ?model a fmi:FMU .
+}
+=>
+{
+    _:request http:methodName "POST" ;
+              http:requestURI "/models" ;
+              http:body ?model ;
+              http:resp [ http:body ?model ] ;
+              http:resp [ http:headers [
+                  http:fieldName "Location" ;
+                  http:fieldValue ?model
+              ]] .
+    
+    ?model a sms:Model .
+} .
+
+# Get a model representation ###########################################################
+
+{
+    ?model a sms:Model .
+}
+=>
+{
+    _:request http:methodName "GET" ;
+              http:requestURI ?model ;
+              http:resp [ http:body ?model ] .
+    
+    ?model api:allInstances _:allInstances .
+    ?model sms:hasParameterSet _:parameterSet .
+} .
+
+# Instantiate a model ##################################################################
+
+{
+    ?model a sms:Model ;
+           api:allInstances ?allInstances ;
+           sms:hasParameterSet ?parameterSet .
+}
+=>
+{
+    _:request http:methodName "POST" ;
+              http:requestURI ?allInstances ;
+              http:body ?parameterSet ;
+              http:resp [ http:body ?modelInstance ] ;
+              http:resp [ http:headers [
+                  http:fieldName "Location" ;
+                  http:fieldValue ?modelInstance
+              ]] .
+    
+    ?modelInstance a sms:ModelInstance ;
+                   sms:instanceOf ?model .
+} .
+
+# Get an instance representation #######################################################
+
+{
+    ?modelInstance a sms:ModelInstance .
+}
+=>
+{
+    _:request http:methodName "GET" ;
+              http:requestURI ?modelInstance ;
+              http:resp [ http:body ?modelInstance ] .
+    
+    ?modelInstance api:allSimulations _:allSimulations .
+    ?modelInstance sms:hasSimulationParameters _:simulationParameters .
+} .
+
+# Trigger the simulation of a model instance ###########################################
+
+{
+    ?modelInstance a sms:ModelInstance ;
+                   api:allSimulations ?allSimulations ;
+                   sms:hasSimulationParameters ?simulationParameters .
+}
+=>
+{
+    _:request http:methodName "POST" ;
+              http:requestURI ?allSimulations ;
+              http:body ?simulationParameters ;
+              http:resp [ http:body ?simulation ] ;
+              http:resp [ http:headers [
+                  http:fieldName "Location" ;
+                  http:fieldValue ?simulation
+              ]] .
+    
+    ?simulation a sms:Simulation ;
+                   sms:simulates ?modelInstance .
+} .
+
+# Get a representation of a simulation #################################################
+
+{
+    ?simulation a sms:Simulation .
+}
+=>
+{
+    _:request http:methodName "GET" ;
+              http:requestURI ?simulation ;
+              http:resp [ http:body ?simulation ] .
+    
+    ?simulation api:theSimulationResult _:theSimulationResult .
+} .
+
+# Retrieve the result of a simulation ##################################################
+
+{
+    ?simulation a sms:Simulation ;
+                api:theSimulationResult ?simulationResult .
+}
+=>
+{
+    _:request http:methodName "GET" ;
+              http:requestURI ?simulationResult ;
+              http:resp [ http:body ?simulationResult ] .
+    
+    ?simulationResult a sms:SimulationResult .
+    ?simulationResult sms:resultOf ?simulation .
+} .

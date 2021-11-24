@@ -692,6 +692,15 @@ async function serveOAS (c, req, res) {
   res.status(200).json(oasRepresentation)
 }
 
+async function serveRESTdesc (req, res) {
+  res.format({
+    'text/n3': async function () {
+      res.set('content-type', 'text/n3')
+      res.status(200).render('restdesc/*.n3')
+    }
+  })
+}
+
 // Export handlers
 exports.updateInternalListOfModels = updateInternalListOfModels
 exports.updateOpenAPISpecification = updateOpenAPISpecification
@@ -713,3 +722,4 @@ exports.simulateModelInstance = simulateModelInstance
 exports.getExperimentStatus = getExperimentStatus
 exports.getExperimentResult = getExperimentResult
 exports.serveOAS = serveOAS
+exports.serveRESTdesc = serveRESTdesc
