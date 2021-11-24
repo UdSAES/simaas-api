@@ -403,7 +403,7 @@ class ModelInstance extends Resource {
     let parametersAsJSON = {}
 
     if (this.graph === undefined) {
-      parametersAsJSON = this.json
+      parametersAsJSON = this.json.parameters
     } else {
       const unitMap = {
         m: `${knownPrefixes.unit}M`,
@@ -437,7 +437,8 @@ class ModelInstance extends Resource {
     return {
       modelId: this.model.id,
       modelHref: this.model.iri,
-      parameters: {modelName: this.model.name, ...parametersAsJSON}
+      modelName: this.model.name,
+      parameters: parametersAsJSON
     }
   }
 
@@ -498,11 +499,12 @@ class Simulation extends Resource {
   }
 
   async asTask () {
+    const instanceRepresentation = await this.instance.asJSON()
     return {
       modelInstanceId: this.instance.id,
       simulationParameters: this.json.simulationParameters,
       inputTimeseries: this.json.inputTimeseries,
-      parameterSet: await this.instance.asJSON().parameters,
+      parameterSet: instanceRepresentation.parameters,
       modelHref: this.instance.model.iri
     }
   }
