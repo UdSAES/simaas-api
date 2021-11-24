@@ -7,14 +7,50 @@
 @prefix unit: <http://qudt.org/vocab/unit/> .
 
 @prefix fmi: <https://ontologies.msaas.me/fmi-ontology.ttl#> .
-@prefix ex: <http://example.org/> .
+@prefix sms: <https://ontologies.msaas.me/sms-ontology.ttl#> .
 
+@prefix var: <http://localhost:4000/models/6157f34f-f629-484b-b873-f31be22269e1/variables#> .
 
-ex:record rdf:type ex:ParameterSet ;
-    ex:modelName "asdf" ;
-    ex:elevation [
-        rdf:type fmi:ParameterValue ;
-        qudt:numericValue 456.11 ;
-        qudt:unit unit:M
-    ]
-.
+<> sms:represents <https://abox.msaas.me/systems/swsls-th> .
+
+<#latitude> rdf:type qudt:QuantityValue ;
+    sms:isParameterValueFor var:latitude ;
+    qudt:numericValue 49.31659 ;
+    qudt:unit unit:DEG .
+
+<#longitude> rdf:type qudt:QuantityValue ;
+    sms:isParameterValueFor var:longitude ;
+    qudt:numericValue 6.749953 ;
+    qudt:unit unit:DEG .
+
+<#elevation> rdf:type qudt:QuantityValue ;
+    sms:isParameterValueFor var:elevation ;
+    qudt:numericValue 181 ;
+    qudt:unit unit:M .
+
+<#panelArea> rdf:type qudt:QuantityValue ;
+    sms:isParameterValueFor var:panelArea ;
+    qudt:numericValue 227.78496 ;
+    qudt:unit unit:M2 .
+
+<#plantEfficiency> rdf:type qudt:QuantityValue ;
+    sms:isParameterValueFor var:plantEfficiency ;
+    qudt:numericValue 0.17 .
+
+<#panelTilt> rdf:type qudt:QuantityValue ;
+    sms:isParameterValueFor var:panelTilt ;
+    qudt:numericValue 28 ;
+    qudt:unit unit:DEG .
+
+<#panelAzimuth> rdf:type qudt:QuantityValue ;
+    sms:isParameterValueFor var:panelAzimuth ;
+    qudt:numericValue 47 ;
+    qudt:unit unit:DEG .
+
+<#nsModule> rdf:type qudt:QuantityValue ;
+    sms:isParameterValueFor var:nsModule ;
+    qudt:numericValue 6 .
+
+<#npModule> rdf:type qudt:QuantityValue ;
+    sms:isParameterValueFor var:npModule ;
+    qudt:numericValue 26 .

@@ -16,21 +16,41 @@ const { pipeline } = require('stream/promises')
 const storeStream = require('rdf-store-stream').storeStream
 const JsonLdParser = require('jsonld-streaming-parser').JsonLdParser
 const JsonLdSerializer = require('jsonld-streaming-serializer').JsonLdSerializer
-const { namedNode, literal, quad } = N3.DataFactory
+const { namedNode, literal, quad, defaultGraph } = N3.DataFactory
 const uuid = require('uuid')
 const nunjucks = require('nunjucks')
+
+const log = require('./logger.js')
 
 // Helper classes/-functions
 const knownPrefixes = {
   rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+  rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
   xsd: 'http://www.w3.org/2001/XMLSchema#',
   dct: 'http://purl.org/dc/terms/',
   foaf: 'http://xmlns.com/foaf/spec/#',
   hydra: 'http://www.w3.org/ns/hydra/core#',
   http: 'http://www.w3.org/2011/http#',
+  sh: 'http://www.w3.org/ns/shacl#',
+  qudt: 'http://qudt.org/schema/qudt/',
+  unit: 'http://qudt.org/vocab/unit/',
   fmi: 'https://ontologies.msaas.me/fmi-ontology.ttl#',
   sms: 'https://ontologies.msaas.me/sms-ontology.ttl#',
   api: 'http://localhost:4000/vocabulary#' // TODO do not hardcode origin!
+}
+
+const ns = _.mapValues(knownPrefixes, function (o) {
+  return namespace(o)
+})
+
+// https://2ality.com/2019/11/nodejs-streams-async-iteration.html
+// #collecting-the-contents-of-a-readable-stream-in-a-string
+async function readableToString (readable) {
+  let result = ''
+  for await (const chunk of readable) {
+    result += chunk
+  }
+  return result
 }
 
 // Class definitions
@@ -85,10 +105,6 @@ class Model extends Resource {
   }
 
   static async createRdfRepresentation (input, modelDirectory, modelURI) {
-    const ns = _.mapValues(knownPrefixes, function (o) {
-      return namespace(o)
-    })
-
     // Read quads to RDFJS-compatible internal representation; pipe to store
     const inputStream = Readable.from(JSON.stringify(input))
     const streamParser = new JsonLdParser()
@@ -291,31 +307,26 @@ class ModelInstance extends Resource {
   constructor (model, instanceView) {
     super()
 
-    this.id = uuid.v4()
-    this.iri = `${model.iri}/instances/${this.id}`
+    this.id = instanceView.id
+    this.iri = instanceView.iri
     this.origin = model.origin
     this.model = model
 
-    this.json = instanceView.json
-    this.data = instanceView.store
-    this.metadata = null
-    this.context = null
-    this.controls = null
+    this.graph = instanceView.graph // data, metadata, context, controls, shapes
+    this.json = instanceView.json // to be removed when graph is single source of truth
   }
 
   static async init (model, content, mimetype) {
-    const instanceView = {}
+    const view = {}
+    view.id = uuid.v4()
+    view.iri = `${model.iri}/instances/${view.id}`
 
     if (mimetype === 'application/json') {
-      instanceView.json = {
-        model: {
-          href: model.iri,
-          id: model.id
-        },
-        parameterSet: content.parameters
-      }
+      view.json = content
 
-      instanceView.store = null // TODO should theoretically also be populated!
+      log.warn(`Populating internal RDF-representation of instances not implemented!
+      -> downstream actions that should be supported will fail in anything but JSON`)
+      view.store = null // TODO should theoretically also be populated!
     } else {
       // Parse request body
       let inputStream = null
@@ -327,17 +338,64 @@ class ModelInstance extends Resource {
       } else {
         // Hope that we deal with a serialization that N3 can handle...
         inputStream = Readable.from(content.toString())
-        streamParser = new N3.StreamParser({ format: mimetype })
+        streamParser = new N3.StreamParser({ baseIRI: view.iri, format: mimetype })
       }
 
       inputStream.pipe(streamParser)
       const store = await storeStream(streamParser)
 
-      instanceView.store = store
-      instanceView.json = {} // TODO should be populated from the store eventually
+      // Add additional triples that are data
+      store.addQuads([
+        quad(namedNode(view.iri), ns.rdf.type, ns.sms.ModelInstance),
+        quad(
+          namedNode(view.iri),
+          ns.sms.hasSimulationParameters,
+          namedNode('#shapes-simulation-parameters'),
+          defaultGraph()
+        )
+      ])
+
+      // Add metadata
+      const metadataGraph = namedNode('#metadata')
+
+      // Define the context of this resource
+      const contextGraph = namedNode('#context')
+      store.addQuads([
+        quad(
+          namedNode('#context'),
+          ns.foaf.primaryTopic,
+          namedNode(view.iri),
+          contextGraph
+        ),
+        quad(namedNode('#context'), ns.api.home, namedNode(model.origin), contextGraph),
+        quad(
+          namedNode('#context'),
+          ns.api.allSimulations,
+          namedNode(`${view.iri}/experiments`),
+          contextGraph
+        )
+      ])
+
+      // Define the controls that this resource supports
+      const controlsGraph = namedNode('#controls')
+
+      // Define the necessary shapes
+      const shapesGraph = namedNode('#shapes')
+      store.addQuad(
+        quad(
+          namedNode('#shapes-simulation-parameters'),
+          ns.rdf.type,
+          ns.sh.NodeShape,
+          shapesGraph
+        )
+      )
+
+      // Collect all information in view that is passed to the actual constructor
+      view.graph = store
+      view.json = null // private attribute; only populated when user supplies JSON
     }
 
-    return new ModelInstance(model, instanceView)
+    return new ModelInstance(model, view)
   }
 
   async asJSON () {
@@ -349,18 +407,31 @@ class ModelInstance extends Resource {
   }
 
   async asRDF (mimetype) {
-    if (mimetype === 'application/trig') {
-      const representation = nunjucks.render('resources/model_instance.trig.jinja', {
-        fmi_url: knownPrefixes.fmi,
-        sms_url: knownPrefixes.sms,
-        api_url: `${this.origin}/vocabulary#`,
-        base_url: this.iri,
-        base_separator: '/'
-      })
+    const supportedMimeTypes = ['application/trig', 'application/ld+json']
+    let representation
+
+    if (_.includes(supportedMimeTypes, mimetype)) {
+      if (mimetype === 'application/trig') {
+        const streamWriter = new N3.StreamWriter({
+          format: 'application/trig',
+          prefixes: { '': `${this.iri}#`, ...knownPrefixes }
+        })
+        this.graph.match(null, null, null).pipe(streamWriter)
+        representation = await readableToString(streamWriter)
+      }
+      if (mimetype === 'application/ld+json') {
+        const streamWriter = new JsonLdSerializer({
+          space: '  ',
+          context: knownPrefixes
+        })
+        this.graph.match(null, null, null).pipe(streamWriter)
+        representation = await readableToString(streamWriter)
+        representation = JSON.parse(representation)
+      }
 
       return representation
     } else {
-      throw new Error(`Mimetype '${mimetype}' not yet implemented!`)
+      throw new Error(`Mimetype '${mimetype}' not supported!`)
     }
   }
 }
