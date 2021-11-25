@@ -481,6 +481,9 @@ class Simulation extends Resource {
     this.origin = instance.origin
     this.instance = instance
 
+    this.status = 'NEW'
+    this.resultExists = false
+
     this.json = simulationView.json
   }
 
@@ -510,6 +513,11 @@ class Simulation extends Resource {
   }
 
   async asJSON () {
+    this.json.status = this.status
+    if (this.resultExists === true) {
+      this.json.linkToResult = `${this.iri}/result`
+    }
+
     return this.json
   }
 

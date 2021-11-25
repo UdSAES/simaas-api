@@ -610,10 +610,10 @@ async function getExperimentStatus (c, req, res) {
     }
     const status = statusMapping[jobStatus]
 
-    simulation.json.status = status
+    simulation.status = status
 
     if (status === 'DONE') {
-      simulation.json.linkToResult = `${origin}${req.url}/result`
+      simulation.resultExists = true
       experimentCache.set(experimentId, {
         simulation: simulation,
         simulationResult: simulationResult
