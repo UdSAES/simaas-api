@@ -100,21 +100,21 @@ class Resource {
     'application/ld+json'
   ])
 
-  static async parseRdfRequestbody (content, mimetype, baseIRI) {
+  static async parseRdfRequestbody (content, mediatype, baseIRI) {
     // Parse request body
     let inputStream = null
     let streamParser = null
 
-    if (_.includes(this.supportedRdfSerializations, mimetype)) {
-      if (mimetype === 'application/ld+json') {
+    if (_.includes(this.supportedRdfSerializations, mediatype)) {
+      if (mediatype === 'application/ld+json') {
         inputStream = Readable.from(JSON.stringify(content))
         streamParser = new JsonLdParser()
       } else {
         inputStream = Readable.from(content.toString())
-        streamParser = new N3.StreamParser({ baseIRI: baseIRI, format: mimetype })
+        streamParser = new N3.StreamParser({ baseIRI: baseIRI, format: mediatype })
       }
     } else {
-      throw new NotAcceptableError(`Media type '${mimetype}' not supported`)
+      throw new NotAcceptableError(`Media Type '${mediatype}' not supported`)
     }
 
     inputStream.pipe(streamParser)
@@ -123,11 +123,11 @@ class Resource {
     return store
   }
 
-  static async renderRdfResponseFromGraph (graph, mimetype, resourceIRI) {
+  static async renderRdfResponseFromGraph (graph, mediatype, resourceIRI) {
     let representation
 
-    if (_.includes(this.supportedRdfSerializations, mimetype)) {
-      if (mimetype === 'application/ld+json') {
+    if (_.includes(this.supportedRdfSerializations, mediatype)) {
+      if (mediatype === 'application/ld+json') {
         const streamWriter = new JsonLdSerializer({
           space: '  ',
           context: knownPrefixes
@@ -137,7 +137,7 @@ class Resource {
         representation = JSON.parse(representation)
       } else {
         const streamWriter = new N3.StreamWriter({
-          format: mimetype,
+          format: mediatype,
           prefixes: { '': `${resourceIRI}#`, ...knownPrefixes }
         })
         graph.match(null, null, null).pipe(streamWriter)
@@ -146,7 +146,7 @@ class Resource {
 
       return representation
     } else {
-      throw new Error(`Mimetype '${mimetype}' not supported!`)
+      throw new Error(`Media Type '${mediatype}' not supported!`)
     }
   }
 
@@ -284,9 +284,9 @@ class Model extends Resource {
       }
 
       // Store serializations as files on disk
-      _.forEach(serializations, async function (config, mimetype) {
+      _.forEach(serializations, async function (config, mediatype) {
         const filePath = `${modelDirectory}/${resource}.${config.extension}`
-        filePaths[resource][mimetype] = filePath
+        filePaths[resource][mediatype] = filePath
 
         const outputStream = fs.createWriteStream(filePath)
 
@@ -374,9 +374,9 @@ class Model extends Resource {
     return this.json
   }
 
-  async asRDF (mimetype) {
+  async asRDF (mediatype) {
     let reader = fs.readFile
-    switch (mimetype) {
+    switch (mediatype) {
       case 'application/ld+json':
         reader = fs.readJSON
         break
@@ -384,10 +384,10 @@ class Model extends Resource {
         reader = fs.readFile
         break
       default:
-        throw new Error(`Mimetype '${mimetype}' not supported!`)
+        throw new Error(`Media Type '${mediatype}' not supported!`)
     }
 
-    return await reader(this.model[mimetype], { encoding: 'utf-8' })
+    return await reader(this.model[mediatype], { encoding: 'utf-8' })
   }
 }
 
@@ -404,19 +404,19 @@ class ModelInstance extends Resource {
     this.json = instanceView.json // to be removed when graph is single source of truth
   }
 
-  static async init (model, content, mimetype) {
+  static async init (model, content, mediatype) {
     const view = {}
     view.id = uuid.v4()
     view.iri = `${model.iri}/instances/${view.id}`
 
-    if (mimetype === 'application/json') {
+    if (mediatype === 'application/json') {
       view.json = content
 
       log.warn(`Populating internal RDF-representation of instances not implemented!
       -> downstream actions that should be supported will fail in anything but JSON`)
       view.store = null // TODO should theoretically also be populated!
     } else {
-      const store = await Resource.parseRdfRequestbody(content, mimetype, view.iri)
+      const store = await Resource.parseRdfRequestbody(content, mediatype, view.iri)
 
       // -> TODO: INPUT VALIDATION!! <-
 
@@ -511,8 +511,8 @@ class ModelInstance extends Resource {
     }
   }
 
-  async asRDF (mimetype) {
-    return await Resource.renderRdfResponseFromGraph(this.graph, mimetype, this.iri)
+  async asRDF (mediatype) {
+    return await Resource.renderRdfResponseFromGraph(this.graph, mediatype, this.iri)
   }
 }
 
@@ -532,19 +532,19 @@ class Simulation extends Resource {
     this.json = simulationView.json
   }
 
-  static async init (instance, content, mimetype) {
+  static async init (instance, content, mediatype) {
     const view = {}
     view.id = uuid.v4()
     view.iri = `${instance.iri}/experiments/${view.id}`
 
-    if (mimetype === 'application/json') {
+    if (mediatype === 'application/json') {
       view.json = content
 
       log.warn(`Populating internal RDF-representation of instances not implemented!
       -> downstream actions that should be supported will fail in anything but JSON`)
       view.store = null // TODO should theoretically also be populated!
     } else {
-      const store = await Resource.parseRdfRequestbody(content, mimetype, view.iri)
+      const store = await Resource.parseRdfRequestbody(content, mediatype, view.iri)
 
       // -> TODO: INPUT VALIDATION!! <-
 
@@ -615,7 +615,7 @@ class Simulation extends Resource {
     return simulationAsJSON
   }
 
-  async asRDF (mimetype) {
+  async asRDF (mediatype) {
     if (this.resultExists === true) {
       this.graph.addQuad(
         namedNode(this.iri),
@@ -625,7 +625,7 @@ class Simulation extends Resource {
       )
     }
 
-    return await Resource.renderRdfResponseFromGraph(this.graph, mimetype, this.iri)
+    return await Resource.renderRdfResponseFromGraph(this.graph, mediatype, this.iri)
   }
 }
 
@@ -663,8 +663,8 @@ class SimulationResult extends Resource {
     return resultBody
   }
 
-  async asRDF (mimetype) {
-    if (mimetype === 'application/trig') {
+  async asRDF (mediatype) {
+    if (mediatype === 'application/trig') {
       const representation = nunjucks.render('resources/simulation_result.trig.jinja', {
         api_url: `${this.origin}/vocabulary#`,
         base_url: this.iri,
@@ -677,7 +677,7 @@ class SimulationResult extends Resource {
 
       return representation
     } else {
-      throw new Error(`Mimetype '${mimetype}' not yet implemented!`)
+      throw new Error(`Media Type '${mediatype}' not yet implemented!`)
     }
   }
 }
