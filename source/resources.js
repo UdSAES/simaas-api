@@ -65,11 +65,67 @@ class Resource {
     }
   }
 
-  asJSON () {
+  static unitMap = {
+    m: `${knownPrefixes.unit}M`,
+    m2: `${knownPrefixes.unit}M2`,
+    deg: `${knownPrefixes.unit}DEG`,
+    degC: `${knownPrefixes.unit}DEG_C`
+  }
+
+  static async parseRdfRequestbody (content, mimetype, baseIRI) {
+    // Parse request body
+    let inputStream = null
+    let streamParser = null
+
+    if (mimetype === 'application/ld+json') {
+      inputStream = Readable.from(JSON.stringify(content))
+      streamParser = new JsonLdParser()
+    } else {
+      // Hope that we deal with a serialization that N3 can handle...
+      inputStream = Readable.from(content.toString())
+      streamParser = new N3.StreamParser({ baseIRI: baseIRI, format: mimetype })
+    }
+
+    inputStream.pipe(streamParser)
+    const store = await storeStream(streamParser)
+
+    return store
+  }
+
+  static async renderRdfResponseFromGraph (graph, mimetype, resourceIRI) {
+    const supportedMimeTypes = ['application/trig', 'application/ld+json']
+    let representation
+
+    if (_.includes(supportedMimeTypes, mimetype)) {
+      if (mimetype === 'application/trig') {
+        const streamWriter = new N3.StreamWriter({
+          format: 'application/trig',
+          prefixes: { '': `${resourceIRI}#`, ...knownPrefixes }
+        })
+        graph.match(null, null, null).pipe(streamWriter)
+        representation = await readableToString(streamWriter)
+      }
+      if (mimetype === 'application/ld+json') {
+        const streamWriter = new JsonLdSerializer({
+          space: '  ',
+          context: knownPrefixes
+        })
+        graph.match(null, null, null).pipe(streamWriter)
+        representation = await readableToString(streamWriter)
+        representation = JSON.parse(representation)
+      }
+
+      return representation
+    } else {
+      throw new Error(`Mimetype '${mimetype}' not supported!`)
+    }
+  }
+
+  async asJSON () {
     throw new Error('Method `asJSON` must be implemented.')
   }
 
-  asRDF () {
+  async asRDF () {
     throw new Error('Method `asRDF` must be implemented.')
   }
 }
@@ -331,21 +387,9 @@ class ModelInstance extends Resource {
       -> downstream actions that should be supported will fail in anything but JSON`)
       view.store = null // TODO should theoretically also be populated!
     } else {
-      // Parse request body
-      let inputStream = null
-      let streamParser = null
+      const store = await Resource.parseRdfRequestbody(content, mimetype, view.iri)
 
-      if (mimetype === 'application/ld+json') {
-        inputStream = Readable.from(JSON.stringify(content))
-        streamParser = new JsonLdParser()
-      } else {
-        // Hope that we deal with a serialization that N3 can handle...
-        inputStream = Readable.from(content.toString())
-        streamParser = new N3.StreamParser({ baseIRI: view.iri, format: mimetype })
-      }
-
-      inputStream.pipe(streamParser)
-      const store = await storeStream(streamParser)
+      // -> TODO: INPUT VALIDATION!! <-
 
       // Add additional triples that are data
       store.addQuads([
@@ -407,12 +451,6 @@ class ModelInstance extends Resource {
     if (this.graph === undefined) {
       parametersAsJSON = this.json.parameters
     } else {
-      const unitMap = {
-        m: `${knownPrefixes.unit}M`,
-        m2: `${knownPrefixes.unit}M2`,
-        deg: `${knownPrefixes.unit}DEG`
-      }
-
       _.forEach(
         this.graph.getSubjects(ns.sms.isParameterValueFor, null, defaultGraph()),
         (subject) => {
@@ -424,7 +462,7 @@ class ModelInstance extends Resource {
                 obj.value = parseFloat(quad.object.value) // TODO account for datatype?
               }
               if (quad.predicate.value === `${knownPrefixes.qudt}unit`) {
-                obj.unit = _.findKey(unitMap, function (o) {
+                obj.unit = _.findKey(Resource.unitMap, function (o) {
                   return o === quad.object.value
                 })
               }
@@ -445,32 +483,7 @@ class ModelInstance extends Resource {
   }
 
   async asRDF (mimetype) {
-    const supportedMimeTypes = ['application/trig', 'application/ld+json']
-    let representation
-
-    if (_.includes(supportedMimeTypes, mimetype)) {
-      if (mimetype === 'application/trig') {
-        const streamWriter = new N3.StreamWriter({
-          format: 'application/trig',
-          prefixes: { '': `${this.iri}#`, ...knownPrefixes }
-        })
-        this.graph.match(null, null, null).pipe(streamWriter)
-        representation = await readableToString(streamWriter)
-      }
-      if (mimetype === 'application/ld+json') {
-        const streamWriter = new JsonLdSerializer({
-          space: '  ',
-          context: knownPrefixes
-        })
-        this.graph.match(null, null, null).pipe(streamWriter)
-        representation = await readableToString(streamWriter)
-        representation = JSON.parse(representation)
-      }
-
-      return representation
-    } else {
-      throw new Error(`Mimetype '${mimetype}' not supported!`)
-    }
+    return await Resource.renderRdfResponseFromGraph(this.graph, mimetype, this.iri)
   }
 }
 
