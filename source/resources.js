@@ -56,6 +56,22 @@ async function readableToString (readable) {
 }
 
 // Class definitions
+class NotAcceptableError extends Error {
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
+  // /Global_Objects/Error#es6_custom_error_class
+  constructor (...params) {
+    // Pass remaining arguments (including vendor specific ones) to parent constructor
+    super(...params)
+
+    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, NotAcceptableError)
+    }
+
+    this.name = 'NotAcceptable'
+  }
+}
+
 class Resource {
   iri // the Internationalized Resource Identifier of this resource
 
@@ -72,18 +88,33 @@ class Resource {
     degC: `${knownPrefixes.unit}DEG_C`
   }
 
+  static supportedRdfSerializationsN3 = [
+    'text/turtle',
+    'application/trig',
+    'application/n-triples',
+    'application/n-quads',
+    'text/n3'
+  ]
+
+  static supportedRdfSerializations = _.concat(this.supportedRdfSerializationsN3, [
+    'application/ld+json'
+  ])
+
   static async parseRdfRequestbody (content, mimetype, baseIRI) {
     // Parse request body
     let inputStream = null
     let streamParser = null
 
-    if (mimetype === 'application/ld+json') {
-      inputStream = Readable.from(JSON.stringify(content))
-      streamParser = new JsonLdParser()
+    if (_.includes(this.supportedRdfSerializations, mimetype)) {
+      if (mimetype === 'application/ld+json') {
+        inputStream = Readable.from(JSON.stringify(content))
+        streamParser = new JsonLdParser()
+      } else {
+        inputStream = Readable.from(content.toString())
+        streamParser = new N3.StreamParser({ baseIRI: baseIRI, format: mimetype })
+      }
     } else {
-      // Hope that we deal with a serialization that N3 can handle...
-      inputStream = Readable.from(content.toString())
-      streamParser = new N3.StreamParser({ baseIRI: baseIRI, format: mimetype })
+      throw new NotAcceptableError(`Media type '${mimetype}' not supported`)
     }
 
     inputStream.pipe(streamParser)
@@ -93,18 +124,9 @@ class Resource {
   }
 
   static async renderRdfResponseFromGraph (graph, mimetype, resourceIRI) {
-    const supportedMimeTypes = ['application/trig', 'application/ld+json']
     let representation
 
-    if (_.includes(supportedMimeTypes, mimetype)) {
-      if (mimetype === 'application/trig') {
-        const streamWriter = new N3.StreamWriter({
-          format: 'application/trig',
-          prefixes: { '': `${resourceIRI}#`, ...knownPrefixes }
-        })
-        graph.match(null, null, null).pipe(streamWriter)
-        representation = await readableToString(streamWriter)
-      }
+    if (_.includes(this.supportedRdfSerializations, mimetype)) {
       if (mimetype === 'application/ld+json') {
         const streamWriter = new JsonLdSerializer({
           space: '  ',
@@ -113,6 +135,13 @@ class Resource {
         graph.match(null, null, null).pipe(streamWriter)
         representation = await readableToString(streamWriter)
         representation = JSON.parse(representation)
+      } else {
+        const streamWriter = new N3.StreamWriter({
+          format: mimetype,
+          prefixes: { '': `${resourceIRI}#`, ...knownPrefixes }
+        })
+        graph.match(null, null, null).pipe(streamWriter)
+        representation = await readableToString(streamWriter)
       }
 
       return representation
