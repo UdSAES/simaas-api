@@ -111,7 +111,7 @@ class Resource {
     if (_.includes(this.supportedRdfSerializations, mediatype)) {
       if (mediatype === 'application/ld+json') {
         inputStream = Readable.from(JSON.stringify(content))
-        streamParser = new JsonLdParser()
+        streamParser = new JsonLdParser({ baseIRI: baseIRI })
       } else {
         inputStream = Readable.from(content.toString())
         streamParser = new N3.StreamParser({ baseIRI: baseIRI, format: mediatype })
@@ -760,13 +760,58 @@ class SimulationResult extends Resource {
 
     this.simulation = simulation
 
-    this.json = resultView
+    this.graph = resultView.graph
+    this.json = resultView.json
   }
 
   static async init (simulation, result) {
-    const resultView = result
+    const view = {}
+    view.iri = `${simulation.iri}/result`
 
-    return new SimulationResult(simulation, resultView)
+    // Load JSON-representation
+    view.json = result.json
+
+    // Load RDF-representation
+    const store = await Resource.parseRdfRequestbody(
+      result['ld+json'],
+      'application/ld+json',
+      view.iri
+    )
+
+    // -> TODO: INPUT VALIDATION!! <-
+
+    // Add additional triples that are data
+    store.addQuads([
+      quad(namedNode(view.iri), ns.rdf.type, ns.sms.SimulationResult, defaultGraph()),
+      quad(namedNode(view.iri), ns.sms.resultOf, simulation.iri, defaultGraph())
+    ])
+
+    // Add metadata
+    const metadataGraph = namedNode('#metadata')
+
+    // Define the context of this resource
+    const contextGraph = namedNode('#context')
+    store.addQuads([
+      quad(
+        namedNode('#context'),
+        ns.foaf.primaryTopic,
+        namedNode(view.iri),
+        contextGraph
+      ),
+      quad(
+        namedNode('#context'),
+        ns.api.home,
+        namedNode(simulation.origin),
+        contextGraph
+      )
+    ])
+
+    // Define the controls that this resource supports
+    const controlsGraph = namedNode('#controls')
+
+    view.graph = store
+
+    return new SimulationResult(simulation, view)
   }
 
   async asJSON () {
@@ -786,21 +831,7 @@ class SimulationResult extends Resource {
   }
 
   async asRDF (mediatype) {
-    if (mediatype === 'application/trig') {
-      const representation = nunjucks.render('resources/simulation_result.trig.jinja', {
-        api_url: `${this.origin}/vocabulary#`,
-        base_url: this.iri,
-        sms_url: knownPrefixes.sms,
-        simulation_url: this.simulation.iri,
-        observations: '/behaviour/quantity/observations',
-        feature_of_interest: '/behaviour',
-        property: '/behaviour/quantity'
-      })
-
-      return representation
-    } else {
-      throw new Error(`Media Type '${mediatype}' not yet implemented!`)
-    }
+    return await Resource.renderRdfResponseFromGraph(this.graph, mediatype, this.iri)
   }
 }
 
