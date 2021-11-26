@@ -1,0 +1,49 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix time: <http://www.w3.org/2006/time#> .
+
+@prefix fmi: <https://ontologies.msaas.me/fmi-ontology.ttl#> .
+@prefix sms: <https://ontologies.msaas.me/sms-ontology.ttl#> .
+
+@prefix var: </models/6157f34f-f629-484b-b873-f31be22269e1/variables#> .
+@prefix settings: </models/6157f34f-f629-484b-b873-f31be22269e1/instances/1234/settings#> .
+
+<#w_s> a sosa:ObservableProperty;
+  sms:mappedTo var:windSpeed.
+
+<#NR6y5Lc0> a sosa:Observation ;
+  sosa:observedProperty <#w_s> ;
+  sosa:hasResult <#NR6y5Lc0_result> ;
+  sosa:phenomenonTime <#NR6y5Lc0_time> .
+
+<#NR6y5Lc0_result> a qudt:QuantityValue ;
+    qudt:numericValue 4.444444e+00 ;
+    qudt:unit unit:M-PER-SEC .
+
+<#NR6y5Lc0_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2021-01-01T01:00:00+0000"^^xsd:dateTimeStamp .
+
+<#startTime> a qudt:QuantityValue ;
+    sms:isValueFor settings:startTime ;
+    qudt:numericValue 1609462800000 ;
+    qudt:unit unit:SEC .
+
+<#stopTime> a qudt:QuantityValue ;
+    sms:isValueFor settings:stopTime ;
+    qudt:numericValue 1609464650000 ;
+    qudt:unit unit:SEC .
+
+<#outputInterval> a qudt:QuantityValue ;
+    sms:isValueFor settings:outputInterval ;
+    qudt:numericValue 900 ;
+    qudt:unit unit:SEC .
+
+<#inputTimeIsRelative> a qudt:ConstantValue ;
+  sms:isValueFor settings:inputTimeIsRelative ;
+  qudt:value "false"^^xsd:boolean .

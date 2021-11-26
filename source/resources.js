@@ -19,6 +19,7 @@ const JsonLdSerializer = require('jsonld-streaming-serializer').JsonLdSerializer
 const { namedNode, literal, quad, defaultGraph } = N3.DataFactory
 const uuid = require('uuid')
 const nunjucks = require('nunjucks')
+const moment = require('moment')
 
 const log = require('./logger.js')
 
@@ -85,7 +86,9 @@ class Resource {
     m: `${knownPrefixes.unit}M`,
     m2: `${knownPrefixes.unit}M2`,
     deg: `${knownPrefixes.unit}DEG`,
-    degC: `${knownPrefixes.unit}DEG_C`
+    degC: `${knownPrefixes.unit}DEG_C`,
+    'm/s': `${knownPrefixes.unit}M-PER-SEC`,
+    s: `${knownPrefixes.unit}SEC`
   }
 
   static supportedRdfSerializationsN3 = [
@@ -610,6 +613,125 @@ class Simulation extends Resource {
 
       simulationAsJSON = this.json
     } else {
+      const simulationParameters = {}
+      const inputTimeseries = []
+
+      // Parse simulation parameters
+      _.forEach(
+        this.graph.getSubjects(ns.sms.isValueFor, null, defaultGraph()),
+        (subject) => {
+          const parameterName = _.last(
+            _.split(
+              this.graph.getObjects(subject, ns.sms.isValueFor, null)[0].value,
+              '#'
+            )
+          )
+          _.forEach(
+            this.graph.getQuads(subject.value, null, null, defaultGraph()),
+            (quad) => {
+              try {
+                simulationParameters[parameterName] = parseFloat(
+                  this.graph.getObjects(
+                    subject,
+                    `${knownPrefixes.qudt}numericValue`,
+                    null
+                  )[0].value
+                )
+              } catch (e) {}
+              try {
+                simulationParameters[parameterName] =
+                  this.graph.getObjects(subject, `${knownPrefixes.qudt}value`, null)[0]
+                    .value === 'true'
+              } catch (e) {}
+            }
+          )
+        }
+      )
+
+      simulationAsJSON.simulationParameters = simulationParameters
+
+      // Parse input time series
+      _.forEach(
+        this.graph.getSubjects(ns.rdf.type, ns.sosa.ObservableProperty, defaultGraph()),
+        (observableProperty) => {
+          const parameterName = _.last(
+            _.split(
+              this.graph.getObjects(observableProperty, ns.sms.mappedTo, null)[0].value,
+              '#'
+            )
+          )
+
+          const oneSeries = {
+            label: parameterName,
+            unit: null,
+            timeseries: []
+          }
+
+          _.forEach(
+            this.graph.getSubjects(
+              ns.sosa.observedProperty,
+              observableProperty,
+              defaultGraph()
+            ),
+            (observation) => {
+              const observationObj = {}
+
+              _.forEach(
+                this.graph.getObjects(
+                  observation,
+                  ns.sosa.hasResult,
+                  null,
+                  defaultGraph()
+                ),
+                (result) => {
+                  observationObj.value = parseFloat(
+                    this.graph.getObjects(
+                      result,
+                      ns.qudt.numericValue,
+                      defaultGraph()
+                    )[0].value
+                  )
+                  if (oneSeries.unit == null) {
+                    const qudtUnit = this.graph.getObjects(
+                      result,
+                      ns.qudt.unit,
+                      defaultGraph()
+                    )[0].value
+                    oneSeries.unit =
+                      _.findKey(Resource.unitMap, function (o) {
+                        return o === qudtUnit
+                      }) || 1
+                  }
+                }
+              )
+
+              _.forEach(
+                this.graph.getObjects(
+                  observation,
+                  ns.sosa.phenomenonTime,
+                  null,
+                  defaultGraph()
+                ),
+                (timeInstant) => {
+                  observationObj.datetime = this.graph.getObjects(
+                    timeInstant,
+                    ns.time.inXSDDateTimeStamp,
+                    defaultGraph()
+                  )[0].value
+                }
+              )
+
+              observationObj.timestamp = moment(observationObj.datetime).valueOf()
+              oneSeries.timeseries.push(observationObj)
+            }
+          )
+
+          inputTimeseries.push(oneSeries)
+        }
+      )
+
+      simulationAsJSON.inputTimeseries = inputTimeseries
+      simulationAsJSON.modelId = this.instance.model.id
     }
 
     return simulationAsJSON
