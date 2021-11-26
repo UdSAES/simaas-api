@@ -32,11 +32,13 @@ const knownPrefixes = {
   hydra: 'http://www.w3.org/ns/hydra/core#',
   http: 'http://www.w3.org/2011/http#',
   sh: 'http://www.w3.org/ns/shacl#',
+  sosa: 'http://www.w3.org/ns/sosa/',
   qudt: 'http://qudt.org/schema/qudt/',
   unit: 'http://qudt.org/vocab/unit/',
+  time: 'http://www.w3.org/2006/time#',
   fmi: 'https://ontologies.msaas.me/fmi-ontology.ttl#',
   sms: 'https://ontologies.msaas.me/sms-ontology.ttl#',
-  api: 'http://localhost:4000/vocabulary#' // TODO do not hardcode origin!
+  api: '/vocabulary#'
 }
 
 const ns = _.mapValues(knownPrefixes, function (o) {
