@@ -448,7 +448,7 @@ class ModelInstance extends Resource {
   async asJSON () {
     let parametersAsJSON = {}
 
-    if (this.graph === undefined) {
+    if (this.graph == null) {
       parametersAsJSON = this.json.parameters
     } else {
       _.forEach(

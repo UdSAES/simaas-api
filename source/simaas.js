@@ -645,7 +645,7 @@ async function getExperimentResult (c, req, res) {
   const experimentId = _.nth(_.split(req.url, '/'), -2)
   const simulationResult = experimentCache.get(experimentId).simulationResult
 
-  if (simulationResult === undefined) {
+  if (simulationResult == null) {
     if (_.has(jobQueue, experimentId)) {
       await responseUtils.respondWithGone(c, req, res)
     } else {
