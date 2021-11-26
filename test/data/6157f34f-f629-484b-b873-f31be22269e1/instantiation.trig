@@ -14,43 +14,52 @@
 <> sms:represents <https://abox.msaas.me/systems/swsls-th> .
 
 <#latitude> rdf:type qudt:QuantityValue ;
-    sms:isParameterValueFor var:latitude ;
+    sms:isValueFor var:latitude ;
     qudt:numericValue 49.31659 ;
     qudt:unit unit:DEG .
 
 <#longitude> rdf:type qudt:QuantityValue ;
-    sms:isParameterValueFor var:longitude ;
+    sms:isValueFor var:longitude ;
     qudt:numericValue 6.749953 ;
     qudt:unit unit:DEG .
 
 <#elevation> rdf:type qudt:QuantityValue ;
-    sms:isParameterValueFor var:elevation ;
+    sms:isValueFor var:elevation ;
     qudt:numericValue 181 ;
     qudt:unit unit:M .
 
 <#panelArea> rdf:type qudt:QuantityValue ;
-    sms:isParameterValueFor var:panelArea ;
+    sms:isValueFor var:panelArea ;
     qudt:numericValue 227.78496 ;
     qudt:unit unit:M2 .
 
 <#plantEfficiency> rdf:type qudt:QuantityValue ;
-    sms:isParameterValueFor var:plantEfficiency ;
+    sms:isValueFor var:plantEfficiency ;
     qudt:numericValue 0.17 .
 
+<#T_cell_ref> rdf:type qudt:QuantityValue ;
+    sms:isValueFor var:T_cell_ref ;
+    qudt:numericValue 25 ;
+    qudt:unit unit:DEG_C .
+
 <#panelTilt> rdf:type qudt:QuantityValue ;
-    sms:isParameterValueFor var:panelTilt ;
+    sms:isValueFor var:panelTilt ;
     qudt:numericValue 28 ;
     qudt:unit unit:DEG .
 
 <#panelAzimuth> rdf:type qudt:QuantityValue ;
-    sms:isParameterValueFor var:panelAzimuth ;
+    sms:isValueFor var:panelAzimuth ;
     qudt:numericValue 47 ;
     qudt:unit unit:DEG .
 
+<#environmentAlbedo> rdf:type qudt:QuantityValue ;
+    sms:isValueFor var:environmentAlbedo ;
+    qudt:numericValue 0.2 .
+
 <#nsModule> rdf:type qudt:QuantityValue ;
-    sms:isParameterValueFor var:nsModule ;
+    sms:isValueFor var:nsModule ;
     qudt:numericValue 6 .
 
 <#npModule> rdf:type qudt:QuantityValue ;
-    sms:isParameterValueFor var:npModule ;
+    sms:isValueFor var:npModule ;
     qudt:numericValue 26 .

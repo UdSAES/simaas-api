@@ -481,7 +481,7 @@ class ModelInstance extends Resource {
       parametersAsJSON = this.json.parameters
     } else {
       _.forEach(
-        this.graph.getSubjects(ns.sms.isParameterValueFor, null, defaultGraph()),
+        this.graph.getSubjects(ns.sms.isValueFor, null, defaultGraph()),
         (subject) => {
           const obj = { value: null, unit: '1' }
           _.forEach(
