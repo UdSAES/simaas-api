@@ -491,65 +491,112 @@ class Simulation extends Resource {
   constructor (instance, simulationView) {
     super()
 
-    this.id = uuid.v4()
-    this.iri = `${instance.iri}/experiments/${this.id}`
+    this.id = simulationView.id
+    this.iri = simulationView.iri
     this.origin = instance.origin
     this.instance = instance
 
     this.status = 'NEW'
     this.resultExists = false
 
+    this.graph = simulationView.graph
     this.json = simulationView.json
   }
 
   static async init (instance, content, mimetype) {
-    const simulationView = {}
+    const view = {}
+    view.id = uuid.v4()
+    view.iri = `${instance.iri}/experiments/${view.id}`
 
     if (mimetype === 'application/json') {
-      simulationView.json = content
+      view.json = content
+
+      log.warn(`Populating internal RDF-representation of instances not implemented!
+      -> downstream actions that should be supported will fail in anything but JSON`)
+      view.store = null // TODO should theoretically also be populated!
     } else {
-      simulationView.json = await fs.readJSON(
-        'test/data/6157f34f-f629-484b-b873-f31be22269e1/simulation.json'
-      )
+      const store = await Resource.parseRdfRequestbody(content, mimetype, view.iri)
+
+      // -> TODO: INPUT VALIDATION!! <-
+
+      // Add additional triples that are data
+      store.addQuads([
+        quad(namedNode(view.iri), ns.rdf.type, ns.sms.Simulation, defaultGraph()),
+        quad(namedNode(view.iri), ns.sms.simulates, instance.iri, defaultGraph())
+      ])
+
+      // Add metadata
+      const metadataGraph = namedNode('#metadata')
+
+      // Define the context of this resource
+      const contextGraph = namedNode('#context')
+      store.addQuads([
+        quad(
+          namedNode('#context'),
+          ns.foaf.primaryTopic,
+          namedNode(view.iri),
+          contextGraph
+        ),
+        quad(
+          namedNode('#context'),
+          ns.api.home,
+          namedNode(instance.origin),
+          contextGraph
+        )
+      ])
+
+      // Define the controls that this resource supports
+      const controlsGraph = namedNode('#controls')
+
+      // Define the necessary shapes
+      const shapesGraph = namedNode('#shapes')
+
+      view.graph = store
+      view.json = null // private attribute; only populated when user supplies JSON
     }
 
-    return new Simulation(instance, simulationView)
+    return new Simulation(instance, view)
   }
 
   async asTask () {
-    const instanceRepresentation = await this.instance.asJSON()
+    const instanceAsJSON = await this.instance.asJSON()
+    const simulationAsJSON = await this.asJSON()
     return {
       modelInstanceId: this.instance.id,
-      simulationParameters: this.json.simulationParameters,
-      inputTimeseries: this.json.inputTimeseries,
-      parameterSet: instanceRepresentation.parameters,
+      simulationParameters: simulationAsJSON.simulationParameters,
+      inputTimeseries: simulationAsJSON.inputTimeseries,
+      parameterSet: instanceAsJSON.parameters,
       modelHref: this.instance.model.iri
     }
   }
 
   async asJSON () {
-    this.json.status = this.status
-    if (this.resultExists === true) {
-      this.json.linkToResult = `${this.iri}/result`
+    let simulationAsJSON = {}
+
+    if (this.graph == null) {
+      this.json.status = this.status
+      if (this.resultExists === true) {
+        this.json.linkToResult = `${this.iri}/result`
+      }
+
+      simulationAsJSON = this.json
+    } else {
     }
 
-    return this.json
+    return simulationAsJSON
   }
 
   async asRDF (mimetype) {
-    if (mimetype === 'application/trig') {
-      const representation = nunjucks.render('resources/simulation.trig.jinja', {
-        fmi_url: knownPrefixes.fmi,
-        sms_url: knownPrefixes.sms,
-        api_url: `${this.origin}/vocabulary#`,
-        base_url: this.iri,
-        base_separator: '/'
-      })
-
-      return representation
-    } else {
-      throw new Error(`Mimetype '${mimetype}' not yet implemented!`)
+    if (this.resultExists === true) {
+      this.graph.addQuad(
+        namedNode(this.iri),
+        ns.api.theSimulationResult,
+        namedNode(`${this.iri}/result`),
+        namedNode('#context')
+      )
     }
+
+    return await Resource.renderRdfResponseFromGraph(this.graph, mimetype, this.iri)
   }
 }
 
