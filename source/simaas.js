@@ -573,18 +573,17 @@ async function simulateModelInstance (c, req, res) {
 }
 
 async function getExperimentStatus (c, req, res) {
-  const origin = `${req.protocol}://${req.headers.host}`
-
   const experimentId = _.last(_.split(req.url, '/'))
-  const simulation = experimentCache.get(experimentId).simulation
+  const cachedExperiment = experimentCache.get(experimentId)
 
-  if (simulation === undefined) {
+  if (cachedExperiment == null) {
     if (_.has(jobQueue, experimentId)) {
       await responseUtils.respondWithGone(c, req, res)
     } else {
       await responseUtils.respondWithNotFound(c, req, res)
     }
   } else {
+    const simulation = cachedExperiment.simulation
     const job = jobQueue[experimentId]
     let jobStatus
     let simulationResult
