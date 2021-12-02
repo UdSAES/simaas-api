@@ -486,9 +486,12 @@ class ModelInstance extends Resource {
       _.forEach(
         this.graph.getSubjects(ns.sms.isValueFor, null, defaultGraph()),
         (subject) => {
+          const key = _.last(
+            _.split(this.graph.getObjects(subject, ns.sms.isValueFor)[0].value, '#')
+          )
           const obj = { value: null, unit: '1' }
           _.forEach(
-            this.graph.getQuads(subject.value, null, null, defaultGraph()),
+            this.graph.getQuads(subject, null, null, defaultGraph()),
             (quad) => {
               if (quad.predicate.value === `${knownPrefixes.qudt}numericValue`) {
                 obj.value = parseFloat(quad.object.value) // TODO account for datatype?
@@ -498,10 +501,9 @@ class ModelInstance extends Resource {
                   return o === quad.object.value
                 })
               }
-              const key = _.last(_.split(quad.subject.value, '#'))
-              parametersAsJSON[key] = obj
             }
           )
+          parametersAsJSON[key] = obj
         }
       )
     }
