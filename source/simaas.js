@@ -404,10 +404,17 @@ async function deleteModel (c, req, res) {
 }
 
 async function getModelInstanceCollection (req, res) {
-  const host = _.get(req, ['headers', 'host'])
-  const protocol = _.get(req, ['protocol'])
-  const origin = protocol + '://' + host
+  const origin = `${req.protocol}://${req.headers.host}`
   const thisURL = `${origin}${req.path}`
+
+  const modelId = _.nth(_.split(req.path, '/'), 2)
+  const listOfModels = await updateInternalListOfModels(null, null, 'read')
+  const model = await Model.fromJSON(origin, listOfModels[modelId])
+
+  // Get rid of `@prefix`-declarations assuming all necessary ones are in the template
+  const prefixRegEx = /@prefix [\w\d\s\.:<>/#-]*\.\n/gm
+  let shapes = await fs.readFile(model.shapes['application/trig'], {encoding: 'utf-8'})
+  shapes = shapes.replace(prefixRegEx, '')
 
   res.format({
     'application/trig': function () {
@@ -421,7 +428,8 @@ async function getModelInstanceCollection (req, res) {
         instanceURIs: _.map(knownModelInstances, function (v) {
           return `${thisURL}/${v}`
         }),
-        modelURI: _.join(_.slice(_.split(thisURL, '/'), 0, -1), '/')
+        modelURI: model.iri,
+        shapes_graph: shapes
       })
     }
   })

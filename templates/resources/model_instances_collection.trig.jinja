@@ -32,42 +32,11 @@
             http:fieldName "Content-Type" ;
             http:fieldValue "application/trig" ;
         ] ;
-        http:body <#shapes-parameterSet> ;
+        http:body <#shapes-instantiation> ;
     .
 }
 
-<#shapes> {
-    <#shapes-elevation> a sh:NodeShape ;
-        sh:property [
-            sh:path qudt:numericValue ;
-            sh:datatype xsd:decimal ;
-            sh:maxInclusive 8848 ;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-        ] ;
-        sh:property [
-            sh:path qudt:unit ;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:hasValue unit:M ;
-        ]
-    .
-
-    <#shapes-parameter-set> rdf:type sms:ParameterSet, sh:NodeShape ;
-        sh:targetClass sms:ParameterSet ;
-        sh:property [
-            sh:path :modelName ;
-            sh:datatype xsd:string ;
-            sh:minCount 1 ;
-        ] ;
-        sh:property [
-            sh:path :elevation ;
-            sh:minCount 1 ;
-            sh:maxCount 1 ;
-            sh:node <#shapes-elevation> ;
-        ]
-    .
-}
+<#shapes> {{ '{' }} {{  shapes_graph|safe }} {{ '} ' }}
 
 {% for instance in instanceURIs %}
 <{{ instance }}> a sms:ModelInstance .
