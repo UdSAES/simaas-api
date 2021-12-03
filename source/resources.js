@@ -192,6 +192,7 @@ class Model extends Resource {
     this.types = filePaths.types
     this.variables = filePaths.variables
     this.units = filePaths.units
+    this.shapes = filePaths.shapes
   }
 
   static async createRdfRepresentation (input, modelDirectory, modelURI) {
@@ -217,6 +218,10 @@ class Model extends Resource {
       },
       units: {
         type: ns.fmi.Unit,
+        store: new N3.Store()
+      },
+      shapes: {
+        type: ns.sh.NodeShape,
         store: new N3.Store()
       }
     }
@@ -269,6 +274,14 @@ class Model extends Resource {
 
         subStore.addQuad(subjectQuad)
         subStore.addQuads(quadsAboutSubject)
+
+        _.forEach(quadsAboutSubject, function (quad) {
+          if (quad.predicate.value === ns.sh.property.value) {
+            const nestedQuads = store.getQuads(quad.object, null, null)
+
+            subStore.addQuads(nestedQuads)
+          }
+        })
       })
 
       // Define serializations
@@ -367,7 +380,7 @@ class Model extends Resource {
     const modelView = _.pick(object, ['iri', 'origin', 'graph', 'schemata'])
     modelView.guid = object.id
     modelView.modelName = object.name
-    const filePaths = _.pick(object, ['model', 'types', 'variables', 'units'])
+    const filePaths = _.pick(object, ['model', 'types', 'variables', 'units', 'shapes'])
 
     // Call actual synchronous `constructor` and return resulting object
     return new Model(origin, modelView, filePaths)
