@@ -83,6 +83,63 @@ describe('Verify non-functional behaviour of API-instance', function () {
   })
 })
 
+describe('Test upload of an FMU to the API instance wrt expected status codes', function () {
+  const instanceURL = new url.URL(API_ORIGIN)
+
+  const tests = [
+    {
+      file: 'test/data/6157f34f-f629-484b-b873-f31be22269e1/model.fmu',
+      params: {
+        records:
+          'irradianceTemperatureWindSpeed2Power.plantRecord,irradianceTemperatureWindSpeed2Power.location'
+      },
+      accept: 'application/trig',
+      expected: {
+        statusCode: 201,
+        'content-type': 'application/trig'
+      }
+    }
+  ]
+
+  _.forEach(tests, function (test) {
+    const testTitle = `${test.method} ${test.path} as \`${test.accept}\``
+    const expectation = `should return \`${test.expected.statusCode}\`
+      as \`${test.expected['content-type']}\``
+
+    describe(testTitle, function () {
+      const body = fs.readFileSync(test.file, { encoding: null })
+
+      const options = {
+        url: `/models`,
+        method: 'POST',
+        headers: {
+          accept: test.accept,
+          'content-type': 'application/octet-stream'
+        },
+        params: test.params,
+        data: body,
+        isStream: false,
+        baseURL: instanceURL.origin
+      }
+
+      let response
+
+      before(async function () {
+        try {
+          response = await axios(options)
+        } catch (error) {
+          console.error(error)
+        }
+      })
+
+      it(expectation, function () {
+        assert.equal(response.status, test.expected.statusCode)
+        assert.include(response.headers['content-type'], test.expected['content-type'])
+      })
+    })
+  })
+})
+
 describe('Test API functionality wrt expected status codes', function () {
   const instanceURL = new url.URL(API_ORIGIN)
 
