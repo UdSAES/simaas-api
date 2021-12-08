@@ -249,9 +249,9 @@ async function getModelCollection (req, res) {
 async function addModel (c, req, res) {
   // Receive file content, store in temporary file
   const tmpDir = `${cfg.tmpfs}/${uuid.v4()}`
-  const tmpFile = `${tmpDir}/${req.files.fmu.name}` // <- field name `fmu` only assumed!
+  const tmpFile = `${tmpDir}/model.fmu`
   await fs.ensureDir(tmpDir)
-  await fs.writeFile(tmpFile, req.files.fmu.data) // <- field name `fmu` only assumed!
+  await fs.writeFile(tmpFile, req.body)
 
   // Create internal representation by instantiating class `Model`
   const model = await Model.init(req, tmpFile, cfg.fs, celeryClient)

@@ -25,7 +25,6 @@ process.on('SIGTERM', shutDownGracefully)
 
 // Load modules
 const express = require('express')
-const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
 require('express-async-errors')
 const cors = require('cors')
@@ -130,7 +129,7 @@ async function init () {
 
   app.use(bodyParser.json({ type: ['application/json', 'application/*+json'] }))
   app.use(bodyParser.text({ type: ['application/trig', 'text/turtle', 'text/n3'] }))
-  app.use(fileUpload())
+  app.use(bodyParser.raw({ type: ['application/octet-stream'], limit: '50mb' }))
   app.use(cors())
   app.use(addRequestId)
   nunjucks.configure('templates', { autoescape: true, express: app })
