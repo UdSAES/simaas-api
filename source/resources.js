@@ -327,7 +327,9 @@ class Model extends Resource {
     await extract(tmpFile, { dir: tmpDir })
 
     // Have worker build internal representation of model
-    const modelDescription = await fs.readFile(`${tmpDir}/modelDescription.xml`)
+    const modelDescription = await fs.readFile(`${tmpDir}/modelDescription.xml`, {
+      encoding: 'utf-8'
+    })
     const templateParameters = await fs.readFile(Model.templates.parameter)
     const templateIO = await fs.readFile(Model.templates.io)
     const stringEncoding = 'utf8'
