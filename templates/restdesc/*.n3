@@ -1,9 +1,12 @@
 @prefix http: <http://www.w3.org/2011/http#> .
 @prefix fmi: <https://ontologies.msaas.me/fmi-ontology.ttl#> .
 @prefix sms: <https://ontologies.msaas.me/sms-ontology.ttl#> .
-@prefix api: <http://localhost:4000/vocabulary#> .
+@prefix api: <{{ origin }}/vocabulary#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
 
 # Add a model to the service instance ##################################################
+# XXX communicate `records`-path parameter!
 
 {
     ?model a fmi:FMU .
@@ -11,7 +14,7 @@
 =>
 {
     _:request http:methodName "POST" ;
-              http:requestURI "/models" ;
+              http:requestURI "{{ origin }}/models" ;
               http:body ?model ;
               http:resp [ http:body ?model ] ;
               http:resp [ http:headers [
