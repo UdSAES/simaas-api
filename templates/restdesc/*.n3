@@ -37,7 +37,9 @@
               http:resp [ http:body ?model ] .
     
     ?model api:allInstances _:allInstances .
-    ?model sms:hasParameterSet _:parameterSet .
+    ?model sms:instantiationShape _:instantiationShape .
+
+    _:instantiationShape a sh:NodeShape ; sh:targetNode _:parameterSet .
 } .
 
 # Instantiate a model ##################################################################
@@ -45,7 +47,9 @@
 {
     ?model a sms:Model ;
            api:allInstances ?allInstances ;
-           sms:hasParameterSet ?parameterSet .
+           sms:instantiationShape ?instantiationShape .
+
+    ?instantiationShape sh:targetNode ?parameterSet .
 }
 =>
 {
@@ -74,7 +78,9 @@
               http:resp [ http:body ?modelInstance ] .
     
     ?modelInstance api:allSimulations _:allSimulations .
-    ?modelInstance sms:hasSimulationParameters _:simulationParameters .
+    ?modelInstance sms:simulationShape _:simulationShape .
+
+    _:simulationShape a sh:NodeShape ; sh:targetNode _:simulationSpec .
 } .
 
 # Trigger the simulation of a model instance ###########################################
@@ -82,13 +88,15 @@
 {
     ?modelInstance a sms:ModelInstance ;
                    api:allSimulations ?allSimulations ;
-                   sms:hasSimulationParameters ?simulationParameters .
+                   sms:simulationShape ?simulationShape .
+
+    ?simulationShape sh:targetNode ?simulationSpec .
 }
 =>
 {
     _:request http:methodName "POST" ;
               http:requestURI ?allSimulations ;
-              http:body ?simulationParameters ;
+              http:body ?simulationSpec ;
               http:resp [ http:body ?simulation ] ;
               http:resp [ http:headers [
                   http:fieldName "Location" ;
