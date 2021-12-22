@@ -17,7 +17,7 @@
     "api-resolve": "speccy resolve $npm_package_config_oas3 > $npm_package_config_oas3_flat",
     "predredd": "npm run api-resolve",
     "dredd": "node ./test/dredd.js",
-    "test-api": "mocha test/test_api.js",
+    "test-api": "mocha test/test_api.js --timeout 5000",
     "test-all": "npm run lint && npm run api-lint && npm run dredd"
   },
   "repository": {

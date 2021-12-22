@@ -7,6 +7,9 @@ test/dredd_report.html
 # Ignore derivative versions of API specification
 oas/simaas_oas3*.yaml
 
+# Ignore test results (only for inspection, get recreated on each run)
+test/results/
+
 # Ignore files for local development
 .env
 local/

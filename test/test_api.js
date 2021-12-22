@@ -151,15 +151,21 @@ describe('Test API functionality wrt expected status codes', function () {
     'application/trig': {
       ext: 'trig',
       reader: fs.readFileSync
+      // },
+      // 'application/ld+json': {
+      //   ext: 'ld+json',
+      //   reader = fs.readJSONSync
     }
   }
 
   _.forEach(serializations, function (v, k) {
     const testAddendum = `using \`${k}\` as input`
 
-    describe(`Instantiate model; ${testAddendum}...`, function () {
-      const modelId = '6157f34f-f629-484b-b873-f31be22269e1'
+    const modelId = '6157f34f-f629-484b-b873-f31be22269e1'
+    const testResultDirectory = `./test/results/${modelId}/${v.ext}`
+    fs.emptyDirSync(testResultDirectory)
 
+    describe(`Instantiate model; ${testAddendum}...`, function () {
       let instantiationResponse
       let simulationResponse
       let simulationState
@@ -167,6 +173,8 @@ describe('Test API functionality wrt expected status codes', function () {
       let resultLocation
 
       before(async function () {
+        let filePath // variable for file paths for intermediate results, use later
+
         // Add model instance
         instantiationResponse = await axios({
           baseURL: instanceURL.origin,
@@ -185,6 +193,58 @@ describe('Test API functionality wrt expected status codes', function () {
           -> Status: ${instantiationResponse.status}
           -> Location: ${instantiationResponse.headers.location}
         `)
+
+        // Get list of model instances
+        if (k !== 'application/json') {
+          const listOfModelInstances = await axios({
+            baseURL: instanceURL.origin,
+            url: `models/${modelId}/instances`,
+            method: 'GET',
+            headers: {
+              accept: k,
+              'content-type': k
+            }
+          })
+
+          console.log(`\nGetting list of model instances...
+            -> Status: ${listOfModelInstances.status}
+          `)
+
+          filePath = `${testResultDirectory}/model_instances_all.${v.ext}`
+          await fs.writeFile(filePath, listOfModelInstances.data)
+        }
+
+        // Get model instance representations in all supported formats
+        let serializationsToGet = {}
+        if (k === 'application/json') {
+          // RDF representation is not generated from JSON user input
+          serializationsToGet = { 'application/json': { ext: 'json' } }
+        } else {
+          // ...but JSON representation _is_ generated from RDF user input
+          serializationsToGet = serializations
+        }
+
+        _.forEach(serializationsToGet, async function (o, f) {
+          const modelInstanceResponse = await axios({
+            url: instantiationResponse.headers.location,
+            method: 'GET',
+            headers: {
+              accept: f,
+              'content-type': f
+            }
+          })
+
+          const filePath = `${testResultDirectory}/model_instance.${o.ext}`
+          if (f === 'application/trig') {
+            await fs.writeFile(filePath, modelInstanceResponse.data)
+          } else {
+            await fs.writeJson(filePath, modelInstanceResponse.data, { spaces: 2 })
+          }
+
+          console.log(`\nSaved '${f}'-representation of model instance
+            ${instantiationResponse.headers.location}
+            as ${filePath}`)
+        })
 
         // Trigger simulation
         simulationResponse = await axios({
@@ -207,6 +267,7 @@ describe('Test API functionality wrt expected status codes', function () {
         // Get simulation status
         const sleepForXms = 500
         const maxIterations = 10
+        let polledAfterWaiting = false
         for (let i = 0; i < maxIterations; i++) {
           simulationState = await axios({
             url: simulationResponse.headers.location,
@@ -232,11 +293,23 @@ describe('Test API functionality wrt expected status codes', function () {
               await sleep(sleepForXms)
             }
           } else {
-            console.warn(`Can't yet parse non-JSON response!
+            console.warn(`Cannot parse non-JSON response yet!
           => Waiting for 1 s; assuming that the result exists afterwards...`)
             await sleep(1000)
             resultLocation = `${simulationResponse.headers.location}/result`
-            break
+
+            if (polledAfterWaiting === false) {
+              polledAfterWaiting = true
+              continue
+            } else {
+              const filePath = `${testResultDirectory}/simulation.trig`
+              await fs.writeFile(filePath, simulationState.data)
+
+              console.log(`\nSaved 'application/trig'-representation of simulation
+            ${simulationResponse.headers.location}
+            as ${filePath}`)
+              break
+            }
           }
         }
 
@@ -254,6 +327,13 @@ describe('Test API functionality wrt expected status codes', function () {
           -> Status: ${resultResponse.status},
           -> URL: ${resultLocation}
         `)
+
+        filePath = `${testResultDirectory}/simulation_result.${v.ext}`
+        if (k === 'application/json') {
+          await fs.writeJson(filePath, { spaces: 2 })
+        } else {
+          await fs.writeFile(filePath, resultResponse.data)
+        }
       })
 
       it('should return the expected status codes', function () {
