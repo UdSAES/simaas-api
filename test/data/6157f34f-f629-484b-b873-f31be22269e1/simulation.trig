@@ -1,49 +1,473 @@
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix sosa: <http://www.w3.org/ns/sosa/> .
 @prefix qudt: <http://qudt.org/schema/qudt/> .
 @prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
 @prefix time: <http://www.w3.org/2006/time#> .
 
-@prefix fmi: <https://ontologies.msaas.me/fmi-ontology.ttl#> .
 @prefix sms: <https://ontologies.msaas.me/sms-ontology.ttl#> .
+@prefix settings: <http://localhost:4000/models/6157f34f-f629-484b-b873-f31be22269e1/instances/fe6c4e80-315d-4c6d-a6d6-77bf90601eee/settings#> .
+@prefix var: <http://localhost:4000/models/6157f34f-f629-484b-b873-f31be22269e1/variables#> .
 
-@prefix var: </models/6157f34f-f629-484b-b873-f31be22269e1/variables#> .
-@prefix settings: </models/6157f34f-f629-484b-b873-f31be22269e1/instances/1234/settings#> .
+<#aswdifd_s> a sosa:ObservableProperty ;
+    sms:mappedTo var:diffuseHorizontalIrradiance .
 
-<#w_s> a sosa:ObservableProperty;
-  sms:mappedTo var:windSpeed.
+<#aswdir_s> a sosa:ObservableProperty ;
+    sms:mappedTo var:directHorizontalIrradiance .
 
-<#NR6y5Lc0> a sosa:Observation ;
-  sosa:observedProperty <#w_s> ;
-  sosa:hasResult <#NR6y5Lc0_result> ;
-  sosa:phenomenonTime <#NR6y5Lc0_time> .
+<#t_2m> a sosa:ObservableProperty ;
+    sms:mappedTo var:temperature .
 
-<#NR6y5Lc0_result> a qudt:QuantityValue ;
-    qudt:numericValue 4.444444e+00 ;
-    qudt:unit unit:M-PER-SEC .
-
-<#NR6y5Lc0_time> a time:Instant ;
-    time:inXSDDateTimeStamp "2021-01-01T01:00:00+0000"^^xsd:dateTimeStamp .
-
-<#startTime> a qudt:QuantityValue ;
-    sms:isValueFor settings:startTime ;
-    qudt:numericValue 1609462800000 ;
-    qudt:unit unit:SEC .
-
-<#stopTime> a qudt:QuantityValue ;
-    sms:isValueFor settings:stopTime ;
-    qudt:numericValue 1609464650000 ;
-    qudt:unit unit:SEC .
-
-<#outputInterval> a qudt:QuantityValue ;
-    sms:isValueFor settings:outputInterval ;
-    qudt:numericValue 900 ;
-    qudt:unit unit:SEC .
+<#ws_10m> a sosa:ObservableProperty ;
+    sms:mappedTo var:windSpeed .
 
 <#inputTimeIsRelative> a qudt:ConstantValue ;
-  sms:isValueFor settings:inputTimeIsRelative ;
-  qudt:value "false"^^xsd:boolean .
+    qudt:value false ;
+    sms:isValueFor settings:inputTimeIsRelative .
+
+<#outputInterval> a qudt:QuantityValue ;
+    qudt:numericValue 900 ;
+    qudt:unit unit:SEC ;
+    sms:isValueFor settings:outputInterval .
+
+<#startTime> a qudt:QuantityValue ;
+    qudt:numericValue 1587124800000 ;
+    qudt:unit unit:SEC ;
+    sms:isValueFor settings:startTime .
+
+<#stopTime> a qudt:QuantityValue ;
+    qudt:numericValue 1587132000000 ;
+    qudt:unit unit:SEC ;
+    sms:isValueFor settings:stopTime .
+
+<#7Kv9jOz1_aswdifd_s> a sosa:Observation ;
+    sosa:hasResult <#7Kv9jOz1_aswdifd_s_result> ;
+    sosa:observedProperty <#aswdifd_s> ;
+    sosa:phenomenonTime <#7Kv9jOz1_aswdifd_s_time> .
+
+<#7Kv9jOz1_aswdir_s> a sosa:Observation ;
+    sosa:hasResult <#7Kv9jOz1_aswdir_s_result> ;
+    sosa:observedProperty <#aswdir_s> ;
+    sosa:phenomenonTime <#7Kv9jOz1_aswdir_s_time> .
+
+<#7Kv9jOz1_t_2m> a sosa:Observation ;
+    sosa:hasResult <#7Kv9jOz1_t_2m_result> ;
+    sosa:observedProperty <#t_2m> ;
+    sosa:phenomenonTime <#7Kv9jOz1_t_2m_time> .
+
+<#7Kv9jOz1_ws_10m> a sosa:Observation ;
+    sosa:hasResult <#7Kv9jOz1_ws_10m_result> ;
+    sosa:observedProperty <#ws_10m> ;
+    sosa:phenomenonTime <#7Kv9jOz1_ws_10m_time> .
+
+<#BZJHrJJ8_aswdifd_s> a sosa:Observation ;
+    sosa:hasResult <#BZJHrJJ8_aswdifd_s_result> ;
+    sosa:observedProperty <#aswdifd_s> ;
+    sosa:phenomenonTime <#BZJHrJJ8_aswdifd_s_time> .
+
+<#BZJHrJJ8_aswdir_s> a sosa:Observation ;
+    sosa:hasResult <#BZJHrJJ8_aswdir_s_result> ;
+    sosa:observedProperty <#aswdir_s> ;
+    sosa:phenomenonTime <#BZJHrJJ8_aswdir_s_time> .
+
+<#BZJHrJJ8_t_2m> a sosa:Observation ;
+    sosa:hasResult <#BZJHrJJ8_t_2m_result> ;
+    sosa:observedProperty <#t_2m> ;
+    sosa:phenomenonTime <#BZJHrJJ8_t_2m_time> .
+
+<#BZJHrJJ8_ws_10m> a sosa:Observation ;
+    sosa:hasResult <#BZJHrJJ8_ws_10m_result> ;
+    sosa:observedProperty <#ws_10m> ;
+    sosa:phenomenonTime <#BZJHrJJ8_ws_10m_time> .
+
+<#CKtXTyeJ_aswdifd_s> a sosa:Observation ;
+    sosa:hasResult <#CKtXTyeJ_aswdifd_s_result> ;
+    sosa:observedProperty <#aswdifd_s> ;
+    sosa:phenomenonTime <#CKtXTyeJ_aswdifd_s_time> .
+
+<#CKtXTyeJ_aswdir_s> a sosa:Observation ;
+    sosa:hasResult <#CKtXTyeJ_aswdir_s_result> ;
+    sosa:observedProperty <#aswdir_s> ;
+    sosa:phenomenonTime <#CKtXTyeJ_aswdir_s_time> .
+
+<#CKtXTyeJ_t_2m> a sosa:Observation ;
+    sosa:hasResult <#CKtXTyeJ_t_2m_result> ;
+    sosa:observedProperty <#t_2m> ;
+    sosa:phenomenonTime <#CKtXTyeJ_t_2m_time> .
+
+<#CKtXTyeJ_ws_10m> a sosa:Observation ;
+    sosa:hasResult <#CKtXTyeJ_ws_10m_result> ;
+    sosa:observedProperty <#ws_10m> ;
+    sosa:phenomenonTime <#CKtXTyeJ_ws_10m_time> .
+
+<#CWbvRNjL_aswdifd_s> a sosa:Observation ;
+    sosa:hasResult <#CWbvRNjL_aswdifd_s_result> ;
+    sosa:observedProperty <#aswdifd_s> ;
+    sosa:phenomenonTime <#CWbvRNjL_aswdifd_s_time> .
+
+<#CWbvRNjL_aswdir_s> a sosa:Observation ;
+    sosa:hasResult <#CWbvRNjL_aswdir_s_result> ;
+    sosa:observedProperty <#aswdir_s> ;
+    sosa:phenomenonTime <#CWbvRNjL_aswdir_s_time> .
+
+<#CWbvRNjL_t_2m> a sosa:Observation ;
+    sosa:hasResult <#CWbvRNjL_t_2m_result> ;
+    sosa:observedProperty <#t_2m> ;
+    sosa:phenomenonTime <#CWbvRNjL_t_2m_time> .
+
+<#CWbvRNjL_ws_10m> a sosa:Observation ;
+    sosa:hasResult <#CWbvRNjL_ws_10m_result> ;
+    sosa:observedProperty <#ws_10m> ;
+    sosa:phenomenonTime <#CWbvRNjL_ws_10m_time> .
+
+<#FKF5jQ8L_aswdifd_s> a sosa:Observation ;
+    sosa:hasResult <#FKF5jQ8L_aswdifd_s_result> ;
+    sosa:observedProperty <#aswdifd_s> ;
+    sosa:phenomenonTime <#FKF5jQ8L_aswdifd_s_time> .
+
+<#FKF5jQ8L_aswdir_s> a sosa:Observation ;
+    sosa:hasResult <#FKF5jQ8L_aswdir_s_result> ;
+    sosa:observedProperty <#aswdir_s> ;
+    sosa:phenomenonTime <#FKF5jQ8L_aswdir_s_time> .
+
+<#FKF5jQ8L_t_2m> a sosa:Observation ;
+    sosa:hasResult <#FKF5jQ8L_t_2m_result> ;
+    sosa:observedProperty <#t_2m> ;
+    sosa:phenomenonTime <#FKF5jQ8L_t_2m_time> .
+
+<#FKF5jQ8L_ws_10m> a sosa:Observation ;
+    sosa:hasResult <#FKF5jQ8L_ws_10m_result> ;
+    sosa:observedProperty <#ws_10m> ;
+    sosa:phenomenonTime <#FKF5jQ8L_ws_10m_time> .
+
+<#SEthQg8C_aswdifd_s> a sosa:Observation ;
+    sosa:hasResult <#SEthQg8C_aswdifd_s_result> ;
+    sosa:observedProperty <#aswdifd_s> ;
+    sosa:phenomenonTime <#SEthQg8C_aswdifd_s_time> .
+
+<#SEthQg8C_aswdir_s> a sosa:Observation ;
+    sosa:hasResult <#SEthQg8C_aswdir_s_result> ;
+    sosa:observedProperty <#aswdir_s> ;
+    sosa:phenomenonTime <#SEthQg8C_aswdir_s_time> .
+
+<#SEthQg8C_t_2m> a sosa:Observation ;
+    sosa:hasResult <#SEthQg8C_t_2m_result> ;
+    sosa:observedProperty <#t_2m> ;
+    sosa:phenomenonTime <#SEthQg8C_t_2m_time> .
+
+<#SEthQg8C_ws_10m> a sosa:Observation ;
+    sosa:hasResult <#SEthQg8C_ws_10m_result> ;
+    sosa:observedProperty <#ws_10m> ;
+    sosa:phenomenonTime <#SEthQg8C_ws_10m_time> .
+
+<#WFNTcK4w_aswdifd_s> a sosa:Observation ;
+    sosa:hasResult <#WFNTcK4w_aswdifd_s_result> ;
+    sosa:observedProperty <#aswdifd_s> ;
+    sosa:phenomenonTime <#WFNTcK4w_aswdifd_s_time> .
+
+<#WFNTcK4w_aswdir_s> a sosa:Observation ;
+    sosa:hasResult <#WFNTcK4w_aswdir_s_result> ;
+    sosa:observedProperty <#aswdir_s> ;
+    sosa:phenomenonTime <#WFNTcK4w_aswdir_s_time> .
+
+<#WFNTcK4w_t_2m> a sosa:Observation ;
+    sosa:hasResult <#WFNTcK4w_t_2m_result> ;
+    sosa:observedProperty <#t_2m> ;
+    sosa:phenomenonTime <#WFNTcK4w_t_2m_time> .
+
+<#WFNTcK4w_ws_10m> a sosa:Observation ;
+    sosa:hasResult <#WFNTcK4w_ws_10m_result> ;
+    sosa:observedProperty <#ws_10m> ;
+    sosa:phenomenonTime <#WFNTcK4w_ws_10m_time> .
+
+<#k-uq_Qhk_aswdifd_s> a sosa:Observation ;
+    sosa:hasResult <#k-uq_Qhk_aswdifd_s_result> ;
+    sosa:observedProperty <#aswdifd_s> ;
+    sosa:phenomenonTime <#k-uq_Qhk_aswdifd_s_time> .
+
+<#k-uq_Qhk_aswdir_s> a sosa:Observation ;
+    sosa:hasResult <#k-uq_Qhk_aswdir_s_result> ;
+    sosa:observedProperty <#aswdir_s> ;
+    sosa:phenomenonTime <#k-uq_Qhk_aswdir_s_time> .
+
+<#k-uq_Qhk_t_2m> a sosa:Observation ;
+    sosa:hasResult <#k-uq_Qhk_t_2m_result> ;
+    sosa:observedProperty <#t_2m> ;
+    sosa:phenomenonTime <#k-uq_Qhk_t_2m_time> .
+
+<#k-uq_Qhk_ws_10m> a sosa:Observation ;
+    sosa:hasResult <#k-uq_Qhk_ws_10m_result> ;
+    sosa:observedProperty <#ws_10m> ;
+    sosa:phenomenonTime <#k-uq_Qhk_ws_10m_time> .
+
+<#yxLlXaJm_aswdifd_s> a sosa:Observation ;
+    sosa:hasResult <#yxLlXaJm_aswdifd_s_result> ;
+    sosa:observedProperty <#aswdifd_s> ;
+    sosa:phenomenonTime <#yxLlXaJm_aswdifd_s_time> .
+
+<#yxLlXaJm_aswdir_s> a sosa:Observation ;
+    sosa:hasResult <#yxLlXaJm_aswdir_s_result> ;
+    sosa:observedProperty <#aswdir_s> ;
+    sosa:phenomenonTime <#yxLlXaJm_aswdir_s_time> .
+
+<#yxLlXaJm_t_2m> a sosa:Observation ;
+    sosa:hasResult <#yxLlXaJm_t_2m_result> ;
+    sosa:observedProperty <#t_2m> ;
+    sosa:phenomenonTime <#yxLlXaJm_t_2m_time> .
+
+<#yxLlXaJm_ws_10m> a sosa:Observation ;
+    sosa:hasResult <#yxLlXaJm_ws_10m_result> ;
+    sosa:observedProperty <#ws_10m> ;
+    sosa:phenomenonTime <#yxLlXaJm_ws_10m_time> .
+
+<#7Kv9jOz1_aswdifd_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 1.58573e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#7Kv9jOz1_aswdifd_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T14:00:00"^^xsd:dateTimeStamp .
+
+<#7Kv9jOz1_aswdir_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 4.39805e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#7Kv9jOz1_aswdir_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T14:00:00"^^xsd:dateTimeStamp .
+
+<#7Kv9jOz1_t_2m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.944796e+02 ;
+    qudt:unit unit:K .
+
+<#7Kv9jOz1_t_2m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T14:00:00"^^xsd:dateTimeStamp .
+
+<#7Kv9jOz1_ws_10m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.498603e+00 ;
+    qudt:unit unit:M-PER-SEC .
+
+<#7Kv9jOz1_ws_10m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T14:00:00"^^xsd:dateTimeStamp .
+
+<#BZJHrJJ8_aswdifd_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 1.55859e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#BZJHrJJ8_aswdifd_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:30:00"^^xsd:dateTimeStamp .
+
+<#BZJHrJJ8_aswdir_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 4.976565e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#BZJHrJJ8_aswdir_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:30:00"^^xsd:dateTimeStamp .
+
+<#BZJHrJJ8_t_2m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.942868e+02 ;
+    qudt:unit unit:K .
+
+<#BZJHrJJ8_t_2m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:30:00"^^xsd:dateTimeStamp .
+
+<#BZJHrJJ8_ws_10m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.513312e+00 ;
+    qudt:unit unit:M-PER-SEC .
+
+<#BZJHrJJ8_ws_10m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:30:00"^^xsd:dateTimeStamp .
+
+<#CKtXTyeJ_aswdifd_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 1.754738e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#CKtXTyeJ_aswdifd_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:00:00"^^xsd:dateTimeStamp .
+
+<#CKtXTyeJ_aswdir_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 5.580707e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#CKtXTyeJ_aswdir_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:00:00"^^xsd:dateTimeStamp .
+
+<#CKtXTyeJ_t_2m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.931306e+02 ;
+    qudt:unit unit:K .
+
+<#CKtXTyeJ_t_2m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:00:00"^^xsd:dateTimeStamp .
+
+<#CKtXTyeJ_ws_10m_result> a qudt:QuantityValue ;
+    qudt:numericValue 3.292638e+00 ;
+    qudt:unit unit:M-PER-SEC .
+
+<#CKtXTyeJ_ws_10m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:00:00"^^xsd:dateTimeStamp .
+
+<#CWbvRNjL_aswdifd_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 1.63765e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#CWbvRNjL_aswdifd_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:00:00"^^xsd:dateTimeStamp .
+
+<#CWbvRNjL_aswdir_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 5.288596e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#CWbvRNjL_aswdir_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:00:00"^^xsd:dateTimeStamp .
+
+<#CWbvRNjL_t_2m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.940939e+02 ;
+    qudt:unit unit:K .
+
+<#CWbvRNjL_t_2m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:00:00"^^xsd:dateTimeStamp .
+
+<#CWbvRNjL_ws_10m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.52802e+00 ;
+    qudt:unit unit:M-PER-SEC .
+
+<#CWbvRNjL_ws_10m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:00:00"^^xsd:dateTimeStamp .
+
+<#FKF5jQ8L_aswdifd_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 1.642034e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#FKF5jQ8L_aswdifd_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:15:00"^^xsd:dateTimeStamp .
+
+<#FKF5jQ8L_aswdir_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 5.679222e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#FKF5jQ8L_aswdir_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:15:00"^^xsd:dateTimeStamp .
+
+<#FKF5jQ8L_t_2m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.933714e+02 ;
+    qudt:unit unit:K .
+
+<#FKF5jQ8L_t_2m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:15:00"^^xsd:dateTimeStamp .
+
+<#FKF5jQ8L_ws_10m_result> a qudt:QuantityValue ;
+    qudt:numericValue 3.101483e+00 ;
+    qudt:unit unit:M-PER-SEC .
+
+<#FKF5jQ8L_ws_10m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:15:00"^^xsd:dateTimeStamp .
+
+<#SEthQg8C_aswdifd_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 1.497365e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#SEthQg8C_aswdifd_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:30:00"^^xsd:dateTimeStamp .
+
+<#SEthQg8C_aswdir_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 5.78594e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#SEthQg8C_aswdir_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:30:00"^^xsd:dateTimeStamp .
+
+<#SEthQg8C_t_2m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.936123e+02 ;
+    qudt:unit unit:K .
+
+<#SEthQg8C_t_2m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:30:00"^^xsd:dateTimeStamp .
+
+<#SEthQg8C_ws_10m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.910329e+00 ;
+    qudt:unit unit:M-PER-SEC .
+
+<#SEthQg8C_ws_10m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:30:00"^^xsd:dateTimeStamp .
+
+<#WFNTcK4w_aswdifd_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 1.525255e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#WFNTcK4w_aswdifd_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:45:00"^^xsd:dateTimeStamp .
+
+<#WFNTcK4w_aswdir_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 4.780706e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#WFNTcK4w_aswdir_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:45:00"^^xsd:dateTimeStamp .
+
+<#WFNTcK4w_t_2m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.943832e+02 ;
+    qudt:unit unit:K .
+
+<#WFNTcK4w_t_2m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:45:00"^^xsd:dateTimeStamp .
+
+<#WFNTcK4w_ws_10m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.505958e+00 ;
+    qudt:unit unit:M-PER-SEC .
+
+<#WFNTcK4w_ws_10m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:45:00"^^xsd:dateTimeStamp .
+
+<#k-uq_Qhk_aswdifd_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 1.477037e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#k-uq_Qhk_aswdifd_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:15:00"^^xsd:dateTimeStamp .
+
+<#k-uq_Qhk_aswdir_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 5.326877e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#k-uq_Qhk_aswdir_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:15:00"^^xsd:dateTimeStamp .
+
+<#k-uq_Qhk_t_2m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.941903e+02 ;
+    qudt:unit unit:K .
+
+<#k-uq_Qhk_t_2m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:15:00"^^xsd:dateTimeStamp .
+
+<#k-uq_Qhk_ws_10m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.520666e+00 ;
+    qudt:unit unit:M-PER-SEC .
+
+<#k-uq_Qhk_ws_10m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T13:15:00"^^xsd:dateTimeStamp .
+
+<#yxLlXaJm_aswdifd_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 1.463123e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#yxLlXaJm_aswdifd_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:45:00"^^xsd:dateTimeStamp .
+
+<#yxLlXaJm_aswdir_s_result> a qudt:QuantityValue ;
+    qudt:numericValue 5.706565e+02 ;
+    qudt:unit unit:W-PER-M2 .
+
+<#yxLlXaJm_aswdir_s_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:45:00"^^xsd:dateTimeStamp .
+
+<#yxLlXaJm_t_2m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.938531e+02 ;
+    qudt:unit unit:K .
+
+<#yxLlXaJm_t_2m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:45:00"^^xsd:dateTimeStamp .
+
+<#yxLlXaJm_ws_10m_result> a qudt:QuantityValue ;
+    qudt:numericValue 2.719174e+00 ;
+    qudt:unit unit:M-PER-SEC .
+
+<#yxLlXaJm_ws_10m_time> a time:Instant ;
+    time:inXSDDateTimeStamp "2020-04-17T12:45:00"^^xsd:dateTimeStamp .
