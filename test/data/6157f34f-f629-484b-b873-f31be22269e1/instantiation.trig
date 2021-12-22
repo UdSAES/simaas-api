@@ -9,10 +9,10 @@
 @prefix fmi: <https://ontologies.msaas.me/fmi-ontology.ttl#> .
 @prefix sms: <https://ontologies.msaas.me/sms-ontology.ttl#> .
 
-@prefix var: <http://localhost:4000/models/6157f34f-f629-484b-b873-f31be22269e1/variables#> .
-@prefix : <http://localhost:4000/models/6157f34f-f629-484b-b873-f31be22269e1/instances#>.
+@prefix var: </models/6157f34f-f629-484b-b873-f31be22269e1/variables#> .
+@prefix : <#>.
 
-<> sms:represents <https://abox.msaas.me/systems/swsls-th> .
+<> sms:represents </systems/swsls-th> .
 
 :parameters rdf:type sms:ParameterSet ;
     :latitude [ rdf:type qudt:QuantityValue ;
