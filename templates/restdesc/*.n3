@@ -16,6 +16,10 @@
     _:request http:methodName "POST" ;
               http:requestURI "{{ origin }}/models" ;
               http:body ?model ;
+              http:headers [
+                  http:fieldName "Content-Type" ;
+                  http:fieldValue "application/octet-stream"
+              ] ;
               http:resp [ http:body ?model ] ;
               http:resp [ http:headers [
                   http:fieldName "Location" ;
@@ -34,6 +38,10 @@
 {
     _:request http:methodName "GET" ;
               http:requestURI ?model ;
+              http:headers [
+                  http:fieldName "Accept" ;
+                  http:fieldValue "application/trig"
+              ] ;
               http:resp [ http:body ?model ] .
     
     ?model api:allInstances _:allInstances .
@@ -56,6 +64,10 @@
     _:request http:methodName "POST" ;
               http:requestURI ?allInstances ;
               http:body ?parameterSet ;
+              http:headers [
+                  http:fieldName "Accept" ;
+                  http:fieldValue "application/trig"
+              ] ;
               http:resp [ http:body ?modelInstance ] ;
               http:resp [ http:headers [
                   http:fieldName "Location" ;
@@ -75,6 +87,10 @@
 {
     _:request http:methodName "GET" ;
               http:requestURI ?modelInstance ;
+              http:headers [
+                  http:fieldName "Accept" ;
+                  http:fieldValue "application/trig"
+              ] ;
               http:resp [ http:body ?modelInstance ] .
     
     ?modelInstance api:allSimulations _:allSimulations .
@@ -97,6 +113,10 @@
     _:request http:methodName "POST" ;
               http:requestURI ?allSimulations ;
               http:body ?simulationSpec ;
+              http:headers [
+                  http:fieldName "Accept" ;
+                  http:fieldValue "application/trig"
+              ] ;
               http:resp [ http:body _:simulation ] ;
               http:resp [ http:headers [
                   http:fieldName "Location" ;
@@ -115,6 +135,10 @@
 =>
 {
     _:request http:methodName "GET" ;
+              http:headers [
+                  http:fieldName "Accept" ;
+                  http:fieldValue "application/trig"
+              ] ;
               http:requestURI ?simulation ;
               http:resp [ http:body ?simulation ] .
     
@@ -131,6 +155,10 @@
 {
     _:request http:methodName "GET" ;
               http:requestURI ?simulationResult ;
+              http:headers [
+                  http:fieldName "Accept" ;
+                  http:fieldValue "application/trig"
+              ] ;
               http:resp [ http:body ?simulationResult ] .
     
     ?simulationResult a sms:SimulationResult .
