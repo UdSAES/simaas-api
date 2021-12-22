@@ -97,13 +97,13 @@
     _:request http:methodName "POST" ;
               http:requestURI ?allSimulations ;
               http:body ?simulationSpec ;
-              http:resp [ http:body ?simulation ] ;
+              http:resp [ http:body _:simulation ] ;
               http:resp [ http:headers [
                   http:fieldName "Location" ;
                   http:fieldValue ?simulation
               ]] .
     
-    ?simulation a sms:Simulation ;
+    _:simulation a sms:Simulation ;
                    sms:simulates ?modelInstance .
 } .
 
