@@ -282,6 +282,24 @@ class Model extends Resource {
           }
         })
       })
+    })
+
+    const shapesGraph = namedNode('#shapes')
+    _.forEach(parts.shapes.store.getQuads(null, null, null), function (quad) {
+      parts.model.store.addQuad(quad.subject, quad.predicate, quad.object, shapesGraph)
+    })
+
+    parts.model.store.addQuads([
+      quad(
+        namedNode(modelURI),
+        ns.sms.instantiationShape,
+        namedNode(`${modelURI}#shapes-instantiation`),
+        defaultGraph()
+      )
+    ])
+
+    _.forEach(parts, async function (config, resource) {
+      const subStore = config.store
 
       // Define serializations
       const serializations = {
