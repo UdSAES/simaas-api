@@ -16,9 +16,8 @@ const { pipeline } = require('stream/promises')
 const storeStream = require('rdf-store-stream').storeStream
 const JsonLdParser = require('jsonld-streaming-parser').JsonLdParser
 const JsonLdSerializer = require('jsonld-streaming-serializer').JsonLdSerializer
-const { namedNode, literal, quad, defaultGraph } = N3.DataFactory
+const { namedNode, blankNode, quad, defaultGraph } = N3.DataFactory
 const uuid = require('uuid')
-const nunjucks = require('nunjucks')
 const moment = require('moment')
 
 const log = require('./logger.js')
@@ -341,7 +340,7 @@ class Model extends Resource {
         io: templateIO.toString(stringEncoding)
       },
       records: _.split(request.query.records, ','),
-      iri_prefix: `${origin}/models`
+      iri_prefix: `${origin}${Model.iriPathAllModels}`
     }
 
     const task = celeryClient.createTask('worker.tasks.get_modelinfo')
@@ -437,6 +436,7 @@ class ModelInstance extends Resource {
       const store = await Resource.parseRdfRequestbody(content, mediatype, view.iri)
 
       // -> TODO: INPUT VALIDATION!! <-
+      // https://github.com/zazuko/rdf-validate-shacl
 
       // Add additional triples that are data
       store.addQuads([
@@ -706,7 +706,7 @@ class Simulation extends Resource {
                       result,
                       ns.qudt.numericValue,
                       defaultGraph()
-                    )[0].value
+                    )[0].value // XXX breaks if property `sh:numericValue` is missing
                   )
                   if (oneSeries.unit == null) {
                     const qudtUnit = this.graph.getObjects(

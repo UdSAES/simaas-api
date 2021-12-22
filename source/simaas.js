@@ -413,7 +413,9 @@ async function getModelInstanceCollection (req, res) {
 
   // Get rid of `@prefix`-declarations assuming all necessary ones are in the template
   const prefixRegEx = /@prefix [\w\d\s\.:<>/#-]*\.\n/gm
-  let shapes = await fs.readFile(model.shapes['application/trig'], {encoding: 'utf-8'})
+  let shapes = await fs.readFile(model.shapes['application/trig'], {
+    encoding: 'utf-8'
+  })
   shapes = shapes.replace(prefixRegEx, '')
 
   res.format({
