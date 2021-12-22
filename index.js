@@ -128,7 +128,12 @@ async function init () {
   app.options('*', handlers.serveRESTdesc)
 
   app.use(bodyParser.json({ type: ['application/json', 'application/*+json'] }))
-  app.use(bodyParser.text({ type: ['application/trig', 'text/turtle', 'text/n3'] }))
+  app.use(
+    bodyParser.text({
+      type: ['application/trig', 'text/turtle', 'text/n3'],
+      limit: '2mb'
+    })
+  )
   app.use(bodyParser.raw({ type: ['application/octet-stream'], limit: '50mb' }))
   app.use(cors())
   app.use(addRequestId)
