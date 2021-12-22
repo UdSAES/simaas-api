@@ -412,7 +412,7 @@ async function getModelInstanceCollection (req, res) {
   const model = await Model.fromJSON(origin, listOfModels[modelId])
 
   // Get rid of `@prefix`-declarations assuming all necessary ones are in the template
-  const prefixRegEx = /@prefix [\w\d\s\.:<>/#-]*\.\n/gm
+  const prefixRegEx = /@prefix [\w\d\s.:<>/#-]*\.\n/gm
   let shapes = await fs.readFile(model.shapes['application/trig'], {
     encoding: 'utf-8'
   })
