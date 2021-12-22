@@ -64,7 +64,6 @@
     "@stoplight/spectral": "^5.9.2",
     "axios": "^0.24.0",
     "chai": "^4.3.4",
-    "dredd": "^9.0.5",
     "mocha": "^9.1.3",
     "prettier-standard": "^16.4.1",
     "speccy": "^0.11.0",
