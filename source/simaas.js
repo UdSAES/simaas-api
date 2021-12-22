@@ -700,10 +700,15 @@ async function serveOAS (c, req, res) {
 }
 
 async function serveRESTdesc (req, res) {
+  const origin = `${req.protocol}://${req.headers.host}`
+
+  log.info(`served RESTdesc to client in 'text/n3'`)
   res.format({
     'text/n3': async function () {
       res.set('content-type', 'text/n3')
-      res.status(200).render('restdesc/*.n3')
+      res.status(200).render('restdesc/*.n3', {
+        origin: origin
+      })
     }
   })
 }
