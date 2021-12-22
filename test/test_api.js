@@ -330,7 +330,7 @@ describe('Test API functionality wrt expected status codes', function () {
 
         filePath = `${testResultDirectory}/simulation_result.${v.ext}`
         if (k === 'application/json') {
-          await fs.writeJson(filePath, { spaces: 2 })
+          await fs.writeJson(filePath, resultResponse.data, { spaces: 2 })
         } else {
           await fs.writeFile(filePath, resultResponse.data)
         }
