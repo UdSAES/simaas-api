@@ -228,12 +228,7 @@ class Model extends Resource {
     // WIP Add metadata/context/controls before adding actual data
     const aboutGraph = namedNode(`#about`)
     parts.model.store.addQuads([
-      quad(
-        aboutGraph,
-        ns.foaf.primaryTopic,
-        namedNode(modelURI),
-        aboutGraph
-      ),
+      quad(aboutGraph, ns.foaf.primaryTopic, namedNode(modelURI), aboutGraph),
       quad(namedNode(modelURI), ns.rdf.type, ns.sms.Model, defaultGraph()),
       quad(aboutGraph, ns.api.home, namedNode('/'), aboutGraph),
       quad(
@@ -441,50 +436,43 @@ class ModelInstance extends Resource {
       // https://github.com/zazuko/rdf-validate-shacl
 
       // Add additional triples that are data
+      const aboutGraph = namedNode('#about')
       store.addQuads([
         quad(namedNode(view.iri), ns.rdf.type, ns.sms.ModelInstance),
+        quad(namedNode(view.iri), ns.sms.instanceOf, namedNode(model.iri)),
         quad(
           namedNode(view.iri),
-          ns.sms.hasSimulationParameters,
-          namedNode('#shapes-simulation-parameters'),
-          defaultGraph()
-        )
-      ])
-
-      // Add metadata
-      const metadataGraph = namedNode('#metadata')
-
-      // Define the context of this resource
-      const contextGraph = namedNode('#context')
-      store.addQuads([
-        quad(
-          namedNode('#context'),
-          ns.foaf.primaryTopic,
-          namedNode(view.iri),
-          contextGraph
+          ns.sms.simulationShape,
+          namedNode('#shapes-simulation'),
+          aboutGraph
         ),
-        quad(namedNode('#context'), ns.api.home, namedNode(model.origin), contextGraph),
+        quad(aboutGraph, ns.foaf.primaryTopic, namedNode(view.iri), aboutGraph),
+        quad(aboutGraph, ns.api.home, namedNode(model.origin), aboutGraph),
         quad(
-          namedNode('#context'),
+          namedNode(view.iri),
           ns.api.allSimulations,
           namedNode(`${view.iri}/experiments`),
-          contextGraph
+          aboutGraph
         )
       ])
 
-      // Define the controls that this resource supports
-      const controlsGraph = namedNode('#controls')
 
-      // Define the necessary shapes
+      // XXX Define the necessary shapes
       const shapesGraph = namedNode('#shapes')
-      store.addQuad(
+      store.addQuads([
         quad(
-          namedNode('#shapes-simulation-parameters'),
+          namedNode('#shapes-simulation'),
           ns.rdf.type,
           ns.sh.NodeShape,
           shapesGraph
+        ),
+        quad(
+          namedNode('#shapes-simulation'),
+          ns.sh.targetNode,
+          blankNode(),
+          shapesGraph
         )
-      )
+      ])
 
       // Collect all information in view that is passed to the actual constructor
       view.graph = store
@@ -571,36 +559,20 @@ class Simulation extends Resource {
       // -> TODO: INPUT VALIDATION!! <-
 
       // Add additional triples that are data
+      const aboutGraph = namedNode('#about')
       store.addQuads([
         quad(namedNode(view.iri), ns.rdf.type, ns.sms.Simulation, defaultGraph()),
-        quad(namedNode(view.iri), ns.sms.simulates, instance.iri, defaultGraph())
-      ])
-
-      // Add metadata
-      const metadataGraph = namedNode('#metadata')
-
-      // Define the context of this resource
-      const contextGraph = namedNode('#context')
-      store.addQuads([
         quad(
-          namedNode('#context'),
-          ns.foaf.primaryTopic,
           namedNode(view.iri),
-          contextGraph
+          ns.sms.simulates,
+          namedNode(instance.iri),
+          defaultGraph()
         ),
-        quad(
-          namedNode('#context'),
-          ns.api.home,
-          namedNode(instance.origin),
-          contextGraph
-        )
+        quad(aboutGraph, ns.foaf.primaryTopic, namedNode(view.iri), aboutGraph),
+        quad(aboutGraph, ns.api.home, namedNode(instance.origin), aboutGraph)
       ])
 
-      // Define the controls that this resource supports
-      const controlsGraph = namedNode('#controls')
 
-      // Define the necessary shapes
-      const shapesGraph = namedNode('#shapes')
 
       view.graph = store
       view.json = null // private attribute; only populated when user supplies JSON
@@ -762,7 +734,7 @@ class Simulation extends Resource {
         namedNode(this.iri),
         ns.api.theSimulationResult,
         namedNode(`${this.iri}/result`),
-        namedNode('#context')
+        namedNode('#about')
       )
     }
 
@@ -800,33 +772,15 @@ class SimulationResult extends Resource {
     // -> TODO: INPUT VALIDATION!! <-
 
     // Add additional triples that are data
+    const aboutGraph = namedNode('#about')
     store.addQuads([
       quad(namedNode(view.iri), ns.rdf.type, ns.sms.SimulationResult, defaultGraph()),
-      quad(namedNode(view.iri), ns.sms.resultOf, simulation.iri, defaultGraph())
+      quad(namedNode(view.iri), ns.sms.resultOf, simulation.iri, defaultGraph()),
+      quad(aboutGraph, ns.foaf.primaryTopic, namedNode(view.iri), aboutGraph),
+      quad(aboutGraph, ns.api.home, namedNode(simulation.origin), aboutGraph)
     ])
 
-    // Add metadata
-    const metadataGraph = namedNode('#metadata')
 
-    // Define the context of this resource
-    const contextGraph = namedNode('#context')
-    store.addQuads([
-      quad(
-        namedNode('#context'),
-        ns.foaf.primaryTopic,
-        namedNode(view.iri),
-        contextGraph
-      ),
-      quad(
-        namedNode('#context'),
-        ns.api.home,
-        namedNode(simulation.origin),
-        contextGraph
-      )
-    ])
-
-    // Define the controls that this resource supports
-    const controlsGraph = namedNode('#controls')
 
     view.graph = store
 
