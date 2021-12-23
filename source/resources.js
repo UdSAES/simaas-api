@@ -456,7 +456,6 @@ class ModelInstance extends Resource {
         )
       ])
 
-
       // XXX Define the necessary shapes
       const shapesGraph = namedNode('#shapes')
       store.addQuads([
@@ -571,8 +570,6 @@ class Simulation extends Resource {
         quad(aboutGraph, ns.foaf.primaryTopic, namedNode(view.iri), aboutGraph),
         quad(aboutGraph, ns.api.home, namedNode(instance.origin), aboutGraph)
       ])
-
-
 
       view.graph = store
       view.json = null // private attribute; only populated when user supplies JSON
@@ -779,8 +776,6 @@ class SimulationResult extends Resource {
       quad(aboutGraph, ns.foaf.primaryTopic, namedNode(view.iri), aboutGraph),
       quad(aboutGraph, ns.api.home, namedNode(simulation.origin), aboutGraph)
     ])
-
-
 
     view.graph = store
 
