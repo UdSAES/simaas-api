@@ -158,7 +158,7 @@ function initializeBackend (oasFilePath) {
     backend = new OpenAPIBackend({
       definition: oasFilePath,
       strict: true,
-      validate: true,
+      validate: false,
       validateFormats: false
     })
     log.info(`successfully loaded API description ${oasFilePath}`)
