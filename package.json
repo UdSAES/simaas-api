@@ -1,7 +1,7 @@
 {
   "name": "simaas_api",
-  "version": "0.4.0",
-  "description": "Microservice which implements the public API of the Simulation as a Service instance",
+  "version": "0.6.0",
+  "description": "Microservice which implements the public API of the Simulation as a Service-Implementation",
   "main": "index.js",
   "config": {
     "oas3": "./templates/simaas_oas3.json",
@@ -15,10 +15,8 @@
     "api-lint": "spectral lint $npm_package_config_oas3",
     "api-serve": "speccy serve $npm_package_config_oas3",
     "api-resolve": "speccy resolve $npm_package_config_oas3 > $npm_package_config_oas3_flat",
-    "predredd": "npm run api-resolve",
-    "dredd": "node ./test/dredd.js",
     "test-api": "mocha test/test_api.js --timeout 5000",
-    "test-all": "npm run lint && npm run api-lint && npm run dredd"
+    "lint-all": "npm run lint && npm run api-lint"
   },
   "repository": {
     "type": "git",
@@ -31,7 +29,7 @@
   "bugs": {
     "url": "https://github.com/UdSAES/simaas_api/issues"
   },
-  "homepage": "https://github.com/UdSAES/simaas_api#readme",
+  "homepage": "https://github.com/UdSAES/simaas-api#a-simulation-as-a-service-implementation-api",
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
     "@rdfjs/namespace": "^1.1.0",
@@ -68,11 +66,5 @@
     "prettier-standard": "^16.4.1",
     "speccy": "^0.11.0",
     "standard": "^16.0.4"
-  },
-  "standard": {
-    "ignore": [
-      "/simaas_worker/",
-      "/udsaes_async_queue/"
-    ]
   }
 }
