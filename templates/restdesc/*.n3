@@ -120,7 +120,7 @@
               http:resp [ http:body _:simulation ] ;
               http:resp [ http:headers [
                   http:fieldName "Location" ;
-                  http:fieldValue ?simulation
+                  http:fieldValue _:simulation
               ]] .
     
     _:simulation a sms:Simulation ;
