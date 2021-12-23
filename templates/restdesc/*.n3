@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2021 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+# SPDX-License-Identifier: MIT
+
 @prefix http: <http://www.w3.org/2011/http#> .
 @prefix fmi: <https://ontologies.msaas.me/fmi-ontology.ttl#> .
 @prefix sms: <https://ontologies.msaas.me/sms-ontology.ttl#> .
