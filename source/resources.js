@@ -226,37 +226,21 @@ class Model extends Resource {
     }
 
     // WIP Add metadata/context/controls before adding actual data
+    const aboutGraph = namedNode(`#about`)
     parts.model.store.addQuads([
       quad(
-        namedNode(`#context`),
+        aboutGraph,
         ns.foaf.primaryTopic,
         namedNode(modelURI),
-        namedNode(`#context`)
+        aboutGraph
       ),
-      quad(namedNode(`#context`), ns.api.home, namedNode('/'), namedNode(`#context`)),
+      quad(namedNode(modelURI), ns.rdf.type, ns.sms.Model, defaultGraph()),
+      quad(aboutGraph, ns.api.home, namedNode('/'), aboutGraph),
       quad(
-        namedNode('#context'),
+        namedNode(modelURI),
         ns.api.allInstances,
-        namedNode('#controls-get-instances'),
-        namedNode(`#context`)
-      ),
-      quad(
-        namedNode('#controls-get-instances'),
-        ns.rdf.type,
-        ns.http.Request,
-        namedNode('#controls')
-      ),
-      quad(
-        namedNode('#controls-get-instances'),
-        ns.http.methodName,
-        literal('GET'),
-        namedNode('#controls')
-      ),
-      quad(
-        namedNode('#controls-get-instances'),
-        ns.http.requestURI,
         namedNode(`${modelURI}/instances`),
-        namedNode('#controls')
+        aboutGraph
       )
     ])
 
@@ -294,7 +278,7 @@ class Model extends Resource {
         namedNode(modelURI),
         ns.sms.instantiationShape,
         namedNode(`${modelURI}#shapes-instantiation`),
-        defaultGraph()
+        aboutGraph
       )
     ])
 
@@ -386,7 +370,7 @@ class Model extends Resource {
     const filePaths = await Model.createRdfRepresentation(
       modelViewWorker.graph,
       modelDirectory,
-      modelViewWorker.guid
+      `${origin}${Model.iriPathAllModels}/${modelViewWorker.guid}`
     )
 
     filePaths.model['application/octet-stream'] = modelFilePath
