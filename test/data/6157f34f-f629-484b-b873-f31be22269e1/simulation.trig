@@ -5,7 +5,7 @@
 @prefix sosa: <http://www.w3.org/ns/sosa/> .
 @prefix time: <http://www.w3.org/2006/time#> .
 
-@prefix sms: <https://ontologies.msaas.me/sms-ontology.ttl#> .
+@prefix sms: <https://purl.org/sms-ontology#> .
 @prefix settings: <http://localhost:4000/models/6157f34f-f629-484b-b873-f31be22269e1/instances/fe6c4e80-315d-4c6d-a6d6-77bf90601eee/settings#> .
 @prefix var: <http://localhost:4000/models/6157f34f-f629-484b-b873-f31be22269e1/variables#> .
 

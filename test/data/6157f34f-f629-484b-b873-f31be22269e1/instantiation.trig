@@ -6,8 +6,8 @@
 @prefix qudt: <http://qudt.org/schema/qudt/> .
 @prefix unit: <http://qudt.org/vocab/unit/> .
 
-@prefix fmi: <https://ontologies.msaas.me/fmi-ontology.ttl#> .
-@prefix sms: <https://ontologies.msaas.me/sms-ontology.ttl#> .
+@prefix fmi: <https://purl.org/fmi-ontology#> .
+@prefix sms: <https://purl.org/sms-ontology#> .
 
 @prefix var: </models/6157f34f-f629-484b-b873-f31be22269e1/variables#> .
 @prefix : <#>.

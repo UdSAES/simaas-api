@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 
 @prefix http: <http://www.w3.org/2011/http#> .
-@prefix fmi: <https://ontologies.msaas.me/fmi-ontology.ttl#> .
-@prefix sms: <https://ontologies.msaas.me/sms-ontology.ttl#> .
+@prefix fmi: <https://purl.org/fmi-ontology#> .
+@prefix sms: <https://purl.org/sms-ontology#> .
 @prefix api: <{{ origin }}/vocabulary#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 

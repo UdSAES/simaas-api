@@ -36,8 +36,8 @@ const knownPrefixes = {
   qudt: 'http://qudt.org/schema/qudt/',
   unit: 'http://qudt.org/vocab/unit/',
   time: 'http://www.w3.org/2006/time#',
-  fmi: 'https://ontologies.msaas.me/fmi-ontology.ttl#',
-  sms: 'https://ontologies.msaas.me/sms-ontology.ttl#',
+  fmi: 'https://purl.org/fmi-ontology#',
+  sms: 'https://purl.org/sms-ontology#',
   api: '/vocabulary#'
 }
 
