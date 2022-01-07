@@ -13,6 +13,12 @@ const NodeCache = require('node-cache')
 const { promiseStatus } = require('promise-status-async')
 const { OpenAPIBackend } = require('openapi-backend')
 const $RefParser = require('@apidevtools/json-schema-ref-parser')
+const N3 = require('n3')
+const { pipeline } = require('stream/promises')
+const storeStream = require('rdf-store-stream').storeStream
+const { defaultGraph } = N3.DataFactory
+const util = require('util')
+const exec = util.promisify(require('child_process').exec)
 
 const log = require('./logger.js')
 const responseUtils = require('./response_utils.js')
@@ -35,6 +41,9 @@ const cfg = {
   },
   tmpfs: process.env.SIMAAS_TMPFS_PATH,
   fs: process.env.SIMAAS_FS_PATH,
+  tpf: {
+    containerName: process.env.TPF_CONTAINER
+  },
   backingServices: {
     rabbitMQ: {
       protocol: 'amqp',
@@ -50,6 +59,7 @@ const cfg = {
 }
 
 cfg.oas.filePathDynamic = `${cfg.fs}/OAS.json`
+cfg.tpf.sourceFilePath = `${cfg.fs}/data.trig`
 
 const modelInstanceCache = new NodeCache({
   // TODO make configurable?
@@ -127,6 +137,27 @@ async function updateOpenAPISpecification (key, value, action) {
     action
   )
   return fileContent
+}
+
+async function updateDataSet (quadsToAdd) {
+  const inputStream = fs.createReadStream(cfg.tpf.sourceFilePath)
+  const streamParser = new N3.StreamParser({ format: 'application/trig' })
+
+  inputStream.pipe(streamParser)
+  const store = await storeStream(streamParser)
+  store.addQuads(quadsToAdd)
+
+  const outputStream = fs.createWriteStream(cfg.tpf.sourceFilePath)
+  const streamWriter = new N3.StreamWriter({
+    prefixes: knownPrefixes,
+    format: 'application/trig'
+  })
+
+  await pipeline(store.match(null, null, null), streamWriter, outputStream)
+
+  // Reload `@ldf/server` so changes are taken into account
+  // https://github.com/LinkedDataFragments/Server.js/tree/master/packages/server#reload-running-server
+  await exec(`podman kill --signal=SIGHUP ${cfg.tpf.containerName}`)
 }
 
 // Instantiate connections to messaging broker and result storage
@@ -255,6 +286,16 @@ async function addModel (c, req, res) {
 
   // Create internal representation by instantiating class `Model`
   const model = await Model.init(req, tmpFile, cfg.fs, celeryClient)
+
+  // Update read-only data set exposed via QPFs with triples about new model
+  for (const part of ['model', 'types', 'units', 'variables']) {
+    const inputStream = fs.createReadStream(model[part]['application/trig'])
+    const streamParser = new N3.StreamParser({ format: 'application/trig' })
+    inputStream.pipe(streamParser)
+    const store = await storeStream(streamParser)
+
+    await updateDataSet(store.getQuads(null, null, null, defaultGraph()))
+  }
 
   // Persist changes to internal list of models
   await updateInternalListOfModels(model.id, model, 'set')
@@ -448,6 +489,8 @@ async function createModelInstance (c, req, res) {
 
   // Parse request body
   const instance = await ModelInstance.init(model, requestBody, mimetype)
+
+  await updateDataSet(instance.graph.getQuads(null, null, null, defaultGraph()))
 
   // Save internal representation of new model instance to cache
   modelInstanceCache.set(instance.id, instance)
