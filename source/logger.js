@@ -5,7 +5,7 @@
 
 // Create logger
 // -- `log.<level>()` does _not_ include a request identifier
-// -- use req.log.<level>() for including the request id! compare `app.use()`-statement 
+// -- use req.log.<level>() for including the request id! compare `app.use()`-statement
 //    for logging incoming requests, as suggested here:
 //    https://github.com/trentm/node-bunyan#logchild (last paragraph)
 const bunyan = require('bunyan')
