@@ -33,6 +33,7 @@ const fs = require('fs-extra')
 const delay = require('delay')
 const addRequestId = require('express-request-id')()
 const nunjucks = require('nunjucks')
+const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middleware')
 
 const handlers = require('./source/simaas.js')
 const responseUtils = require('./source/response_utils.js')
@@ -54,6 +55,10 @@ async function checkIfConfigIsValid () {
     },
     oas: {
       filePathStatic: './oas/simaas_oas3.json'
+    },
+    tpf: {
+      path: '/dataset',
+      target: process.env.TPF_ORIGIN
     },
     fs: process.env.SIMAAS_FS_PATH
   }
@@ -138,6 +143,22 @@ async function init () {
   app.use(cors())
   app.use(addRequestId)
   nunjucks.configure('templates', { autoescape: true, express: app })
+
+  app.use(
+    [cfg.tpf.path, '/assets'],
+    createProxyMiddleware({
+      target: cfg.tpf.target,
+      changeOrigin: true, // idk if this is really necessary..
+      // https://github.com/chimurai/http-proxy-middleware#intercept-and-manipulate-responses
+      selfHandleResponse: true,
+      onProxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
+        const response = responseBuffer.toString('utf-8')
+        const oldURL = `${cfg.tpf.target}${cfg.tpf.path}`
+        const newURL = `${req.protocol}://${req.headers.host}${req.path}`
+        return response.replaceAll(oldURL, newURL)
+      })
+    })
+  )
 
   // Expose UI iff UI_URL_PATH is not empty
   if (cfg.ui.urlPath !== '') {
