@@ -144,22 +144,6 @@ async function init () {
   app.use(addRequestId)
   nunjucks.configure('templates', { autoescape: true, express: app })
 
-  app.use(
-    [cfg.tpf.path, '/assets'],
-    createProxyMiddleware({
-      target: cfg.tpf.target,
-      changeOrigin: true, // idk if this is really necessary..
-      // https://github.com/chimurai/http-proxy-middleware#intercept-and-manipulate-responses
-      selfHandleResponse: true,
-      onProxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
-        const response = responseBuffer.toString('utf-8')
-        const oldURL = `${cfg.tpf.target}${cfg.tpf.path}`
-        const newURL = `${req.protocol}://${req.headers.host}${req.path}`
-        return response.replaceAll(oldURL, newURL)
-      })
-    })
-  )
-
   // Expose UI iff UI_URL_PATH is not empty
   if (cfg.ui.urlPath !== '') {
     if (cfg.ui.staticFilesPath !== '') {
@@ -179,6 +163,25 @@ async function init () {
     req.log.info({ req: req }, `received ${req.method}-request on ${req.originalUrl}`) // XXX incompatible with GDPR!!
     next()
   })
+
+  // Expose Triple Pattern Fragmens interface by proxying requests to LDF-server
+  app.use(
+    [cfg.tpf.path, '/assets'],
+    createProxyMiddleware({
+      target: cfg.tpf.target,
+      changeOrigin: true, // idk if this is really necessary..
+      // https://github.com/chimurai/http-proxy-middleware#intercept-and-manipulate-responses
+      selfHandleResponse: true,
+      onProxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
+        const response = responseBuffer.toString('utf-8')
+        const oldURL = `${cfg.tpf.target}${cfg.tpf.path}`
+        const newURL = `${req.protocol}://${req.headers.host}${req.path}`
+        return response.replaceAll(oldURL, newURL)
+      })
+    })
+  )
+
+  // TODO ensure that `tpf_server_config.json` and `data.trig` exist!!
 
   // Rebuild dynamic OAS to ensure that upgrades are propagated but models are kept
   await fs.remove(cfg.oas.filePathDynamic)
