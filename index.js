@@ -57,7 +57,7 @@ async function checkIfConfigIsValid () {
       filePathStatic: './oas/simaas_oas3.json'
     },
     tpf: {
-      path: '/dataset',
+      path: '/knowledge-graph',
       target: process.env.TPF_ORIGIN
     },
     fs: process.env.SIMAAS_FS_PATH
@@ -182,6 +182,7 @@ async function init () {
   )
 
   // TODO ensure that `tpf_server_config.json` and `data.trig` exist!!
+
 
   // Rebuild dynamic OAS to ensure that upgrades are propagated but models are kept
   await fs.remove(cfg.oas.filePathDynamic)
