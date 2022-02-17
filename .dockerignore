@@ -4,12 +4,11 @@
 
 # Only include specific files/directories
 !source/
-!oas/
-!test/
+!templates/
 !scripts/set_buffer_size_amqplib.js
 
-!prettierrc.json
-
 !package.json
-!startup.sh
 !index.js
+
+!test/
+!prettierrc.json
