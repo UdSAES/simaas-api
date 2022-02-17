@@ -1,0 +1,14 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix foaf: <http://xmlns.com/foaf/spec/#>.
+@prefix hydra: <http://www.w3.org/ns/hydra/core#>.
+@prefix http: <http://www.w3.org/2011/http#>.
+@prefix sh: <http://www.w3.org/ns/shacl#>.
+@prefix sosa: <http://www.w3.org/ns/sosa/>.
+@prefix qudt: <http://qudt.org/schema/qudt/>.
+@prefix unit: <http://qudt.org/vocab/unit/>.
+@prefix time: <http://www.w3.org/2006/time#>.
+@prefix fmi: <https://purl.org/fmi-ontology#>.
+@prefix sms: <https://purl.org/sms-ontology#>.

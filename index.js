@@ -34,6 +34,7 @@ const delay = require('delay')
 const addRequestId = require('express-request-id')()
 const nunjucks = require('nunjucks')
 const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middleware')
+const { processenv } = require('processenv')
 
 const handlers = require('./source/simaas.js')
 const responseUtils = require('./source/response_utils.js')
@@ -56,14 +57,22 @@ async function checkIfConfigIsValid () {
     oas: {
       filePathStatic: './oas/simaas_oas3.json'
     },
-    tpf: {
-      path: '/knowledge-graph',
-      target: process.env.TPF_ORIGIN
+    qpf: {
+      expose: processenv('QPF_SERVER_EXPOSE', true),
+      path: processenv('QPF_SERVER_PATH', '/knowledge-graph'),
+      target: processenv('QPF_SERVER_ORIGIN'),
+      configTemplate: processenv(
+        'QPF_SERVER_CONFIG',
+        './templates/ldf-server_config.json'
+      ),
+      dataTemplate: './templates/ldf-server_data.trig'
     },
     fs: process.env.SIMAAS_FS_PATH
   }
 
-  config.oas.filePathDynamic = `${config.fs}/OAS.json`
+  config.oas.filePathDynamic = `${config.fs}/OAS.json` // careful, also in `simaas.js`
+  config.qpf.configFilePath = `${config.fs}/ldf-server_config.json`
+  config.qpf.sourceFilePath = `${config.fs}/data.trig` // careful, also in `simaas.js`
 
   if (
     !(
@@ -91,6 +100,7 @@ async function checkIfConfigIsValid () {
     process.exit(4)
   }
 
+  // TODO use ?? instead of || or processenv()-syntax
   // TODO check validity of UI_STATIC_FILES_PATH
   // TODO check validity of UI_URL_PATH
   // TODO check validity of LOG_LEVEL?
@@ -164,25 +174,37 @@ async function init () {
     next()
   })
 
-  // Expose Triple Pattern Fragmens interface by proxying requests to LDF-server
-  app.use(
-    [cfg.tpf.path, '/assets'],
-    createProxyMiddleware({
-      target: cfg.tpf.target,
-      changeOrigin: true, // idk if this is really necessary..
-      // https://github.com/chimurai/http-proxy-middleware#intercept-and-manipulate-responses
-      selfHandleResponse: true,
-      onProxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
-        const response = responseBuffer.toString('utf-8')
-        const oldURL = `${cfg.tpf.target}${cfg.tpf.path}`
-        const newURL = `${req.protocol}://${req.headers.host}${req.path}`
-        return response.replaceAll(oldURL, newURL)
+  // Expose Quad/Triple Pattern Fragmens interface by proxying requests to LDF-server
+  if (cfg.qpf.expose === true) {
+    // Ensure that config-file and data source exist
+    const qpfConfigExists = await fs.pathExists(cfg.qpf.configFilePath)
+    const qpfDataExists = await fs.pathExists(cfg.qpf.sourceFilePath)
+
+    if (qpfConfigExists === false) {
+      await fs.copy(cfg.qpf.configTemplate, cfg.qpf.configFilePath)
+    }
+
+    if (qpfDataExists === false) {
+      await fs.copy(cfg.qpf.dataTemplate, cfg.qpf.sourceFilePath)
+    }
+
+    // Proxy requests at designated path to instance of @ldf/server
+    app.use(
+      [cfg.qpf.path, '/assets'],
+      createProxyMiddleware({
+        target: cfg.qpf.target,
+        changeOrigin: true, // idk if this is really necessary..
+        // https://github.com/chimurai/http-proxy-middleware#intercept-and-manipulate-responses
+        selfHandleResponse: true,
+        onProxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
+          const response = responseBuffer.toString('utf-8')
+          const oldURL = `${cfg.qpf.target}${cfg.qpf.path}`
+          const newURL = `${req.protocol}://${req.headers.host}${req.path}`
+          return response.replaceAll(oldURL, newURL)
+        })
       })
-    })
-  )
-
-  // TODO ensure that `tpf_server_config.json` and `data.trig` exist!!
-
+    )
+  }
 
   // Rebuild dynamic OAS to ensure that upgrades are propagated but models are kept
   await fs.remove(cfg.oas.filePathDynamic)

@@ -41,8 +41,10 @@ const cfg = {
   },
   tmpfs: process.env.SIMAAS_TMPFS_PATH,
   fs: process.env.SIMAAS_FS_PATH,
-  tpf: {
-    containerName: process.env.TPF_CONTAINER
+  qpf: {
+    expose: (process.env.QPF_SERVER_EXPOSE === 'true') ?? true,
+    containerEngine: process.env.QPF_SERVER_CONTAINER_ENGINE,
+    containerName: process.env.QPF_SERVER_CONTAINER
   },
   backingServices: {
     rabbitMQ: {
@@ -58,8 +60,8 @@ const cfg = {
   }
 }
 
-cfg.oas.filePathDynamic = `${cfg.fs}/OAS.json`
-cfg.tpf.sourceFilePath = `${cfg.fs}/data.trig`
+cfg.oas.filePathDynamic = `${cfg.fs}/OAS.json` // careful, also defined in `index.js`
+cfg.qpf.sourceFilePath = `${cfg.fs}/data.trig` // careful, also defined in `index.js`
 
 const modelInstanceCache = new NodeCache({
   // TODO make configurable?
@@ -140,14 +142,14 @@ async function updateOpenAPISpecification (key, value, action) {
 }
 
 async function updateDataSet (quadsToAdd) {
-  const inputStream = fs.createReadStream(cfg.tpf.sourceFilePath)
+  const inputStream = fs.createReadStream(cfg.qpf.sourceFilePath)
   const streamParser = new N3.StreamParser({ format: 'application/trig' })
 
   inputStream.pipe(streamParser)
   const store = await storeStream(streamParser)
   store.addQuads(quadsToAdd)
 
-  const outputStream = fs.createWriteStream(cfg.tpf.sourceFilePath)
+  const outputStream = fs.createWriteStream(cfg.qpf.sourceFilePath)
   const streamWriter = new N3.StreamWriter({
     prefixes: knownPrefixes,
     format: 'application/trig'
@@ -157,7 +159,7 @@ async function updateDataSet (quadsToAdd) {
 
   // Reload `@ldf/server` so changes are taken into account
   // https://github.com/LinkedDataFragments/Server.js/tree/master/packages/server#reload-running-server
-  await exec(`podman kill --signal=SIGHUP ${cfg.tpf.containerName}`)
+  await exec(`${cfg.qpf.containerEngine} kill --signal=SIGHUP ${cfg.qpf.containerName}`)
 }
 
 // Instantiate connections to messaging broker and result storage
@@ -288,13 +290,15 @@ async function addModel (c, req, res) {
   const model = await Model.init(req, tmpFile, cfg.fs, celeryClient)
 
   // Update read-only data set exposed via QPFs with triples about new model
-  for (const part of ['model', 'types', 'units', 'variables']) {
-    const inputStream = fs.createReadStream(model[part]['application/trig'])
-    const streamParser = new N3.StreamParser({ format: 'application/trig' })
-    inputStream.pipe(streamParser)
-    const store = await storeStream(streamParser)
+  if (cfg.qpf.expose === true) {
+    for (const part of ['model', 'types', 'units', 'variables']) {
+      const inputStream = fs.createReadStream(model[part]['application/trig'])
+      const streamParser = new N3.StreamParser({ format: 'application/trig' })
+      inputStream.pipe(streamParser)
+      const store = await storeStream(streamParser)
 
-    await updateDataSet(store.getQuads(null, null, null, defaultGraph()))
+      await updateDataSet(store.getQuads(null, null, null, defaultGraph()))
+    }
   }
 
   // Persist changes to internal list of models

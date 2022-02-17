@@ -1,0 +1,62 @@
+{
+  "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@ldf/server/^3.3.0/components/context.jsonld",
+  "@id": "urn:ldf-server:my",
+  "import": "preset-qpf:config-defaults.json",
+  "title": "Linked Data Fragments server for M/S hypermedia API",
+  "datasources": [
+    {
+      "@id": "urn:ldf-server:myTrigDatasource",
+      "@type": "TrigDatasource",
+      "datasourceTitle": "M/S hypermedia API",
+      "description": "Relevant quads from the M/S hypermedia API instance",
+      "datasourcePath": "knowledge-graph",
+      "file": "/tmp/data.trig"
+    }
+  ],
+  "prefixes": [
+    {
+      "prefix": "rdf",
+      "uri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    },
+    {
+      "prefix": "rdfs",
+      "uri": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    {
+      "prefix": "xsd",
+      "uri": "http://www.w3.org/2001/XMLSchema#"
+    },
+    {
+      "prefix": "dct",
+      "uri": "http://purl.org/dc/terms/"
+    },
+    {
+      "prefix": "foaf",
+      "uri": "http://xmlns.com/foaf/0.1/"
+    },
+    {
+      "prefix": "sosa",
+      "uri": "http://www.w3.org/ns/sosa/"
+    },
+    {
+      "prefix": "qudt",
+      "uri": "http://qudt.org/schema/qudt/"
+    },
+    {
+      "prefix": "fmi",
+      "uri": "https://purl.org/fmi-ontology#"
+    },
+    {
+      "prefix": "sms",
+      "uri": "https://purl.org/sms-ontology#"
+    },
+    {
+      "prefix": "hydra",
+      "uri": "http://www.w3.org/ns/hydra/core#"
+    },
+    {
+      "prefix": "void",
+      "uri": "http://rdfs.org/ns/void#"
+    }
+  ]
+}
