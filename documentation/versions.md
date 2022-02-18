@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2022 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # API Version History
 The API is versioned using [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) (semver) and follows the semver specification.
 

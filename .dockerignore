@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+#
+# SPDX-License-Identifier: CC0-1.0
+
 # Ignore everything
 # https://youknowfordevs.com/2018/12/07/getting-control-of-your-dockerignore-files.html
 *

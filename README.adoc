@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+//
+// SPDX-License-Identifier: CC-BY-4.0
+
 = A _Simulation as a Service_-Implementation: API
 
 image:https://img.shields.io/badge/code_style-standard-brightgreen.svg[alt=JavaScript Style Guide, link=https://standardjs.com]
