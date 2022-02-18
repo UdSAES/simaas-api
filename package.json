@@ -1,6 +1,6 @@
 {
   "name": "simaas_api",
-  "version": "0.6.0",
+  "version": "0.7.0-beta.1",
   "description": "Microservice which implements the public API of the Simulation as a Service-Implementation",
   "main": "index.js",
   "config": {
