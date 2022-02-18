@@ -17,8 +17,7 @@ const N3 = require('n3')
 const { pipeline } = require('stream/promises')
 const storeStream = require('rdf-store-stream').storeStream
 const { defaultGraph } = N3.DataFactory
-const util = require('util')
-const exec = util.promisify(require('child_process').exec)
+const axios = require('axios')
 
 const log = require('./logger.js')
 const responseUtils = require('./response_utils.js')
@@ -42,7 +41,7 @@ const cfg = {
   tmpfs: process.env.SIMAAS_TMPFS_PATH,
   fs: process.env.SIMAAS_FS_PATH,
   qpf: {
-    expose: (process.env.QPF_SERVER_EXPOSE === 'true') ?? true,
+    expose: process.env.QPF_SERVER_EXPOSE === 'true' ?? true,
     containerEngine: process.env.QPF_SERVER_CONTAINER_ENGINE,
     containerName: process.env.QPF_SERVER_CONTAINER
   },
@@ -159,7 +158,18 @@ async function updateDataSet (quadsToAdd) {
 
   // Reload `@ldf/server` so changes are taken into account
   // https://github.com/LinkedDataFragments/Server.js/tree/master/packages/server#reload-running-server
-  await exec(`${cfg.qpf.containerEngine} kill --signal=SIGHUP ${cfg.qpf.containerName}`)
+  let socketPath
+  if (cfg.qpf.containerEngine === 'docker') {
+    socketPath = '/var/run/docker.sock'
+  } else {
+    log.error(`Container engine '${cfg.qpf.containerEngine} not yet supported!`)
+  }
+
+  await axios({
+    method: 'POST',
+    url: `/containers/${cfg.qpf.containerName}/kill?signal=SIGHUP`,
+    socketPath: socketPath
+  })
 }
 
 // Instantiate connections to messaging broker and result storage
