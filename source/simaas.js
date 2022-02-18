@@ -494,7 +494,9 @@ async function createModelInstance (c, req, res) {
   // Parse request body
   const instance = await ModelInstance.init(model, requestBody, mimetype)
 
-  await updateDataSet(instance.graph.getQuads(null, null, null, defaultGraph()))
+  if (cfg.qpf.expose === true) {
+    await updateDataSet(instance.graph.getQuads(null, null, null, defaultGraph()))
+  }
 
   // Save internal representation of new model instance to cache
   modelInstanceCache.set(instance.id, instance)
