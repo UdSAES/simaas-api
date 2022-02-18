@@ -1,0 +1,316 @@
+# SPDX-FileCopyrightText: 2021 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+# SPDX-License-Identifier: MIT
+
+
+# Playbook to build and run a SIMaaS-instance locally using plain Docker
+
+---
+- hosts: localhost
+  vars:
+    # General options
+    # CHANGE directory on host into which to clone the repositories
+    tmp_dir: ""
+
+    # Options for the container engine
+    docker:
+      network: 
+        name: simaas  # name of the docker network used for deploying
+        state: present # present / absent
+        subnet: '192.168.98.0/26'  # from 192.168.98.1 to 192.168.98.62
+        gateway: '192.168.98.1'  # use for accessing API, this is reachable from worker!
+
+    # Configuration of the deployment
+    rebuild_existing_images: true  # ensure that updates to code result in new image
+    simaas:
+      state: started  # present / started / stopped / absent; for all containers
+      message_broker:
+        image:
+          name: "rabbitmq:3-alpine"  # https://hub.docker.com/_/rabbitmq
+        container:
+          name: rabbitmq
+          port: 5672
+          username: guest
+          password: guest
+      result_backend:
+        image:
+          name: "redis:6-alpine"  # https://hub.docker.com/_/redis
+        container:
+          name: redis
+          port: 6379
+      ldf_server:
+        repo:
+          path: "{{ tmp_dir }}/ldf-server"
+        image:
+          name: "ldf-server:latest"
+        container:
+          name: "qpf-server"
+          port: 3000
+      worker:
+        repo:
+          path: "{{ tmp_dir }}/worker"
+        image:
+          name: "simaas-worker:latest"
+        container:
+          tmpfs_maxsize: 41943040
+          tmpfs_path: "/home/celery/tmp"  # within container
+          license_path: "/home/celery/DYMOLA_LICENSE.LIC"  # within container
+          cpus: 1  # only integers here! use more instances rather than more CPUs
+        replicas: 1  # CHANGE number of worker instances -- doesn't scale down, only up!
+        license: ""  # CHANGE license file on host
+      api:
+        repo:
+          path: "{{ tmp_dir }}/api"
+        image:
+          name: "simaas-api:latest"
+        container:
+          tmpfs:
+            size: 40M  # size of the tmpfs-mount (RAM)
+          port: 4000
+  tasks:
+    # Check out clean copies of the repositories from GitHub
+    - name: Check out clean copies of the repositories from GitHub
+      ansible.builtin.git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        version: "{{ item.version }}"
+      loop:
+        - {
+            repo: git@github.com:LinkedDataFragments/Server.js.git,
+            dest: "{{ simaas.ldf_server.repo.path }}",
+            version: master
+          }
+        - {
+            repo: git@github.com:UdSAES/simaas-worker.git,
+            dest: "{{ simaas.worker.repo.path }}",
+            version: main
+          }
+        - {
+            repo: git@github.com:UdSAES/simaas-api.git,
+            dest: "{{ simaas.api.repo.path }}",
+            version: main
+          }
+      tags:
+        - build
+        - vcs
+
+    # Build image for Linked Data Fragments Server
+    # https://github.com/LinkedDataFragments/Server.js/tree/master/packages/server
+    # #optional-running-in-a-docker-container
+    - name: Build image for Linked Data Fragments Server
+      community.docker.docker_image:
+        source: "build"
+        force_source: "{{ rebuild_existing_images }}"
+        build:
+          path: "{{ simaas.ldf_server.repo.path }}/packages/server"
+        name: "{{ simaas.ldf_server.image.name }}"
+      tags:
+        - build
+        - ldf_server
+        - build-ldf_server
+
+    # Build image for SIMaaS-worker
+    - name: Build image for SIMaaS-worker
+      block:
+        - name: Get commit hash of repo
+          command: "git rev-parse HEAD"
+          args:
+            chdir: "{{ simaas.worker.repo.path }}"
+          register: commit_hash
+          ignore_errors: true
+
+        - name: "Print result of git rev-parse HEAD (debugging)"
+          debug:
+            msg: "The repository is at commit {{ commit_hash.stdout }}"
+
+        - name: "Build image for worker"
+          community.docker.docker_image:
+            source: "build"
+            force_source: "{{ rebuild_existing_images }}"
+            build:
+              path: "{{ simaas.worker.repo.path }}"
+              args:
+                VCS_REF: "{{ commit_hash.stdout }}"
+            name: "{{ simaas.worker.image.name }}"
+      tags:
+        - build
+        - worker
+        - build-worker
+
+    # Build image for SIMaaS-API
+    - name: Build image for SIMaaS-API
+      block:
+        - name: Get commit hash of repo
+          command: "git rev-parse HEAD"
+          args:
+            chdir: "{{ simaas.api.repo.path }}"
+          register: commit_hash
+          ignore_errors: true
+
+        - name: "Print result of git rev-parse HEAD (debugging)"
+          debug:
+            msg: "The repository is at commit {{ commit_hash.stdout }}"
+
+        - name: "Build image for API"
+          community.docker.docker_image:
+            source: "build"
+            force_source: "{{ rebuild_existing_images }}"
+            build:
+              path: "{{ simaas.api.repo.path }}"
+              args:
+                VCS_REF: "{{ commit_hash.stdout }}"
+            name: "{{ simaas.api.image.name }}"
+      tags:
+        - build
+        - api
+        - build-api
+
+    # Setup a user-defined Docker network
+    - name: "Add docker network {{ docker.network.name }}"
+      docker_network:
+        name: "{{ docker.network.name }}"
+        state: "{{ docker.network.state }}"
+        ipam_config:
+          - subnet: "{{ docker.network.subnet }}"
+            gateway: "{{ docker.network.gateway }}"
+      tags:
+        - run
+        - run-backing
+        - docker-network
+
+    # Deploy backing services
+    - name: Run message broker
+      community.docker.docker_container:
+        name: "{{ simaas.message_broker.container.name }}"
+        image: "{{ simaas.message_broker.image.name }}"
+        state: "{{ simaas.state }}"
+        published_ports:
+          - "{{ simaas.message_broker.container.port }}:5672"
+        networks:
+          - name: "{{ docker.network.name }}"
+      tags:
+        - run
+        - run-backing
+
+    - name: Run result backend
+      community.docker.docker_container:
+        name: "{{ simaas.result_backend.container.name }}"
+        image: "{{ simaas.result_backend.image.name }}"
+        state: "{{ simaas.state }}"
+        published_ports:
+          - "{{ simaas.result_backend.container.port }}:6379"
+        networks:
+          - name: "{{ docker.network.name }}"
+      tags:
+        - run
+        - run-backing
+
+    # Start Linked Data Fragments Server
+    # XXX Depends on API to provide config in volume; won't start iff that doesn't exist!
+    # => (re-)start _after_ the API is running [no problem iff volume already populated]
+    - name: Start Linked Data Fragments Server
+      community.docker.docker_container:
+        name: "{{ simaas.ldf_server.container.name }}"
+        image: "{{ simaas.ldf_server.image.name }}"
+        state: "{{ simaas.state }}"
+        restart_policy: "on-failure"
+        restart_retries: 5
+        command:
+          - "/tmp/ldf-server_config.json"  # path to config within container, don't change
+        mounts:
+          - {
+              source: simaas-api-volume,
+              target: /tmp,
+              type: volume
+            }
+        published_ports:
+          - "{{ simaas.ldf_server.container.port }}:3000"
+        networks:
+          - name: "{{ docker.network.name }}"
+      tags:
+        - run
+        - run-backing
+        - run-ldf_server
+
+    # Deploy worker instances and API
+    - name: Start worker instances
+      community.docker.docker_container:
+        name: "{{ 'simaas_worker_%02x' | format(item) }}"
+        image: "{{ simaas.worker.image.name }}"
+        state: "{{ simaas.state }}"
+        cpus: "{{ simaas.worker.container.cpus }}"
+        hostname: "{{ 'simaas_worker_%02x' | format(item) }}"
+        command:
+          - "--concurrency={{ simaas.worker.container.cpus }}"
+          - "--loglevel=INFO"
+          - "-n {{ 'simaas_worker_%02x' | format(item) }}@{{ inventory_hostname }}"
+        mounts:
+          - { target: "{{ simaas.worker.container.tmpfs_path }}", type: tmpfs }
+          - {
+              source: "{{ simaas.worker.license }}",
+              target: "{{ simaas.worker.container.license_path }}",
+              type: bind,
+              read_only: yes
+            }
+        env:
+          SIMWORKER_TMPFS_PATH: "{{ simaas.worker.container.tmpfs_path }}"
+          SIMWORKER_TMPFS_MAXSIZE: "{{ simaas.worker.container.tmpfs_maxsize }}"
+          SIMWORKER_BROKER_HREF: "amqp://{{ simaas.message_broker.container.name }}"
+          SIMWORKER_BACKEND_HREF: "redis://{{ simaas.result_backend.container.name }}"
+          SIMWORKER_LOG_STRUCTURED: "false"
+          SIMWORKER_LOG_LEVEL: "INFO"
+          DYMOLA_RUNTIME_LICENSE: "{{ simaas.worker.container.license_path }}"
+        networks:
+          - name: "{{ docker.network.name }}"
+      loop: "{{ range(0, simaas.worker.replicas, 1) | list }}"
+      tags:
+        - run
+        - worker
+        - run-worker
+
+    - name: Start API
+      community.docker.docker_container:
+        name: simaas_api
+        image: "{{ simaas.api.image.name }}"
+        state: "{{ simaas.state }}"
+        restart_policy: "on-failure"
+        restart_retries: 5
+        user: root  # CAREFUL, serious security risk -- only for accessing docker socket!
+        mounts:
+          - {
+              source: /var/run/docker.sock,
+              target: /var/run/docker.sock,
+              type: bind
+            }  # CAREFUL -- DO NOT DO THIS IN PRODUCTION! Gives root access to _host_
+          - {
+              target: /tmp,
+              type: tmpfs,
+              tmpfs_size: "{{ simaas.api.container.tmpfs.size }}"
+            }
+          - {
+              source: simaas-api-volume,
+              target: /srv,
+              type: volume
+            }
+        env:
+          # SIMAAS_SCRATCH_BUFFER_SIZE: 262144  # set in Dockerfile
+          # SIMAAS_TMPFS_PATH: /tmp  # set in Dockerfile
+          # SIMAAS_FS_PATH: /srv  # set in Dockerfile
+          SIMAAS_RABBITMQ_HOSTNAME: "{{ simaas.message_broker.container.name }}"
+          SIMAAS_RABBITMQ_USERNAME: "{{ simaas.message_broker.container.username }}"
+          SIMAAS_RABBITMQ_PASSWORD: "{{ simaas.message_broker.container.password }}"
+          SIMAAS_REDIS_HOSTNAME: "{{ simaas.result_backend.container.name }}"
+          QPF_SERVER_ORIGIN: "http://{{ simaas.ldf_server.container.name }}:{{ simaas.ldf_server.container.port }}"
+          QPF_SERVER_CONTAINER_ENGINE: "docker"
+          QPF_SERVER_CONTAINER: "{{ simaas.ldf_server.container.name }}"
+          # QPF_SERVER_EXPOSE: "true"  # set in Dockerfile
+          # QPF_SERVER_PATH: "/knowledge-graph"  # set in Dockerfile
+          # QPF_SERVER_CONFIG: "./templates/ldf-server_config.json"  # set in Dockerfile
+          LOG_LEVEL: "DEBUG"
+        networks:
+          - name: "{{ docker.network.name }}"
+        published_ports:
+          - "{{ simaas.api.container.port }}:3000"
+      tags:
+        - run
+        - api
+        - run-api
