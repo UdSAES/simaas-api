@@ -38,6 +38,7 @@
           name: redis
           port: 6379
       ldf_server:
+        run: "false"  # CHANGE overrides value 'true' set in Dockerfile
         repo:
           version: master  # the commit to check out, e.g. a branch name or tag
           path: "{{ tmp_dir }}/ldf-server"
@@ -214,7 +215,7 @@
       community.docker.docker_container:
         name: "{{ simaas.ldf_server.container.name }}"
         image: "{{ simaas.ldf_server.image.name }}"
-        state: "{{ simaas.state }}"
+        state: "{{ 'started' if (simaas.state == 'started' and (simaas.ldf_server.run == 'true')) else 'absent'}}"
         restart_policy: "on-failure"
         restart_retries: 5
         command:
@@ -302,7 +303,7 @@
           SIMAAS_RABBITMQ_USERNAME: "{{ simaas.message_broker.container.username }}"
           SIMAAS_RABBITMQ_PASSWORD: "{{ simaas.message_broker.container.password }}"
           SIMAAS_REDIS_HOSTNAME: "{{ simaas.result_backend.container.name }}"
-          QPF_SERVER_EXPOSE: "false"  # CHANGE overrides value 'true' set in Dockerfile
+          QPF_SERVER_EXPOSE: "{{ simaas.ldf_server.run }}"
           QPF_SERVER_ORIGIN: "http://{{ simaas.ldf_server.container.name }}:{{ simaas.ldf_server.container.port }}"
           QPF_SERVER_CONTAINER_ENGINE: "docker"
           QPF_SERVER_CONTAINER: "{{ simaas.ldf_server.container.name }}"
