@@ -81,17 +81,17 @@
         - {
             repo: git@github.com:LinkedDataFragments/Server.js.git,
             dest: "{{ simaas.ldf_server.repo.path }}",
-            version: "{{ ldf_server.repo.version }}"
+            version: "{{ simaas.ldf_server.repo.version }}"
           }
         - {
             repo: git@github.com:UdSAES/simaas-worker.git,
             dest: "{{ simaas.worker.repo.path }}",
-            version: "{{ worker.repo.version }}"
+            version: "{{ simaas.worker.repo.version }}"
           }
         - {
             repo: git@github.com:UdSAES/simaas-api.git,
             dest: "{{ simaas.api.repo.path }}",
-            version: "{{ api.repo.version }}"
+            version: "{{ simaas.api.repo.version }}"
           }
       tags:
         - build
