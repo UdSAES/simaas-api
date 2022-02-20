@@ -277,13 +277,13 @@
         state: "{{ simaas.state }}"
         restart_policy: "on-failure"
         restart_retries: 5
-        user: root  # CAREFUL, serious security risk -- only for accessing docker socket!
+        # user: root  # CAREFUL, serious security risk -- this is an ugly workaround!
         mounts:
-          - {
-              source: /var/run/docker.sock,
-              target: /var/run/docker.sock,
-              type: bind
-            }  # CAREFUL -- DO NOT DO THIS IN PRODUCTION! Gives root access to _host_
+          # - {
+          #     source: /var/run/docker.sock,
+          #     target: /var/run/docker.sock,
+          #     type: bind
+          #   }  # CAREFUL, DO NOT DO THIS IN PRODUCTION! Gives root access to _host_ (!)
           - {
               target: /tmp,
               type: tmpfs,
@@ -302,10 +302,10 @@
           SIMAAS_RABBITMQ_USERNAME: "{{ simaas.message_broker.container.username }}"
           SIMAAS_RABBITMQ_PASSWORD: "{{ simaas.message_broker.container.password }}"
           SIMAAS_REDIS_HOSTNAME: "{{ simaas.result_backend.container.name }}"
+          QPF_SERVER_EXPOSE: "false"  # CHANGE overrides value 'true' set in Dockerfile
           QPF_SERVER_ORIGIN: "http://{{ simaas.ldf_server.container.name }}:{{ simaas.ldf_server.container.port }}"
           QPF_SERVER_CONTAINER_ENGINE: "docker"
           QPF_SERVER_CONTAINER: "{{ simaas.ldf_server.container.name }}"
-          # QPF_SERVER_EXPOSE: "true"  # set in Dockerfile
           # QPF_SERVER_PATH: "/knowledge-graph"  # set in Dockerfile
           # QPF_SERVER_CONFIG: "./templates/ldf-server_config.json"  # set in Dockerfile
           LOG_LEVEL: "DEBUG"
