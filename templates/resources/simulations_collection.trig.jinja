@@ -1,0 +1,77 @@
+{#
+SPDX-FileCopyrightText: 2022 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+SPDX-License-Identifier: MIT
+#}
+
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix foaf: <http://xmlns.com/foaf/spec/#> .
+@prefix hydra: <http://www.w3.org/ns/hydra/core#> .
+@prefix http: <http://www.w3.org/2011/http#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+
+@prefix fmi: <{{ fmi_url }}> .
+@prefix sms: <{{ sms_url }}> .
+@prefix api: <{{ api_url }}> .
+
+@prefix : <{{ base_url }}{{ base_separator}}> .
+@base <{{ base_url }}> .
+
+<#context> {
+    <#context> foaf:primaryTopic <> .
+    <#context> api:home </> .
+}
+
+<#controls> {
+    <#controls-trigger-simulations> a http:Request ;
+        http:methodName "POST" ;
+        http:requestURI <> ;
+        http:body <#shapes-trigger-simulation> ;
+        http:headers [
+            http:fieldName "Content-Type" ;
+            http:fieldValue "application/trig"
+        ] .
+}
+
+<#shapes> {
+    <#shapes-simulation-parameters> rdf:type sh:NodeShape ;
+        sh:property [
+            sh:path sms:startTime ;
+            sh:datatype xsd:integer ;
+            sh:minInclusive 0 ;
+            sh:maxCount 1 ;
+        ] ;
+        sh:property [
+            sh:path sms:stopTime ;
+            sh:datatype xsd:integer ;
+            sh:minInclusive 0 ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+        ] .
+
+
+    <#shapes-input-timeseries> rdf:type sh:NodeShape .
+
+    <#shapes-trigger-simulation> rdf:type sh:NodeShape ;
+        sh:targetClass sms:SimulationParameterSet ;
+        sh:property [
+            sh:path :simulationParamters ;
+            sh:minCount 1 ;
+            sh:maxCount 1 ;
+            sh:node <#shapes-simulation-parameters> ;
+        ] ;
+        sh:property [
+            sh:path :inputTimeseries ;
+            sh:node <#shapes-input-timeseries> ;
+        ] .
+}
+
+{% for simulation in simulations %}
+<{{ simulation }}> a sms:Simulation .
+<{{ simulation }}> sms:simulates <{{ instance_uri }}> .
+{% endfor%}

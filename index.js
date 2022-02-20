@@ -4,7 +4,7 @@
 'use strict'
 
 // Instantiate logger
-const log = require('./lib/logger.js')
+const log = require('./source/logger.js')
 log.info({ code: 300000 }, 'service instance started')
 
 // Exit immediately on uncaught errors or unhandled promise rejections
@@ -25,7 +25,6 @@ process.on('SIGTERM', shutDownGracefully)
 
 // Load modules
 const express = require('express')
-const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
 require('express-async-errors')
 const cors = require('cors')
@@ -33,9 +32,12 @@ const _ = require('lodash')
 const fs = require('fs-extra')
 const delay = require('delay')
 const addRequestId = require('express-request-id')()
+const nunjucks = require('nunjucks')
+const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middleware')
+const { processenv } = require('processenv')
 
-const handlers = require('./lib/simaas.js')
-const responseUtils = require('./lib/response_utils.js')
+const handlers = require('./source/simaas.js')
+const responseUtils = require('./source/response_utils.js')
 
 log.info({ code: 300010 }, 'successfully loaded modules')
 
@@ -48,16 +50,29 @@ async function checkIfConfigIsValid () {
     listenPort: parseInt(process.env.SIMAAS_LISTEN_PORT),
     heartbeatPeriod: parseInt(process.env.SIMAAS_HEARTBEAT_PERIOD) || 3600 * 1000,
     ui: {
-      staticFilesPath: String(process.env.UI_STATIC_FILES_PATH) || './lib/redoc.html',
+      staticFilesPath:
+        String(process.env.UI_STATIC_FILES_PATH) || './source/redoc.html',
       urlPath: String(process.env.UI_URL_PATH) || '/ui'
     },
     oas: {
       filePathStatic: './oas/simaas_oas3.json'
     },
+    qpf: {
+      expose: processenv('QPF_SERVER_EXPOSE', false),
+      path: processenv('QPF_SERVER_PATH', '/knowledge-graph'),
+      target: processenv('QPF_SERVER_ORIGIN'),
+      configTemplate: processenv(
+        'QPF_SERVER_CONFIG',
+        './templates/ldf-server_config.json'
+      ),
+      dataTemplate: './templates/ldf-server_data.trig'
+    },
     fs: process.env.SIMAAS_FS_PATH
   }
 
-  config.oas.filePathDynamic = `${config.fs}/OAS.json`
+  config.oas.filePathDynamic = `${config.fs}/OAS.json` // careful, also in `simaas.js`
+  config.qpf.configFilePath = `${config.fs}/ldf-server_config.json`
+  config.qpf.sourceFilePath = `${config.fs}/data.trig` // careful, also in `simaas.js`
 
   if (
     !(
@@ -85,6 +100,7 @@ async function checkIfConfigIsValid () {
     process.exit(4)
   }
 
+  // TODO use ?? instead of || or processenv()-syntax
   // TODO check validity of UI_STATIC_FILES_PATH
   // TODO check validity of UI_URL_PATH
   // TODO check validity of LOG_LEVEL?
@@ -124,10 +140,19 @@ async function init () {
 
   // Instantiate express-application and set up middleware-stack
   const app = express()
-  app.use(bodyParser.json())
-  app.use(fileUpload())
+  app.options('*', handlers.serveRESTdesc)
+
+  app.use(bodyParser.json({ type: ['application/json', 'application/*+json'] }))
+  app.use(
+    bodyParser.text({
+      type: ['application/trig', 'text/turtle', 'text/n3'],
+      limit: '2mb'
+    })
+  )
+  app.use(bodyParser.raw({ type: ['application/octet-stream'], limit: '50mb' }))
   app.use(cors())
   app.use(addRequestId)
+  nunjucks.configure('templates', { autoescape: true, express: app })
 
   // Expose UI iff UI_URL_PATH is not empty
   if (cfg.ui.urlPath !== '') {
@@ -140,11 +165,6 @@ async function init () {
       log.fatal({ code: 600020 }, 'default-UI not implemented')
       process.exit(6)
     }
-
-    // Redirect GET-request on origin to UI iff UI is exposed
-    app.get('', async (req, res) => {
-      res.redirect(cfg.ui.urlPath)
-    })
   }
 
   // Create child logger including req_id to be used in handlers
@@ -153,6 +173,38 @@ async function init () {
     req.log.info({ req: req }, `received ${req.method}-request on ${req.originalUrl}`) // XXX incompatible with GDPR!!
     next()
   })
+
+  // Expose Quad/Triple Pattern Fragmens interface by proxying requests to LDF-server
+  if (cfg.qpf.expose === true) {
+    // Ensure that config-file and data source exist
+    const qpfConfigExists = await fs.pathExists(cfg.qpf.configFilePath)
+    const qpfDataExists = await fs.pathExists(cfg.qpf.sourceFilePath)
+
+    if (qpfConfigExists === false) {
+      await fs.copy(cfg.qpf.configTemplate, cfg.qpf.configFilePath)
+    }
+
+    if (qpfDataExists === false) {
+      await fs.copy(cfg.qpf.dataTemplate, cfg.qpf.sourceFilePath)
+    }
+
+    // Proxy requests at designated path to instance of @ldf/server
+    app.use(
+      [cfg.qpf.path, '/assets'],
+      createProxyMiddleware({
+        target: cfg.qpf.target,
+        changeOrigin: true, // idk if this is really necessary..
+        // https://github.com/chimurai/http-proxy-middleware#intercept-and-manipulate-responses
+        selfHandleResponse: true,
+        onProxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
+          const response = responseBuffer.toString('utf-8')
+          const oldURL = `${cfg.qpf.target}${cfg.qpf.path}`
+          const newURL = `${req.protocol}://${req.headers.host}${req.path}`
+          return response.replaceAll(oldURL, newURL)
+        })
+      })
+    )
+  }
 
   // Rebuild dynamic OAS to ensure that upgrades are propagated but models are kept
   await fs.remove(cfg.oas.filePathDynamic)
@@ -178,6 +230,14 @@ async function init () {
   const backend = handlers.initializeBackend(cfg.oas.filePathDynamic)
 
   // Pass requests to middleware
+  app.get('/', handlers.getApiRoot)
+  app.get('/vocabulary', handlers.getApiVocabulary)
+  app.get('/models', handlers.getModelCollection)
+  app.get('/models/:id/types', handlers.getModelTypes)
+  app.get('/models/:id/units', handlers.getModelUnits)
+  app.get('/models/:id/variables', handlers.getModelVariables)
+  app.get('/models/:id/instances', handlers.getModelInstanceCollection)
+  app.get('/models/:id/instances/:id/experiments', handlers.getExperimentCollection)
   app.use((req, res, next) => backend.handleRequest(req, req, res, next))
 
   // Serialize any remaining errors as JSON

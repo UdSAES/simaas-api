@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+#
+# SPDX-License-Identifier: CC0-1.0
+
 # Ignore locally installed node modules
 node_modules
 
@@ -7,6 +11,11 @@ test/dredd_report.html
 # Ignore derivative versions of API specification
 oas/simaas_oas3*.yaml
 
+# Ignore test results (only for inspection, get recreated on each run)
+test/results/
+
 # Ignore files for local development
 .env
 local/
+.vscode/
+*.code-workspace

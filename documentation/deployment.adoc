@@ -1,0 +1,29 @@
+// SPDX-FileCopyrightText: 2022 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+//
+// SPDX-License-Identifier: CC-BY-4.0
+
+= Deploying a Complete SIMaaS-instance using Docker
+
+The https://docs.ansible.com/ansible/latest/index.html[Ansible] playbook in link:../scripts/deploy_using_ansible.yaml[scripts/deploy_using_ansible.yaml] documents a configuration of a fully functional, containerized deployment of all components of the SIMaaS-implementation.
+
+== Deployment
+
+It can also be executed to deploy a SIMaaS-instance for testing purposes locally, using https://www.docker.com/resources/what-container[Docker containers]. The steps below assume that https://www.python.org/[Python], https://pipenv.pypa.io/en/latest/[Pipenv] and the https://docs.docker.com/engine/install/[Docker engine] are installed.
+
+* Install Ansible and dependencies by executing `pipenv install` from the `scripts/`-directory and activate the resulting virtual environment via `pipenv shell`
+* Install the https://galaxy.ansible.com/community/docker[Docker Community Collection] for Ansible by executing `ansible-galaxy collection install community.docker`
+* Edit the `vars`-section of the playbook, specifically the variables marked with `# CHANGE` -- for all other variables, the values supplied can be used
+* Execute the playbook via `ansible-playbook deploy_using_ansible.yaml` (the `--tags "..."` option can be used to only execute parts of the playbook)
+
+If everything works, the deployment can now be accessed at `http://<gateway-IP>:<API-port>/`.
+
+Note that you should use the gateway IP designated in the playbook (even though `localhost` also appears to work initially) because the worker-instances need to be able to download the FMUs exposed by the API, which isn't possible when the FMUs are identified by a `localhost`-URL because, for worker instances, that points to the worker container instead of to the API container.
+
+== Including a QPF-Endpoint (_insecure_)
+Without changes, the playbook does not deploy and activate the QPF endpoint of the API. The reason for this is that the Linked Data Fragments Server-implementation needs to be  https://github.com/LinkedDataFragments/Server.js/tree/master/packages/server#reload-running-server[reloaded] every time the data set is updated. In the current implementation, this requires that the API-component has access to the Docker daemon in order to send the corresponding signal.
+
+This is possible when the Docker socket is mounted into the API-container in a way that the API-process can use it. However, this represents a serious security risk because that essentially grants full root access to the _host_.
+
+If you understand the risks, you can enable the QPF endpoint by uncommenting the sections marked with `# CAREFUL` in the play for starting the API (line 286 ff.).
+
+To be clear, this is a _workaround_ that needs to be fixed in the future.

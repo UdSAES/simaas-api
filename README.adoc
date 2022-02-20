@@ -1,16 +1,48 @@
+// SPDX-FileCopyrightText: 2022 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+//
+// SPDX-License-Identifier: CC-BY-4.0
+
 = A _Simulation as a Service_-Implementation: API
 
 image:https://img.shields.io/badge/code_style-standard-brightgreen.svg[alt=JavaScript Style Guide, link=https://standardjs.com]
 
 [.lead]
-This repository contains the API component of an implementation of the _Simulation as a Service (SIMaaS)_-concept based on the https://fmi-standard.org[Functional Mock-up Interface (FMI)] that uses dedicated worker-processes to execute simulation jobs distributed using a task queue. Find the worker implementation at https://github.com/UdSAES/simaas-worker[https://github.com/UdSAES/simaas-worker] and an example that demonstrates the abilities of both at https://github.com/UdSAES/simaas-demo[https://github.com/UdSAES/simaas-demo].
+This repository contains the API component of an implementation of the _Simulation as a Service (SIMaaS)_-concept based on the https://fmi-standard.org[Functional Mock-up Interface (FMI)] that uses dedicated worker-processes to execute simulation jobs distributed using a task queue. Find the worker implementation at https://github.com/UdSAES/simaas-worker[https://github.com/UdSAES/simaas-worker].
+
+From a functional perspective, the SIMaaS-implementation allows executing simulations of Functional Mock-up Units (FMUs) on a distributed, horizontally scalable set of computing resources via HTTP-requests. Moreover, the models and model instances registered with an API-instance can be downloaded and searched.
+
+
+== Concepts
+There are two variants of the API with different characteristics, depending on which format is chosen for resource representations:
+
+. a <<hypermedia-api, _RESTful hypermedia API_>> that transfers TriG- and JSON-LD-representations of resources using the https://en.wikipedia.org/wiki/Resource_Description_Framework[RDF data model] and supports https://en.wikipedia.org/wiki/HATEOAS[HATEOAS]; as well as
+. a <<http-api, _REST-based HTTP-API_>> that transfers JSON-representations of resources in an app-specific data model, documented according to the https://spec.openapis.org/oas/latest.html[OpenAPI Specification (OAS)].
+
+=== Hypermedia API
+The core intent of the hypermedia API-variant is to enable software agents to use the functionality exposed _without (!) being explicitly programmed to do so_ and without having to "`read`" a manual like the OAS.
+
+This is achieved by interlinking the resources exposed through machine-readable controls, just like links and forms interlink websites designed for humans. Additionally, https://restdesc.org/[RESTdesc] descriptions explain triggers and consequences of possible state transitions to software agents. Thereby, the Hypermedia representations of resources become The Engine Of Application State (HATEOAS), as required by the Representational State Transfer (REST) constraints.
+
+There is a https://linkeddatafragments.org/specification/quad-pattern-fragments/[Quad Pattern Fragments (QPF)] interface exposed that enables querying the information held by an instance. SPARQL can be used to formulate these queries if a query engine that can decompose SPARQL queries into QPF requests, such as  https://comunica.dev/docs/query/[Comunica], is used.
+
+A scientific paper describing motivation, concepts, system design and applications in detail, as well as the benefits of the design in terms of increased FAIRness and support for loose coupling, is currently under review.
+
+=== HTTP-API
+The REST-based HTTP-API precedes the implementation of the hypermedia API.
 
 Design concepts, software architecture and applications are discussed here:
 
 Stüber, Moritz and Georg Frey (2021-09). "A Cloud-native Implementation of the Simulation as a Service-Concept Based on FMI". In: Proceedings of the 14th International Modelica Conference, Linköping, Sweden, September 20-24, 2021. Linköping University Electronic Press, pp. 393--402. DOI: https://doi.org/10.3384/ecp21181393[10.3384/ecp21181393]
 
+A demonstration of the capabilities by means of the examples described in the paper can be found at https://github.com/UdSAES/simaas-demo[https://github.com/UdSAES/simaas-demo]. The descriptions in the paper refer to https://github.com/UdSAES/simaas-api/releases/tag/v0.5.0[v0.5.0] of the API and https://github.com/UdSAES/simaas-worker/releases/tag/v0.1.0[v0.1.0] of the worker-implementation.
+
+WARNING: Input validation for JSON request bodies was temporarily disabled in favour of simplifying the development of the hypermedia API-variant. Consider sticking to v0.5.0 for running the version presented at the Modelica conference. Moreover, JSON-representations and RDF-representations are not fully synchronized, so preferably use one variant only.
+
+
 == Installation
 The code can be executed directly on GNU/Linux host machines or containerized using Podman or Docker. In both cases, some environment variables (ENVVARs) must be set according to the table below.
+
+There is an Ansible playbook that demonstrates a fully functional deployment of all necessary components using Docker. _Because the playbook can be executed, this is likely the fastest way of arriving at a running instance!_ See link:scripts/deploy_using_ansible.yaml[scripts/deploy_using_ansible.yaml] and link:documentation/deployment.adoc[documentation/deployment.adoc] for details.
 
 === Configuration
 All environment variables without a default value MUST be set before starting the program. Otherwise, a fatal error will be raised and the program will terminate with a non-zero exit code.
@@ -63,11 +95,35 @@ All environment variables without a default value MUST be set before starting th
 
 | `UI_STATIC_FILES_PATH`
 | The path to any static HTML file to be exposed; intended for rendered version of OAS
-| `./lib/redoc.html`
+| `./source/redoc.html`
 
 | `UI_URL_PATH`
 | The URL path at which to expose the static HTML file
 | `/ui`
+
+| `QPF_SERVER_EXPOSE`
+| Whether (`"true"`) or not (`"false"`) to expose a https://github.com/LinkedDataFragments/Server.js[Linked Data Fragments Server] as part of the SIMaaS-API in order to support querying
+| `"false"``
+
+| `QPF_SERVER_ORIGIN`
+| The origin of a containerized Linked Data Fragments Server-instance to which requests are proxied
+| --
+
+| `QPF_SERVER_CONTAINER_ENGINE`
+| The container engine which runs the Linked Data Fragments Server-instance (only `"docker"` supported at the moment)
+| `"docker"`
+
+| `QPF_SERVER_CONTAINER`
+| The name of the container in which the Linked Data Fragments Server-instance runs
+| --
+
+| `QPF_SERVER_PATH`
+| The path at which to expose the QPF interface
+| `/knowledge-graph`
+
+| `QPF_SERVER_CONFIG`
+| The configuration file for the Linked Data Fragments Server-instance
+| `./templates/ldf-server_config.json`
 
 |===
 
@@ -77,11 +133,14 @@ All environment variables without a default value MUST be set before starting th
 * Apply a patch for an insufficient buffer size  by running `node scripts/set_buffer_size_amqplib.js`
 * Start a https://redis.io/[redis] server and a https://www.rabbitmq.com/[RabbitMQ] server
 * Start at least one instance of the https://github.com/UdSAES/simaas-worker[simaas-worker]
+* Optionally, start an instance of the https://github.com/LinkedDataFragments/Server.js[Linked Data Fragments Server]
 * Set the required ENVVARs, for example by putting `export SIMAAS_*=...`-statements in a file named `.env` and then loading the contents of this file via `source .env`
 * Start the API by running `node index.js`
 * Logs are serialized as JSON, so readability in a terminal increases greatly if the output is piped to https://stedolan.github.io/jq/[jq]
 
 === Running Containerized
+The steps outlined below are automated in link:scripts/deploy_using_ansible.yaml[scripts/deploy_using_ansible.yaml], look there for details!
+
 * Ensure that a container engine such as https://www.docker.com/[Docker] or https://podman.io/[podman] are installed and running.
 * Start instances of https://hub.docker.com/\_/redis[redis] and https://hub.docker.com/_/rabbitmq[RabbitMQ] (both available on dockerhub)
 * Build the container image, e.g. using `podman build -t simaas-api:latest .`
@@ -106,31 +165,58 @@ podman run \
 * Logs are serialized as JSON, so readability in a terminal increases greatly if the output is piped to https://stedolan.github.io/jq/[jq]
 
 == Usage
+.Hypermedia API
+Request a supported serialization of RDF as the format for a resource representation using the `"Accept"`-header and start browsing at `/`. Supported serializations are:
+
+  'text/turtle',
+  'application/trig',
+  'application/n-triples',
+  'application/n-quads',
+  'application/ld+json'
+  'text/n3'
+
+The RESTdesc-descriptions can be obtained through an `OPTIONS` request to `*` with the `"Accept"`-header set to `text/n3`.
+
+See the repository https://github.com/UdSAES/pragmatic-proof-agent[https://github.com/UdSAES/pragmatic-proof-agent] for an example of how the developed hypermedia API is used by a generic software agent.
+
+.REST-based HTTP-API
 Once all required components are running, you can access the API documentation at `/ui`. It is rendered from the link:oas/simaas_oas3.json[OpenAPI-Specification (OAS)] using https://github.com/Redocly/redoc[ReDoc].
 
-Initially, the service instance does not know about any models. Therefore, you have to push a model to the service instance first. The model needs to be an FMU 2.0 for co-simulation that includes binaries for GNU/Linux. Two supported FMUs can be found in the https://github.com/UdSAES/simaas-demo[simaas-demo]-repository. Optionally, the name(s) of one or more recordsfootnote:[This assumes that the FMU is created based on a Modelica model; the name of any component that groups the desired parameters should work.] used for storing parameters can be supplied. These will then be used to filter the full list of parameters read from `modelDescription.xml` in order to only expose those parameters that should actually be accessible through the API.
+Initially, the service instance does not know about any models. Therefore, you have to push a model to the service instance first. The model needs to be an FMU 2.0 for co-simulation that includes binaries for GNU/Linux. Two supported FMUs can be found in the https://github.com/UdSAES/simaas-demo[simaas-demo]-repository, alongside the implementation of two exemplary applications of the REST-based HTTP-API using these FMUs.
+
+Optionally, the name(s) of one or more recordsfootnote:[This assumes that the FMU is created based on a Modelica model; the name of any component that groups the desired parameters should work.] used for storing parameters can be supplied. These will then be used to filter the full list of parameters read from `modelDescription.xml` in order to only expose those parameters that should actually be accessible through the API.
 
 Once a model was successfully added, the OAS is updated and details on how to add model instances and simulate them become available.
 
-_If you run into a problem or have a question, please open an issue! Thank you very much._
 
-== Roadmap
-We will work on the follwoing issues in the near future:
+== Contributing and Development
+Feedback is very welcome! Please open an issue for questions, remarks and bug reports; or open a pull request if you want to improve something. However, please note that further development will be dictated by what I need for my PhD thesis until that is finished.
 
+The code in this repository uses Semantic Versioning (semver) and follows the https://semver.org/spec/v2.0.0.html[semver specification].
+
+JavaScript code and JSON documents are formatted automatically according to https://standardjs.com/[JavaScript Standard Style] using https://www.npmjs.com/package/prettier-standard[`prettier-standard`] via `npm run format`.
+
+
+== Known Issues
+We will work on the following issues in the near future:
+
+* [ ] provide more "`rich`" (meta)data, context and controls for all resources (revise)
+* [ ] validate graphs supplied as request bodies against shape definition
+* [ ] provide "`Getting Started`" including exemplary FMUs in documentation
 * [ ] bring back API and unit tests (already exist but need updating)
+* [ ] bring back input validation for JSON request bodies
 * [ ] clarify additional restrictions posed on FMUs
 * [ ] remove as many of these restrictions as possible
 * [ ] investigate relation to and possible use of (parts of) the https://ssp-standard.org/[SSP-standard]
+* [ ] shorten README/make more concise by moving details to separate files?
+* [ ] ...
 
-Additionally, we will add new features/functionality, including:
 
-* [ ] add graph-based representation format in addition to JSON (Turtle, N3, JSON-LD)
-* [ ] derive triples about FMUs upon uploading
-* [ ] add metadata, context and controls to resource representations
+== License
+The source code is licensed under the https://spdx.org/licenses/MIT.html[MIT License]. This is specified in the format suggested by the https://reuse.software[REUSE SOFTWARE]-initiative -- in short: https://spdx.dev/ids/[SPDX IDs] are included in every non-binary file and the license text can be found in link:LICENSES/[./LICENSES/].
 
-Adding this functionality will not break the REST-based HTTP-API described in the paper -- after all, this is what content negotiation is for :wink:.
 
 == Acknowledgements
 From January 2017 to March 2021, this work was supported by the SINTEG-project https://designetz.de["`Designetz`"] funded by the German Federal Ministry of Economic Affairs and Energy (BMWi) under grant 03SIN224.
 
-image::./docs/logos_uds_aes_designetz_bmwi.png[]
+image::./documentation/logos_uds_aes_designetz_bmwi.png[]

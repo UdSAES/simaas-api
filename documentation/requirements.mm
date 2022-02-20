@@ -1,4 +1,4 @@
-<map version="freeplane 1.8.0">
+<map version="freeplane 1.9.8">
 <!--To view this file, download free mind mapping software Freeplane from http://freeplane.sourceforge.net -->
 <attribute_registry SHOW_ATTRIBUTES="hide">
     <attribute_name MANUAL="true" NAME="in.module">
@@ -50,13 +50,14 @@
 <node TEXT="SIMaaS" FOLDED="false" ID="ID_355979620" CREATED="1570370953126" MODIFIED="1590489083038" STYLE="oval">
 <font SIZE="18"/>
 <hook NAME="MapStyle">
-    <properties fit_to_viewport="false" show_icon_for_attributes="true" show_note_icons="true"/>
+    <properties show_icon_for_attributes="true" fit_to_viewport="false" show_note_icons="true"/>
 
 <map_styles>
-<stylenode LOCALIZED_TEXT="styles.root_node" STYLE="oval" UNIFORM_SHAPE="true" VGAP_QUANTITY="24.0 pt">
+<stylenode LOCALIZED_TEXT="styles.root_node" STYLE="oval" UNIFORM_SHAPE="true" VGAP_QUANTITY="24 pt">
 <font SIZE="24"/>
 <stylenode LOCALIZED_TEXT="styles.predefined" POSITION="right" STYLE="bubble">
-<stylenode LOCALIZED_TEXT="default" MAX_WIDTH="600.0 px" COLOR="#000000" STYLE="as_parent">
+<stylenode LOCALIZED_TEXT="default" ID="ID_1356551490" MAX_WIDTH="600 px" COLOR="#000000" STYLE="as_parent">
+<arrowlink SHAPE="CUBIC_CURVE" COLOR="#a2a2a2" WIDTH="2" TRANSPARENCY="200" DASH="" FONT_SIZE="9" FONT_FAMILY="SansSerif" DESTINATION="ID_1356551490" STARTARROW="DEFAULT" ENDARROW="DEFAULT"/>
 <font NAME="Liberation Sans" SIZE="10" BOLD="false" ITALIC="false"/>
 <edge COLOR="#808080"/>
 </stylenode>
@@ -69,6 +70,7 @@
 <edge STYLE="hide_edge"/>
 <cloud COLOR="#f0f0f0" SHAPE="ROUND_RECT"/>
 </stylenode>
+<stylenode LOCALIZED_TEXT="defaultstyle.selection" BACKGROUND_COLOR="#4e85f8" BORDER_COLOR_LIKE_EDGE="false" BORDER_COLOR="#4e85f8"/>
 </stylenode>
 <stylenode LOCALIZED_TEXT="styles.user-defined" POSITION="right" STYLE="bubble">
 <stylenode LOCALIZED_TEXT="styles.topic" COLOR="#18898b" STYLE="fork">
@@ -108,7 +110,7 @@
 </hook>
 <hook NAME="accessories/plugins/AutomaticLayout.properties" VALUE="ALL"/>
 <edge COLOR="#808080"/>
-<node TEXT="Stakeholder" FOLDED="true" POSITION="right" ID="ID_1362715508" CREATED="1610209606525" MODIFIED="1610209682669">
+<node TEXT="Stakeholder" POSITION="right" ID="ID_1362715508" CREATED="1610209606525" MODIFIED="1610209682669">
 <node TEXT="Stakeholders" ID="ID_530363449" CREATED="1610209651046" MODIFIED="1610209660141">
 <node TEXT="UdS AES as the chair that has to deliver specified results as part of the Designetz-project" ID="ID_1848430071" CREATED="1610209609812" MODIFIED="1610209609812"/>
 <node TEXT="Westnetz/innogy as the company that will run the code in a critical environment" ID="ID_1293770855" CREATED="1610209609812" MODIFIED="1610209609812"/>
@@ -239,7 +241,7 @@
 <node TEXT="provide auxiliary information based on the metadata of the FMU" ID="ID_1152076163" CREATED="1612547822679" MODIFIED="1612547822679"/>
 </node>
 </node>
-<node TEXT="As a user, I want to retrieve the results of a simulation" ID="ID_1005945036" CREATED="1590489620175" MODIFIED="1590490900497">
+<node TEXT="As a user, I want to retrieve the results of a simulation" ID="ID_1005945036" CREATED="1590489620175" MODIFIED="1636287793865">
 <attribute NAME="story.form" VALUE="user story"/>
 <attribute NAME="in.status" VALUE="DONE"/>
 <attribute NAME="in.semver" VALUE="0.3.0"/>

@@ -1,0 +1,68 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+
+@prefix fmi: <https://purl.org/fmi-ontology#> .
+@prefix sms: <https://purl.org/sms-ontology#> .
+
+@prefix var: </models/6157f34f-f629-484b-b873-f31be22269e1/variables#> .
+@prefix : <#>.
+
+<> sms:represents </systems/swsls-th> .
+
+:parameters rdf:type sms:ParameterSet ;
+    :latitude [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:latitude ;
+        qudt:numericValue 49.31659 ;
+        qudt:unit unit:DEG ] ;
+
+    :longitude [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:longitude ;
+        qudt:numericValue 6.749953 ;
+        qudt:unit unit:DEG ] ;
+
+    :elevation [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:elevation ;
+        qudt:numericValue 181 ;
+        qudt:unit unit:M ] ;
+
+    :panelArea [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:panelArea ;
+        qudt:numericValue 227.78496 ;
+        qudt:unit unit:M2 ] ;
+
+    :plantEfficiency [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:plantEfficiency ;
+        qudt:numericValue 0.17 ] ;
+
+    :T_cell_ref [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:T_cell_ref ;
+        qudt:numericValue 25 ;
+        qudt:unit unit:DEG_C ] ;
+
+    :panelTilt [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:panelTilt ;
+        qudt:numericValue 28 ;
+        qudt:unit unit:DEG ] ;
+
+    :panelAzimuth [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:panelAzimuth ;
+        qudt:numericValue 47 ;
+        qudt:unit unit:DEG ] ;
+
+    :environmentAlbedo [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:environmentAlbedo ;
+        qudt:numericValue 0.2 ] ;
+
+    :nsModule [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:nsModule ;
+        qudt:numericValue 6 ] ;
+
+    :npModule [ rdf:type qudt:QuantityValue ;
+        sms:isValueFor var:npModule ;
+        qudt:numericValue 26 ]
+.

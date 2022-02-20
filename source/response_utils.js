@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2021 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
 // SPDX-License-Identifier: MIT
 
+// https://www.hydra-cg.com/spec/latest/core/#description-of-http-status-codes-and-errors?
+
 'use strict'
 
 // Define utility functions for API
