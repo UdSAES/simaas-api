@@ -41,8 +41,8 @@ const cfg = {
   tmpfs: process.env.SIMAAS_TMPFS_PATH,
   fs: process.env.SIMAAS_FS_PATH,
   qpf: {
-    expose: process.env.QPF_SERVER_EXPOSE === 'true' ?? true,
-    containerEngine: process.env.QPF_SERVER_CONTAINER_ENGINE,
+    expose: process.env.QPF_SERVER_EXPOSE === 'true' ?? false,
+    containerEngine: process.env.QPF_SERVER_CONTAINER_ENGINE ?? 'docker',
     containerName: process.env.QPF_SERVER_CONTAINER
   },
   backingServices: {

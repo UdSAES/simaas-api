@@ -58,7 +58,7 @@ async function checkIfConfigIsValid () {
       filePathStatic: './oas/simaas_oas3.json'
     },
     qpf: {
-      expose: processenv('QPF_SERVER_EXPOSE', true),
+      expose: processenv('QPF_SERVER_EXPOSE', false),
       path: processenv('QPF_SERVER_PATH', '/knowledge-graph'),
       target: processenv('QPF_SERVER_ORIGIN'),
       configTemplate: processenv(

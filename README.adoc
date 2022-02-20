@@ -73,6 +73,30 @@ All environment variables without a default value MUST be set before starting th
 | The URL path at which to expose the static HTML file
 | `/ui`
 
+| `QPF_SERVER_EXPOSE`
+| Whether (`"true"`) or not (`"false"`) to expose a https://github.com/LinkedDataFragments/Server.js[Linked Data Fragments Server] as part of the SIMaaS-API in order to support querying
+| `"false"``
+
+| `QPF_SERVER_ORIGIN`
+| The origin of a containerized Linked Data Fragments Server-instance to which requests are proxied
+| ---
+
+| `QPF_SERVER_CONTAINER_ENGINE`
+| The container engine which runs the Linked Data Fragments Server-instance (only `"docker"` supported at the moment)
+| `"docker"`
+
+| `QPF_SERVER_CONTAINER`
+| The name of the container in which the Linked Data Fragments Server-instance runs
+| 
+
+| `QPF_SERVER_PATH`
+| The path at which to expose the QPF interface
+| `/knowledge-graph`
+
+| `QPF_SERVER_CONFIG`
+| The configuration file for the Linked Data Fragments Server-instance
+| `./templates/ldf-server_config.json`
+
 |===
 
 === Running from Code
