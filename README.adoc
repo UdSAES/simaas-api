@@ -9,8 +9,6 @@ Design concepts, software architecture and applications are discussed here:
 
 Stüber, Moritz and Georg Frey (2021-09). "A Cloud-native Implementation of the Simulation as a Service-Concept Based on FMI". In: Proceedings of the 14th International Modelica Conference, Linköping, Sweden, September 20-24, 2021. Linköping University Electronic Press, pp. 393--402. DOI: https://doi.org/10.3384/ecp21181393[10.3384/ecp21181393]
 
-IMPORTANT: *Recent improvements to code and README/documentation have not been pushed to GitHub yet -- will be fixed as soon as possible*, certainly in calender week 7! (2022-02-13)
-
 == Installation
 The code can be executed directly on GNU/Linux host machines or containerized using Podman or Docker. In both cases, some environment variables (ENVVARs) must be set according to the table below.
 
