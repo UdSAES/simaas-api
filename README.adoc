@@ -107,7 +107,7 @@ All environment variables without a default value MUST be set before starting th
 
 | `QPF_SERVER_ORIGIN`
 | The origin of a containerized Linked Data Fragments Server-instance to which requests are proxied
-| ---
+| --
 
 | `QPF_SERVER_CONTAINER_ENGINE`
 | The container engine which runs the Linked Data Fragments Server-instance (only `"docker"` supported at the moment)
@@ -115,7 +115,7 @@ All environment variables without a default value MUST be set before starting th
 
 | `QPF_SERVER_CONTAINER`
 | The name of the container in which the Linked Data Fragments Server-instance runs
-| 
+| --
 
 | `QPF_SERVER_PATH`
 | The path at which to expose the QPF interface

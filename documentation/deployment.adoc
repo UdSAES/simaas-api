@@ -4,7 +4,7 @@
 
 = Deploying a Complete SIMaaS-instance using Docker
 
-The https://docs.ansible.com/ansible/latest/index.html[Ansible] playbook in link:scripts/deploy_using_ansible.yaml[scripts/deploy_using_ansible.yaml] documents a configuration of a fully functional, containerized deployment of all components of the SIMaaS-implementation.
+The https://docs.ansible.com/ansible/latest/index.html[Ansible] playbook in link:../scripts/deploy_using_ansible.yaml[scripts/deploy_using_ansible.yaml] documents a configuration of a fully functional, containerized deployment of all components of the SIMaaS-implementation.
 
 == Deployment
 
