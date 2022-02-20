@@ -102,7 +102,7 @@ describe('Test upload of an FMU to the API instance wrt expected status codes', 
   ]
 
   _.forEach(tests, function (test) {
-    const testTitle = `${test.method} ${test.path} as \`${test.accept}\``
+    const testTitle = 'Test upload of an FMU to the API instance'
     const expectation = `should return \`${test.expected.statusCode}\`
       as \`${test.expected['content-type']}\``
 
@@ -144,10 +144,10 @@ describe('Test API functionality wrt expected status codes', function () {
   const instanceURL = new url.URL(API_ORIGIN)
 
   const serializations = {
-    'application/json': {
-      ext: 'json',
-      reader: fs.readJSONSync
-    },
+    // 'application/json': {
+    //   ext: 'json',
+    //   reader: fs.readJSONSync
+    // },
     'application/trig': {
       ext: 'trig',
       reader: fs.readFileSync

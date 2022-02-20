@@ -316,6 +316,8 @@ class Model extends Resource {
 
   // https://dev.to/somedood/the-proper-way-to-write-async-constructors-in-javascript-1o8c
   static async init (request, tmpFile, targetDir, celeryClient) {
+    // TODO this is problematic iff the origin isn't reachable from worker instances
+    // e.g. localhost doesn't work when running containerized! => use gateway-IP of network
     const origin = `${request.protocol}://${request.headers.host}`
 
     // Extract `modelDescription.xml` from FMU

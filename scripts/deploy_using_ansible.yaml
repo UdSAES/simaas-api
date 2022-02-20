@@ -1,11 +1,11 @@
-# SPDX-FileCopyrightText: 2021 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
+# SPDX-FileCopyrightText: 2022 UdS AES <https://www.uni-saarland.de/lehrstuhl/frey.html>
 # SPDX-License-Identifier: MIT
 
 
 # Playbook to build and run a SIMaaS-instance locally using plain Docker
 
 ---
-- hosts: localhost
+- hosts: localhost  # 'localhost' is implicitly known; an inventory is needed for other hosts
   vars:
     # General options
     # CHANGE directory on host into which to clone the repositories
