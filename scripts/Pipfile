@@ -8,6 +8,7 @@ ansible = "*"
 docker = "*"
 
 [dev-packages]
+reuse = "*"
 
 [requires]
 python_version = "3.10"
