@@ -42,6 +42,8 @@ WARNING: Input validation for JSON request bodies was temporarily disabled in fa
 == Installation
 The code can be executed directly on GNU/Linux host machines or containerized using Podman or Docker. In both cases, some environment variables (ENVVARs) must be set according to the table below.
 
+There is an Ansible playbook that demonstrates a fully functional deployment of all necessary components using Docker. _Because the playbook can be executed, this is likely the fastest way of arriving at a running instance!_ See link:scripts/deploy_using_ansible.yaml[scripts/deploy_using_ansible.yaml] and link:documentation/deployment.adoc[documentation/deployment.adoc] for details.
+
 === Configuration
 All environment variables without a default value MUST be set before starting the program. Otherwise, a fatal error will be raised and the program will terminate with a non-zero exit code.
 
@@ -137,6 +139,8 @@ All environment variables without a default value MUST be set before starting th
 * Logs are serialized as JSON, so readability in a terminal increases greatly if the output is piped to https://stedolan.github.io/jq/[jq]
 
 === Running Containerized
+The steps outlined below are automated in link:scripts/deploy_using_ansible.yaml[scripts/deploy_using_ansible.yaml], look there for details!
+
 * Ensure that a container engine such as https://www.docker.com/[Docker] or https://podman.io/[podman] are installed and running.
 * Start instances of https://hub.docker.com/\_/redis[redis] and https://hub.docker.com/_/rabbitmq[RabbitMQ] (both available on dockerhub)
 * Build the container image, e.g. using `podman build -t simaas-api:latest .`
