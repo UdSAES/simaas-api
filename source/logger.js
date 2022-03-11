@@ -12,7 +12,7 @@ const bunyan = require('bunyan')
 const log = bunyan.createLogger({
   name: 'simaas_api', // TODO make configurable?
   stream: process.stdout,
-  level: parseInt(process.env.LOG_LEVEL) || bunyan.INFO,
+  level: bunyan.resolveLevel(process.env.LOG_LEVEL) || bunyan.INFO,
   serializers: {
     err: bunyan.stdSerializers.err,
     req: bunyan.stdSerializers.req,
