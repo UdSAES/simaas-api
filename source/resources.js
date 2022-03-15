@@ -583,12 +583,16 @@ class Simulation extends Resource {
   async asTask () {
     const instanceAsJSON = await this.instance.asJSON()
     const simulationAsJSON = await this.asJSON()
+	const internalHref = this.instance.model.iri.replace(
+		/^https?:\/\/[^/]*\//g,
+		'http://api:3000/'
+	)
     return {
       modelInstanceId: this.instance.id,
       simulationParameters: simulationAsJSON.simulationParameters,
       inputTimeseries: simulationAsJSON.inputTimeseries,
       parameterSet: instanceAsJSON.parameters,
-      modelHref: this.instance.model.iri
+      modelHref: internalHref
     }
   }
 
@@ -762,24 +766,25 @@ class SimulationResult extends Resource {
     view.json = result.json
 
     // Load RDF-representation
-    const store = await Resource.parseRdfRequestbody(
-      result['ld+json'],
-      'application/ld+json',
-      view.iri
-    )
+//     const store = await Resource.parseRdfRequestbody(
+//       result['ld+json'],
+//       'application/ld+json',
+//       view.iri
+//     )
 
     // -> TODO: INPUT VALIDATION!! <-
 
     // Add additional triples that are data
     const aboutGraph = namedNode('#about')
-    store.addQuads([
-      quad(namedNode(view.iri), ns.rdf.type, ns.sms.SimulationResult, defaultGraph()),
-      quad(namedNode(view.iri), ns.sms.resultOf, simulation.iri, defaultGraph()),
-      quad(aboutGraph, ns.foaf.primaryTopic, namedNode(view.iri), aboutGraph),
-      quad(aboutGraph, ns.api.home, namedNode(simulation.origin), aboutGraph)
-    ])
+//     store.addQuads([
+//       quad(namedNode(view.iri), ns.rdf.type, ns.sms.SimulationResult, defaultGraph()),
+//       quad(namedNode(view.iri), ns.sms.resultOf, simulation.iri, defaultGraph()),
+//       quad(aboutGraph, ns.foaf.primaryTopic, namedNode(view.iri), aboutGraph),
+//       quad(aboutGraph, ns.api.home, namedNode(simulation.origin), aboutGraph)
+//     ])
 
-    view.graph = store
+//     view.graph = store
+    view.graph = null
 
     return new SimulationResult(simulation, view)
   }
