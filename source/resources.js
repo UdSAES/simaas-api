@@ -583,9 +583,10 @@ class Simulation extends Resource {
   async asTask () {
     const instanceAsJSON = await this.instance.asJSON()
     const simulationAsJSON = await this.asJSON()
+	const internalApiPrefix = process.env.INTERNAL_API_PREFIX || 'http://api:3000/'
 	const internalHref = this.instance.model.iri.replace(
 		/^https?:\/\/[^/]*\//g,
-		'http://api:3000/'
+		internalApiPrefix
 	)
     return {
       modelInstanceId: this.instance.id,
